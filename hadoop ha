@@ -272,6 +272,7 @@ $ bin/hdfs zkfc -formatZK
         <value>true</value>
     </property>
 
+    <!--任务历史服务-->
     <property> 
         <name>yarn.log.server.url</name> 
         <value>http://z01:19888/jobhistory/logs/</value> 
@@ -288,7 +289,7 @@ $ bin/hdfs zkfc -formatZK
         <value>true</value>
     </property>
  
-    <!--声明两台resourcemanager的地址-->
+    <!--声明两台resourcemanager的地址集群名称-->
     <property>
         <name>yarn.resourcemanager.cluster-id</name>
         <value>cluster-yarn1</value>
@@ -301,18 +302,18 @@ $ bin/hdfs zkfc -formatZK
 
     <property>
         <name>yarn.resourcemanager.hostname.rm1</name>
-        <value>z02</value>
+        <value>z01</value>
     </property>
 
     <property>
         <name>yarn.resourcemanager.hostname.rm2</name>
-        <value>z03</value>
+        <value>z02</value>
     </property>
  
     <!--指定zookeeper集群的地址--> 
     <property>
         <name>yarn.resourcemanager.zk-address</name>
-        <value>z01:2181,z02:2181,z03:2181</value>
+        <value>zknode01:2181,zknode02:2181,zknode03:2181</value>
     </property>
 
     <!--启用自动恢复--> 
