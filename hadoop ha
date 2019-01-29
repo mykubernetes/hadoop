@@ -204,6 +204,8 @@ $ bin/zkServer.sh status
 	<value>zknode01:2181,zknode02:2181,zknode03:2181</value>
 	</property>
 </configuration>
+
+
 * core-site.xml
 <configuration>
 	<property>
