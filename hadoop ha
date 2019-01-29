@@ -86,8 +86,8 @@ $ ssh-copy-id z02
 $ ssh-copy-id z03
 
 完成后，其他机器同理。 
-三、CDH安装
-3.1 CDH之zookeeper
+三、安装
+3.1 zookeeper
 3.1.1修改zoo.cfg配置文件
 修改conf目录下的zoo.cfg文件，如果没有该文件，请自行重命名sample.cfg文件，修改内容为：
 dataDir=/opt/modules/zookeeper/zkData
@@ -209,6 +209,12 @@ $ bin/zkServer.sh status
 	</property>
 </configuration>
 完成后远程拷贝给其他服务器
+
+配置数据节点
+   slave
+	node01
+	node02
+	node03
 
 命令操作：
 启动服务
