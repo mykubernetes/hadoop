@@ -255,6 +255,8 @@ $ bin/hdfs haadmin -getServiceState nn1
 初始化ha在zookeeper中的状态
 $ bin/hdfs zkfc -formatZK
 
+重启各个服务
+
 五、2.2ResourceManager HA
 * yarn-site.xml
 <configuration>
