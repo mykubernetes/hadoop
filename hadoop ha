@@ -252,6 +252,8 @@ $ bin/hdfs haadmin -transitionToActive nn1
 查看服务状态
 $ bin/hdfs haadmin -getServiceState nn1
 
+初始化ha在zookeeper中的状态
+$ bin/hdfs zkfc -formatZK
 
 五、2.2ResourceManager HA
 * yarn-site.xml
