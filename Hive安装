@@ -34,10 +34,10 @@
 		root：操作mysql的用户
 		@''：主机名
 		密码：123456
-** hive-site.xml
+** hive-site.xml   #修改的属性
 	<property>
 		<name>javax.jdo.option.ConnectionURL</name>
-		<value>jdbc:mysql://hadoop-senior01.itguigu.com:3306/metastore?createDatabaseIfNotExist=true</value>
+		<value>jdbc:mysql://node01:3306/metastore?createDatabaseIfNotExist=true</value>
 		<description>JDBC connect string for a JDBC metastore</description>
 	</property>
 
