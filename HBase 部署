@@ -119,7 +119,7 @@ HMaster的高可用
       $ scp -r conf/ node02:/opt/modules/cdh/hbase-0.98.6-cdh5.3.6/
       $ scp -r conf/ node03:/opt/modules/cdh/hbase-0.98.6-cdh5.3.6/
     5、打开页面测试
-       http://hadoop-senior01.itguigu.com:60010
+       http://node01:60010
 
           最后，可以尝试关闭第一台机器的HMaster：
           $ bin/hbase-daemon.sh stop master
