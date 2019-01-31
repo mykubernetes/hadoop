@@ -25,7 +25,7 @@
 	** 设置root用户密码
 		# mysqladmin -uroot password '123456'
 	** 为用户以及其他机器节点授权
-		mysql> grant all on *.* to root@'hadoop-senior01.itguigu.com' identified by '123456';
+		mysql> grant all on *.* to root@'node01' identified by '123456';
 		grant all on *.* to root@'hadoop104' identified by '000000';
 
 		grant：授权
