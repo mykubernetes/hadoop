@@ -98,4 +98,5 @@
 ** 导入数据
 	*** 从本地导入
 		load data local inpath '文件路径' into table;
-	*** 从HDFS系统导入
+	*** 从HDFS系统导入  #无local
+		load data inpath '文件路径' into table;
