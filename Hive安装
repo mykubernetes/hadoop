@@ -95,6 +95,11 @@
 ** 创建表操作
 	hive> create table t1(eid int, name string, sex string) row format delimited fields terminated by '\t';
 
+** 编辑一个需要导入数据的的文件
+1	Nick	male
+2	Thomas	male
+3	Alice	female
+	
 ** 导入数据
 	*** 从本地导入
 		load data local inpath '文件路径' into table;
