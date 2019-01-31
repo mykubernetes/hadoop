@@ -152,7 +152,7 @@ HBase常用操作
     或：查看某个rowkey范围内的数据
          hbase(main):014:0> scan 'student',{STARTROW => '1001',STOPROW => '1007'}
     7、查看表结构
-         hbase(main):009:0> describe ‘student’
+         hbase(main):009:0> describe 'student'
 
 
     8、更新指定字段的数据
