@@ -68,7 +68,32 @@
 	$ cp -a mysql-connector-java-5.1.27-bin.jar /opt/modules/cdh/hive-0.13.1-cdh5.3.6/lib/
 
 ** 启动Hive
+	本地启动
 	$ bin/hive
+	启动远程模式   本地启动
+	$hive --service metastore &   #启动远程模式，否则你只能在本地登录
+		远程系统配置客户端连接Hive（必须有Hadoop环境）
+		$ tar zxvf apache-hive-1.2.0-bin.tar.gz
+		$ mv apache-hive-1.2.0-bin /opt
+		$ vi hive-site.xml
+		<configuration>
+		<!--通过thrift方式连接hive-->
+		   <property>
+		       <name>hive.metastore.uris</name>
+			<value>thrift://192.168.18.215:9083</value>
+		   </property>
+		</configuration>
+		配置好连接信息，连接命令行：
+		$ /opt/apache-hive-1.2.0-bin/bin/hive
+
+** 查看Hive是否启动	
+	$ jps
+	2615 DFSZKFailoverController
+	30027 ResourceManager
+	29656 NameNode
+	25451 Jps
+	10270 HMaster
+	14975 RunJar     #会启动一个RunJar进程
 
 ** 修改HDFS系统中关于Hive的一些目录权限
 	$ /opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/bin/hadoop fs -chmod 777 /tmp/
