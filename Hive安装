@@ -59,6 +59,8 @@
 		<description>password to use against metastore database</description>
 	</property>
 
+** 创建日志目录
+	mkdir /opt/modules/cdh/hive-0.13.1-cdh5.3.6/logs
 ** hive-log4j.properties
 	hive.log.dir=/opt/modules/cdh/hive-0.13.1-cdh5.3.6/logs
 
