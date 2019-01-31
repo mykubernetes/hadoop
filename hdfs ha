@@ -1,120 +1,92 @@
-Hadoop ha
+hdfs ha
 
 一、Linux软件环境配置
-1.1 JDK安装
-$ tar -zxf /opt/softwares/jdk-8u121-linux-x64.gz -C /opt/modules/
-1.2 JDK环境变量配置
-# vi /etc/profile
-
-#JAVA_HOME
-JAVA_HOME=/opt/modules/jdk1.8.0_121
-
-export CLASSPATH=.:$JAVA_HOME/jre/lib/rt.jar:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
-
-export 
-PATH=$PATH:$JAVA_HOME/bin
+	1 JDK安装
+	$ tar -zxf /opt/softwares/jdk-8u121-linux-x64.gz -C /opt/modules/
+	2 JDK环境变量配置
+	# vi /etc/profile
+	#JAVA_HOME
+	JAVA_HOME=/opt/modules/jdk1.8.0_121
+	export CLASSPATH=.:$JAVA_HOME/jre/lib/rt.jar:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+	export 
+	PATH=$PATH:$JAVA_HOME/bin
 二、Linux 其他准备操作
-2.1字符模式启动
-# cat /etc/inittab
- 
-# systemctl set-default multi-user.target，来设置无界面启动linux
-# systemctl set-default graphical.target，来设置有界面启动linux
-2.2 配置NTP时间服务器
-2.2.1检查时区
-对于我们当前这种案例，主要目标是把z01这台服务器设置为时间服务器，剩下的z02，z03这两台机器同步z01的时间，我们需要这样做的原因是因为，整个集群架构中的时间，要保持一致。
-检查当前系统时区，使用命令：# date -R
- 
-注意这里，如果显示的时区不是+0800，你可以删除localtime文件夹后，再关联一个正确时区的链接过去，命令如下：
+配置NTP时间服务器
+	1、 检查时区
+	对于我们当前这种案例，主要目标是把z01这台服务器设置为时间服务器，剩下的z02，z03这两台机器同步z01的时间，我们需要这样做的原因是因为，整个集群架构中的时间，要保持一致。
+	检查当前系统时区，使用命令：# date -R
+ 	注意这里，如果显示的时区不是+0800，你可以删除localtime文件夹后，再关联一个正确时区的链接过去，命令如下：
+	# rm -rf /etc/localtime
+	# ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+	2、 同步时间
+	# ntpdate pool.ntp.org
+	3、 修改NTP配置文件
+	# vi /etc/ntp.conf
+	去掉下面这行前面的# ,并把网段修改成自己的网段：
+	restrict 192.168.122.0 mask 255.255.255.0 nomodify notrap
+	注释掉以下几行：
+	#server 0.centos.pool.ntp.org
+	#server 1.centos.pool.ntp.org
+	#server 2.centos.pool.ntp.org
+	把下面两行前面的#号去掉,如果没有这两行内容,需要手动添加
+	server  127.127.1.0    # local clock
+	fudge  127.127.1.0 stratum 10
+	4、 重启ntp服务
+	# systemctl start ntpd.service，注意，如果是centOS7以下的版本，使用命令：service ntpd start
+	# systemctl enable ntpd.service，注意，如果是centOS7以下的版本，使用命令：chkconfig ntpd on
+	5、 集群其他节点去同步这台时间服务器时间
+	首先需要关闭这两台计算机的ntp服务
+	# systemctl stop ntpd.service，centOS7以下，则：service ntpd stop
+	# systemctl disable ntpd.service，centOS7以下，则：chkconfig ntpd off
+	# systemctl status ntpd，查看ntp服务状态
+	# pgrep ntpd，查看ntp服务进程id
+	同步第一台服务器z01的时间：
+	# ntpdate z01
+	6、 制定计划任务,周期性同步时间
+	# crontab -e
+	*/10 * * * * /usr/sbin/ntpdate z01
+	7、 重启定时任务
+	# systemctl restart crond.service，centOS7以下使用：service crond restart，其他台机器的配置同理
+	
+ssh无秘钥登录
+	配置hadoop集群，首先需要配置集群中的各个主机的ssh无密钥访问
+	在z04上，通过如下命令，生成一对公私钥对
+	$ ssh-keygen -t rsa，，会在/home/z/.ssh/目录下生成两个文件：id_rsa 和 id_rsa.pub，如图所示：
+	生成之后呢，把z01生成的公钥拷贝给z01,z02,z03这三台机器，包含当前机器。
+	$ ssh-copy-id z01
+	$ ssh-copy-id z02
+	$ ssh-copy-id z03
+	完成后，其他机器同理。 
 
-# rm -rf /etc/localtime
-
-# ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-2.2.2同步时间
-# ntpdate pool.ntp.org
-2.2.3修改NTP配置文件
-# vi /etc/ntp.conf
-
-去掉下面这行前面的# ,并把网段修改成自己的网段：
-restrict 192.168.122.0 mask 255.255.255.0 nomodify notrap
-注释掉以下几行：
-#server 0.centos.pool.ntp.org
-#server 1.centos.pool.ntp.org
-#server 2.centos.pool.ntp.org
-把下面两行前面的#号去掉,如果没有这两行内容,需要手动添加
-server  127.127.1.0    # local clock
-fudge  127.127.1.0 stratum 10
-最后，如图所示：
- 
-3.2.4重启ntp服务
-# systemctl start ntpd.service，注意，如果是centOS7以下的版本，使用命令：service ntpd start
-# systemctl enable ntpd.service，注意，如果是centOS7以下的版本，使用命令：chkconfig ntpd on
-2.2.5集群其他节点去同步这台时间服务器时间
-首先需要关闭这两台计算机的ntp服务
-
-# systemctl stop ntpd.service，centOS7以下，则：service ntpd stop
-
-# systemctl disable ntpd.service，centOS7以下，则：chkconfig ntpd off
-
-# systemctl status ntpd，查看ntp服务状态
-
-# pgrep ntpd，查看ntp服务进程id
-
-同步第一台服务器z01的时间：
-
-# ntpdate z01
- 
-2.2.6制定计划任务,周期性同步时间
-# crontab -e
-*/10 * * * * /usr/sbin/ntpdate z01
- 
-2.2.7重启定时任务
-# systemctl restart crond.service，centOS7以下使用：service crond restart，其他台机器的配置同理
-2.3 ssh无秘钥登录
-配置hadoop集群，首先需要配置集群中的各个主机的ssh无密钥访问
-
-在z04上，通过如下命令，生成一对公私钥对
-
-$ ssh-keygen -t rsa，一顿回车操作，这条命令执行完毕后（注意使用普通用户执行该命令），会在/home/z/.ssh/目录下生成两个文件：id_rsa 和 id_rsa.pub，如图所示：
- 
- 
-生成之后呢，把z01生成的公钥拷贝给z01,z02,z03这三台机器，对，没错，包含当前机器。
-
-$ ssh-copy-id z01
-
-$ ssh-copy-id z02
-
-$ ssh-copy-id z03
-
-完成后，其他机器同理。 
 三、安装
-3.1 zookeeper
-3.1.1修改zoo.cfg配置文件
-修改conf目录下的zoo.cfg文件，如果没有该文件，请自行重命名sample.cfg文件，修改内容为：
-dataDir=/opt/modules/zookeeper/zkData
-dataLogDir=/opt/modules/zookeeper/zkLog
-server.1=z01:2888:3888
+首先安装jdk
 
-server.2=z02:2888:3888
+zookeeper
+	1、修改zoo.cfg配置文件
+		修改conf目录下的zoo.cfg文件，如果没有该文件，请自行重命名sample.cfg文件，修改内容为：
+		dataDir=/opt/modules/zookeeper/zkData
+		dataLogDir=/opt/modules/zookeeper/zkLog
+		server.1=z01:2888:3888
+		server.2=z02:2888:3888
+		server.3=z03:2888:3888
 
-server.3=z03:2888:3888
-
-同时创建dataDir属性值所指定的目录
-3.1.2在zkData目录下创建myid文件，修改值为1，如：
-$ cd /opt/modules/zookeeper/zkData
-$ touch myid
-$ echo 1 > myid
-3.1.3将zookeeper安装目录scp到其他机器节点
-$ scp -r /opt/modules/zookeeper/ z02:/opt/modules/
-$ scp -r /opt/modules/zookeeper/ z03:/opt/modules/
-3.1.4修改其他机器节点的myid文件为2和3
-$ echo 2 > myid
-$ echo 3 > myid
-3.1.5在每个节点上启动zookeeper以及查看状态
-$ bin/zkServer.sh start
-$ bin/zkServer.sh status
+		同时创建dataDir属性值所指定的目录
+	2、在zkData目录下创建myid文件，修改值为1，如：
+		$ cd /opt/modules/zookeeper/zkData
+		$ touch myid
+		$ echo 1 > myid
+	3、将zookeeper安装目录scp到其他机器节点
+		$ scp -r /opt/modules/zookeeper/ z02:/opt/modules/
+		$ scp -r /opt/modules/zookeeper/ z03:/opt/modules/
+	4、修改其他机器节点的myid文件为2和3
+		$ echo 2 > myid
+		$ echo 3 > myid
+	5、在每个节点上启动zookeeper以及查看状态
+		$ bin/zkServer.sh start
+		$ bin/zkServer.sh status
 
 四、hadoop
-4.2.1NameNode HA
+1、NameNode HA
 * hdfs-site.xml
 <configuration>
 	<!-- 指定数据冗余份数 -->
@@ -234,26 +206,28 @@ $ bin/zkServer.sh status
 启动服务
 在各个JournalNode节点上，输入以下命令启动journalnode服务：
 
-$ sbin/hadoop-daemon.sh start journalnode
+	$ sbin/hadoop-daemon.sh start journalnode
 
 在[nn1]上，对其进行格式化，并启动
 
-$ bin/hdfs namenode -format
+	$ bin/hdfs namenode -format
 
-$ sbin/hadoop-daemon.sh start namenode
+	$ sbin/hadoop-daemon.sh start namenode
+
+
+初始化ha在zookeeper中的状态
+	$ bin/hdfs zkfc -formatZK
 
 在[nn2]上，同步nn1的元数据信息，并启动
 
-$ bin/hdfs namenode -bootstrapStandby
-$ sbin/hadoop-daemon.sh start namenode
+	$ bin/hdfs namenode -bootstrapStandby
+	$ sbin/hadoop-daemon.sh start namenode
 
 手动把nn1设置为active
-$ bin/hdfs haadmin -transitionToActive nn1
+	$ bin/hdfs haadmin -transitionToActive nn1
 查看服务状态
-$ bin/hdfs haadmin -getServiceState nn1
+	$ bin/hdfs haadmin -getServiceState nn1
 
-初始化ha在zookeeper中的状态
-$ bin/hdfs zkfc -formatZK
 
 重启各个服务
 
@@ -328,14 +302,15 @@ $ bin/hdfs zkfc -formatZK
         <value>org.apache.hadoop.yarn.server.resourcemanager.recovery.ZKRMStateStore</value>
     </property>
 </configuration>
+
 完成后远程拷贝给其他服务器
-$ scp etc/hadoop/yarn-site.xml z02:/opt/modules/hadoop-2.5.0/etc/hadoop/
+	$ scp etc/hadoop/yarn-site.xml z02:/opt/modules/hadoop-2.5.0/etc/hadoop/
 通过jps查看每个服务器的zookeeper服务QuorumPeerMain已经运行，没有运行则开启，方式前文已经说过，不再赘述。
 在z02中执行：
-$ sbin/start-yarn.sh
+	$ sbin/start-yarn.sh
 在z03中执行：
-$ sbin/yarn-daemon.sh start resourcemanager
+	$ sbin/yarn-daemon.sh start resourcemanager
 查看服务状态
-$ bin/yarn rmadmin -getServiceState rm1
+	$ bin/yarn rmadmin -getServiceState rm1
 测试
-$ bin/yarn jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.5.0.jar wordcount /input/ /output/
+	$ bin/yarn jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.5.0.jar wordcount /input/ /output/
