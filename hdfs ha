@@ -1,6 +1,6 @@
 hdfs ha
 
-二、Linux 其他准备操作
+一、Linux 其他准备操作
 配置NTP时间服务器
 	1、 检查时区
 	对于我们当前这种案例，主要目标是把z01这台服务器设置为时间服务器，剩下的z02，z03这两台机器同步z01的时间，我们需要这样做的原因是因为，整个集群架构中的时间，要保持一致。
@@ -48,7 +48,7 @@ ssh无秘钥登录
 	$ ssh-copy-id z03
 	完成后，其他机器同理。 
 
-三、安装
+二、安装
 首先安装jdk
 	$ tar -zxf /opt/softwares/jdk-8u121-linux-x64.gz -C /opt/modules/
 	2 JDK环境变量配置
@@ -81,7 +81,7 @@ zookeeper
 		$ bin/zkServer.sh start
 		$ bin/zkServer.sh status
 
-四、hadoop
+三、hadoop
 JDK环境变量配置
 	# vi /etc/profile
 	#JAVA_HOME
@@ -239,7 +239,7 @@ JDK环境变量配置
 
 重启各个服务
 
-五、2.2ResourceManager HA
+四、2.2ResourceManager HA
 * yarn-site.xml
 <configuration>
 
