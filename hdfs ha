@@ -240,6 +240,8 @@ JDK环境变量配置
 	$ bin/hdfs zkfc -formatZK
 
 重启各个服务
+访问web地址
+	http://node01:50070
 
 四、2.2ResourceManager HA
 * yarn-env.sh
@@ -337,5 +339,8 @@ JDK环境变量配置
 	$ sbin/yarn-daemon.sh start resourcemanager
 查看服务状态
 	$ bin/yarn rmadmin -getServiceState rm1
+访问web地址
+	http://node:8088
+
 测试
 	$ bin/yarn jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.5.0.jar wordcount /input/ /output/
