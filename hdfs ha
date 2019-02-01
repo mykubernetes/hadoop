@@ -223,10 +223,6 @@ JDK环境变量配置
 
 	$ sbin/hadoop-daemon.sh start namenode
 
-
-初始化ha在zookeeper中的状态
-	$ bin/hdfs zkfc -formatZK
-
 在[nn2]上，同步nn1的元数据信息，并启动
 
 	$ bin/hdfs namenode -bootstrapStandby
@@ -234,9 +230,12 @@ JDK环境变量配置
 
 手动把nn1设置为active
 	$ bin/hdfs haadmin -transitionToActive nn1
+
 查看服务状态
 	$ bin/hdfs haadmin -getServiceState nn1
-
+	
+初始化ha在zookeeper中的状态
+	$ bin/hdfs zkfc -formatZK
 
 重启各个服务
 
