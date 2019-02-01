@@ -89,7 +89,13 @@ JDK环境变量配置
 	export PATH=$PATH:$HADOOP_HOME/bin
 	export PATH=$PATH:$HADOOP_HOME/sbin
 	source /etc/profile
+
+
 1、NameNode HA
+设置hadoop里的JAVA_HOME
+* hadoop-env.sh
+	export JAVA_HOME=/opt/modules/jdk1.8.0_121
+
 * hdfs-site.xml
 <configuration>
 	<!-- 指定数据冗余份数 -->
