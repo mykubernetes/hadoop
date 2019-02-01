@@ -316,6 +316,18 @@ JDK环境变量配置
     </property>
 </configuration>
 
+*mapred-env.sh
+	export JAVA_HOME=/opt/modules/jdk1.8.0_121
+	
+*mapred-site.xml
+<configuration>
+    <-- 指定mr运行在yarn上 -->
+    <property>
+        <name>mapreduce.framework.name</name>    
+        <value>yarn</value>
+    </property>
+</configuration>
+
 完成后远程拷贝给其他服务器
 	$ scp etc/hadoop/yarn-site.xml z02:/opt/modules/hadoop-2.5.0/etc/hadoop/
 通过jps查看每个服务器的zookeeper服务QuorumPeerMain已经运行，没有运行则开启，方式前文已经说过，不再赘述。
