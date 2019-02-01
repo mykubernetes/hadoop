@@ -3,134 +3,50 @@ HDFS相关指令
 1、查看集群容量使用情况
 hdfs dfsadmin –report
 
-2、	HDFS其他操作指令
-hdfs 
-Usage: hdfs [--config confdir] COMMAND
-       where COMMAND is one of:
-  dfs                  run a filesystem command on the file systems supported in Hadoop.
-  namenode -format     format the DFS filesystem
-  secondarynamenode    run the DFS secondary namenode
-  namenode             run the DFS namenode
-  journalnode          run the DFS journalnode
-  zkfc                 run the ZK Failover Controller daemon
-  datanode             run a DFS datanode
-  dfsadmin             run a DFS admin client
-  haadmin              run a DFS HA admin client
-  fsck                 run a DFS filesystem checking utility
-  balancer             run a cluster balancing utility
-  jmxget               get JMX exported values from NameNode or DataNode.
-  oiv                  apply the offline fsimage viewer to an fsimage
-  oev                  apply the offline edits viewer to an edits file
-  fetchdt              fetch a delegation token from the NameNode
-  getconf              get config values from configuration
-  groups               get the groups which users belong to
-  snapshotDiff         diff two snapshots of a directory or diff the
-                       current directory contents with a snapshot
-  lsSnapshottableDir   list all snapshottable dirs owned by the current user
-						Use -help to see options
-  portmap              run a portmap service
-  nfs3                 run an NFS version 3 gateway
-
-hdfs dfs
-Usage: hdfs fs [generic options]
-[-appendToFile <localsrc> ... <dst>]  
-	[-cat [-ignoreCrc] <src> ...]
-	[-checksum <src> ...]
-	[-chgrp [-R] GROUP PATH...]
-	[-chmod [-R] <MODE[,MODE]... | OCTALMODE> PATH...]
-	[-chown [-R] [OWNER][:[GROUP]] PATH...]
-	[-copyFromLocal [-f] [-p] <localsrc> ... <dst>]
-	[-copyToLocal [-p] [-ignoreCrc] [-crc] <src> ... <localdst>]
-	[-count [-q] <path> ...]
-	[-cp [-f] [-p] <src> ... <dst>]
-	[-createSnapshot <snapshotDir> [<snapshotName>]]
-	[-deleteSnapshot <snapshotDir> <snapshotName>]
-	[-df [-h] [<path> ...]]
-	[-du [-s] [-h] <path> ...]
-	[-expunge]
-	[-get [-p] [-ignoreCrc] [-crc] <src> ... <localdst>]
-	[-getmerge [-nl] <src> <localdst>]
-	[-help [cmd ...]]
-	[-ls [-d] [-h] [-R] [<path> ...]]
-	[-mkdir [-p] <path> ...]
-	[-moveFromLocal <localsrc> ... <dst>]
-	[-moveToLocal <src> <localdst>]
-	[-mv <src> ... <dst>]
-	[-put [-f] [-p] <localsrc> ... <dst>]
-	[-renameSnapshot <snapshotDir> <oldName> <newName>]
-	[-rm [-f] [-r|-R] [-skipTrash] <src> ...]
-	[-rmdir [--ignore-fail-on-non-empty] <dir> ...]
-	[-setrep [-R] [-w] <rep> <path> ...]
-	[-stat [format] <path> ...]
-	[-tail [-f] <file>]
-	[-test -[defsz] <path>]
-	[-text [-ignoreCrc] <src> ...]
-	[-touchz <path> ...]
-	[-usage [cmd ...]]
-其中，hdfs dfs中大多数指令与文件系统的语义一样，因此不做单独解释。
-
-HBase相关指令
-1、	hbase
-Usage: hbase [<options>] <command> [<args>]
-Options:
-  --config DIR    Configuration direction to use. Default: ./conf
-  --hosts HOSTS   Override the list in 'regionservers' file
-
-Commands:
-Some commands take arguments. Pass no args or -h for usage.
-  shell            Run the HBase shell
-  hbck            Run the hbase 'fsck' tool
-  hlog            Write-ahead-log analyzer
-  hfile            Store file analyzer
-  zkcli            Run the ZooKeeper shell
-  upgrade         Upgrade hbase
-  master          Run an HBase HMaster node
-  regionserver     Run an HBase HRegionServer node
-  zookeeper       Run a Zookeeper server
-  rest            Run an HBase REST server
-  thrift           Run the HBase Thrift server
-  thrift2          Run the HBase Thrift2 server
-  clean           Run the HBase clean up script
-  classpath        Dump hbase CLASSPATH
-  mapredcp       Dump CLASSPATH entries required by mapreduce
-  pe             Run PerformanceEvaluation
-  ltt             Run LoadTestTool
-  version         Print the version
-  CLASSNAME       Run the class named CLASSNAME
-
-2、	hbase shell提供的指令
-COMMAND GROUPS:
-  Group name: general
-  Commands: status, table_help, version, whoami
-
-  Group name: ddl
-  Commands: alter, alter_async, alter_status, create, describe, disable, disable_all, drop, drop_all, enable, enable_all, exists, get_table, is_disabled, is_enabled, list, show_filters
-
-  Group name: namespace
-  Commands: alter_namespace, create_namespace, describe_namespace, drop_namespace, list_namespace, list_namespace_tables
-
-  Group name: dml
-  Commands: append, count, delete, deleteall, get, get_counter, incr, put, scan, truncate, truncate_preserve
-
-  Group name: tools
-  Commands: assign, balance_switch, balancer, catalogjanitor_enabled, catalogjanitor_run, catalogjanitor_switch, close_region, compact, compact_rs, flush, hlog_roll, major_compact, merge_region, move, split, trace, unassign, zk_dump
-
-  Group name: replication
-  Commands: add_peer, disable_peer, enable_peer, list_peers, list_replicated_tables, remove_peer, set_peer_tableCFs, show_peer_tableCFs
-
-  Group name: snapshots
-  Commands: clone_snapshot, delete_all_snapshot, delete_snapshot, list_snapshots, restore_snapshot, snapshot
-
-  Group name: security
-  Commands: grant, revoke, user_permission
-
-  Group name: visibility labels
-  Commands: add_labels, clear_auths, get_auths, list_labels, set_auths, set_visibility
-
-Hbase shell中的大部分指令都没有用过，只对用过的指令作解释。
-DDL指令：
-create创建表、disable/drop删除表、alter改变表结构
-DML指令：
-count统计表的行数、get获取某行数据、put插入一条记录、scan扫描表
-Tools：
-major_compact触发major compact
+常用命令实操
+（1）-help：输出这个命令参数
+	bin/hdfs dfs -help rm
+（2）-ls: 显示目录信息
+	hadoop fs -ls /
+（3）-mkdir：在hdfs上创建目录
+	hadoop fs  -mkdir  -p  /aaa/bbb/cc/dd
+（4）-moveFromLocal从本地剪切粘贴到hdfs
+	hadoop  fs  - moveFromLocal  /home/hadoop/a.txt  /aaa/bbb/cc/dd
+（5）-moveToLocal：从hdfs剪切粘贴到本地
+	hadoop  fs  - moveToLocal   /aaa/bbb/cc/dd  /home/hadoop/a.txt
+（6）--appendToFile  ：追加一个文件到已经存在的文件末尾
+	hadoop  fs  -appendToFile  ./hello.txt  /hello.txt
+（7）-cat ：显示文件内容
+（8）-tail：显示一个文件的末尾
+	hadoop  fs  -tail  /weblog/access_log.1
+（9）-text：以字符形式打印一个文件的内容
+	hadoop  fs  -text  /weblog/access_log.1
+（10）-chgrp 、-chmod、-chown：linux文件系统中的用法一样，修改文件所属权限
+	hadoop  fs  -chmod  666  /hello.txt
+	hadoop  fs  -chown  someuser:somegrp   /hello.txt
+（11）-copyFromLocal：从本地文件系统中拷贝文件到hdfs路径去
+	hadoop  fs  -copyFromLocal  ./jdk.tar.gz  /aaa/
+（12）-copyToLocal：从hdfs拷贝到本地
+	hadoop fs -copyToLocal /aaa/jdk.tar.gz
+（13）-cp ：从hdfs的一个路径拷贝到hdfs的另一个路径
+	hadoop  fs  -cp  /aaa/jdk.tar.gz  /bbb/jdk.tar.gz.2
+（14）-mv：在hdfs目录中移动文件
+	hadoop  fs  -mv  /aaa/jdk.tar.gz  /
+（15）-get：等同于copyToLocal，就是从hdfs下载文件到本地
+	hadoop fs -get  /aaa/jdk.tar.gz
+（16）-getmerge  ：合并下载多个文件，比如hdfs的目录 /aaa/下有多个文件:log.1, log.2,log.3,...
+	hadoop fs -getmerge /aaa/log.* ./log.sum
+（17）-put：等同于copyFromLocal
+	hadoop  fs  -put  /aaa/jdk.tar.gz  /bbb/jdk.tar.gz.2
+（18）-rm：删除文件或文件夹
+	hadoop fs -rm -r /aaa/bbb/
+（19）-rmdir：删除空目录
+	hadoop  fs  -rmdir   /aaa/bbb/ccc
+（20）-df ：统计文件系统的可用空间信息
+	hadoop  fs  -df  -h  /
+（21）-du统计文件夹的大小信息
+	hadoop  fs  -du  -s  -h /aaa/*
+（22）-count：统计一个指定目录下的文件节点数量
+	hadoop fs -count /aaa/
+（23）-setrep：设置hdfs中文件的副本数量
+	hadoop fs -setrep 3 /aaa/jdk.tar.gz
