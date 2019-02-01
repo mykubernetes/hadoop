@@ -84,6 +84,12 @@ zookeeper
 		$ bin/zkServer.sh status
 
 四、hadoop
+JDK环境变量配置
+	# vi /etc/profile
+	#JAVA_HOME
+	export HADOOP_HOME=/opt/modules/hadoop-2.7.2
+	export PATH=$PATH:$HADOOP_HOME/bin
+	source /etc/profile
 1、NameNode HA
 * hdfs-site.xml
 <configuration>
