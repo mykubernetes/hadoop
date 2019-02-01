@@ -1,13 +1,5 @@
 hdfs ha
 
-一、Linux软件环境配置
-	1 JDK安装
-	$ tar -zxf /opt/softwares/jdk-8u121-linux-x64.gz -C /opt/modules/
-	2 JDK环境变量配置
-	# vi /etc/profile
-	#JAVA_HOME
-	export JAVA_HOME=/opt/modules/jdk1.8.0_121
-	export PATH=$PATH:$JAVA_HOME/bin
 二、Linux 其他准备操作
 配置NTP时间服务器
 	1、 检查时区
@@ -58,6 +50,12 @@ ssh无秘钥登录
 
 三、安装
 首先安装jdk
+	$ tar -zxf /opt/softwares/jdk-8u121-linux-x64.gz -C /opt/modules/
+	2 JDK环境变量配置
+	# vi /etc/profile
+	#JAVA_HOME
+	export JAVA_HOME=/opt/modules/jdk1.8.0_121
+	export PATH=$PATH:$JAVA_HOME/bin
 
 zookeeper
 	1、修改zoo.cfg配置文件
@@ -89,6 +87,7 @@ JDK环境变量配置
 	#JAVA_HOME
 	export HADOOP_HOME=/opt/modules/hadoop-2.7.2
 	export PATH=$PATH:$HADOOP_HOME/bin
+	export PATH=$PATH:$HADOOP_HOME/sbin
 	source /etc/profile
 1、NameNode HA
 * hdfs-site.xml
