@@ -50,3 +50,9 @@ hdfs dfsadmin –report
 	hadoop fs -count /aaa/
 （23）-setrep：设置hdfs中文件的副本数量
 	hadoop fs -setrep 3 /aaa/jdk.tar.gz
+
+
+hadoop jar使用方法
+	mkdir input
+	cp etc/hadoop/*.xml input/
+	hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.2.jar grep input output 'dfs[a-z.]+'
