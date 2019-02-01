@@ -53,6 +53,17 @@ hdfs dfsadmin –report
 
 
 hadoop jar使用方法
-	mkdir input
-	cp etc/hadoop/*.xml input/
-	hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.2.jar grep input output 'dfs[a-z.]+'
+1、grep 方法
+	1、mkdir input
+	2、cp etc/hadoop/*.xml input/
+	3、hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.2.jar grep input output 'dfs[a-z.]+'
+2、wordcount 方法
+	1、mkdir wcinput
+	2、cat wcinput/wc.input 
+		hadoop
+		hdfs
+		yarl
+		hbase
+	3、hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.2.jar wordcount wcinput/ wcoutput
+	
+	
