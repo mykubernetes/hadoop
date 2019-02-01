@@ -31,10 +31,10 @@ hdfs ha
 	# systemctl status ntpd，查看ntp服务状态
 	# pgrep ntpd，查看ntp服务进程id
 	同步第一台服务器z01的时间：
-	# ntpdate z01
+	# ntpdate node01
 	6、 制定计划任务,周期性同步时间
 	# crontab -e
-	*/10 * * * * /usr/sbin/ntpdate z01
+	*/10 * * * * /usr/sbin/ntpdate node01
 	7、 重启定时任务
 	# systemctl restart crond.service，centOS7以下使用：service crond restart，其他台机器的配置同理
 	
@@ -42,10 +42,10 @@ ssh无秘钥登录
 	配置hadoop集群，首先需要配置集群中的各个主机的ssh无密钥访问
 	在z04上，通过如下命令，生成一对公私钥对
 	$ ssh-keygen -t rsa，，会在/home/z/.ssh/目录下生成两个文件：id_rsa 和 id_rsa.pub，如图所示：
-	生成之后呢，把z01生成的公钥拷贝给z01,z02,z03这三台机器，包含当前机器。
-	$ ssh-copy-id z01
-	$ ssh-copy-id z02
-	$ ssh-copy-id z03
+	生成之后呢，把z01生成的公钥拷贝给node01,node02,node03这三台机器，包含当前机器。
+	$ ssh-copy-id node01
+	$ ssh-copy-id node02
+	$ ssh-copy-id node03
 	完成后，其他机器同理。 
 
 二、安装
@@ -62,9 +62,9 @@ zookeeper
 		修改conf目录下的zoo.cfg文件，如果没有该文件，请自行重命名sample.cfg文件，修改内容为：
 		dataDir=/opt/modules/zookeeper/zkData
 		dataLogDir=/opt/modules/zookeeper/zkLog
-		server.1=z01:2888:3888
-		server.2=z02:2888:3888
-		server.3=z03:2888:3888
+		server.1=node01:2888:3888
+		server.2=node02:2888:3888
+		server.3=node03:2888:3888
 
 		同时创建dataDir属性值所指定的目录
 	2、在zkData目录下创建myid文件，修改值为1，如：
@@ -72,8 +72,8 @@ zookeeper
 		$ touch myid
 		$ echo 1 > myid
 	3、将zookeeper安装目录scp到其他机器节点
-		$ scp -r /opt/modules/zookeeper/ z02:/opt/modules/
-		$ scp -r /opt/modules/zookeeper/ z03:/opt/modules/
+		$ scp -r /opt/modules/zookeeper/ node02:/opt/modules/
+		$ scp -r /opt/modules/zookeeper/ node03:/opt/modules/
 	4、修改其他机器节点的myid文件为2和3
 		$ echo 2 > myid
 		$ echo 3 > myid
@@ -119,31 +119,31 @@ JDK环境变量配置
 	<!-- nn1的RPC通信地址 -->
 	<property>
 		<name>dfs.namenode.rpc-address.mycluster.nn1</name>
-		<value>z01:8020</value>
+		<value>node01:8020</value>
 	</property>
 
 	<!-- nn2的RPC通信地址 -->
 	<property>
 		<name>dfs.namenode.rpc-address.mycluster.nn2</name>
-		<value>z02:8020</value>
+		<value>node02:8020</value>
 	</property>
 
 	<!-- nn1的http通信地址 -->
 	<property>
 		<name>dfs.namenode.http-address.mycluster.nn1</name>
-		<value>z01:50070</value>
+		<value>node01:50070</value>
 	</property>
 
 	<!-- nn2的http通信地址 -->
 	<property>
 		<name>dfs.namenode.http-address.mycluster.nn2</name>
-		<value>z02:50070</value>
+		<value>node02:50070</value>
 	</property>
 
 	<!-- 指定NameNode元数据在JournalNode上的存放位置 -->
 	<property>
 		<name>dfs.namenode.shared.edits.dir</name>
-		<value>qjournal://z01:8485;z02:8485;z03:8485/mycluster</value>
+		<value>qjournal://node01:8485;node02:8485;node03:8485/mycluster</value>
 	</property>
 
 	<!-- 配置隔离机制，即同一时刻只能有一台服务器对外响应 -->
@@ -155,7 +155,7 @@ JDK环境变量配置
 	<!-- 使用隔离机制时需要ssh无秘钥登录-->
 	<property>
 		<name>dfs.ha.fencing.ssh.private-key-files</name>
-		<value>/home/z/.ssh/id_rsa</value>
+		<value>/home/node01/.ssh/id_rsa</value>
 	</property>
 
 	<!-- 声明journalnode服务器存储目录-->
@@ -202,7 +202,7 @@ JDK环境变量配置
 	<!--namenode故障转移自动切换和hdfs.xml里的文件同时用-->
 	<property>
 		<name>ha.zookeeper.quorum</name>
-		<value>zknode01:2181,zknode02:2181,zknode03:2181</value>
+		<value>node01:2181,node02:2181,node03:2181</value>
 	</property>
 </configuration>
 完成后远程拷贝给其他服务器
@@ -242,6 +242,9 @@ JDK环境变量配置
 重启各个服务
 
 四、2.2ResourceManager HA
+* yarn-env.sh
+	export JAVA_HOME=/opt/modules/jdk1.8.0_121
+
 * yarn-site.xml
 <configuration>
 
@@ -259,7 +262,7 @@ JDK环境变量配置
     <!--任务历史服务-->
     <property> 
         <name>yarn.log.server.url</name> 
-        <value>http://z01:19888/jobhistory/logs/</value> 
+        <value>http://node01:19888/jobhistory/logs/</value> 
     </property> 
 
     <property>
@@ -286,18 +289,18 @@ JDK环境变量配置
 
     <property>
         <name>yarn.resourcemanager.hostname.rm1</name>
-        <value>z01</value>
+        <value>node01</value>
     </property>
 
     <property>
         <name>yarn.resourcemanager.hostname.rm2</name>
-        <value>z02</value>
+        <value>node02</value>
     </property>
  
     <!--指定zookeeper集群的地址--> 
     <property>
         <name>yarn.resourcemanager.zk-address</name>
-        <value>zknode01:2181,zknode02:2181,zknode03:2181</value>
+        <value>node01:2181,node02:2181,node03:2181</value>
     </property>
 
     <!--启用自动恢复--> 
