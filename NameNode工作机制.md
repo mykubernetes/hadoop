@@ -210,7 +210,7 @@ bin/hdfs dfs -put ~/hello.txt /root/hello.txt
 	hdfs-site.xml  
 ```
 <property>
-    <name>dfs.namenode.name.dir</name>
-<value>file:///${hadoop.tmp.dir}/dfs/name1,file:///${hadoop.tmp.dir}/dfs/name2</value>
+    	<name>dfs.namenode.name.dir</name>
+	<value>file:///${hadoop.tmp.dir}/dfs/name1,file:///${hadoop.tmp.dir}/dfs/name2</value>
 </property>
 ```
