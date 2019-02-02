@@ -131,7 +131,9 @@ $ touch dfs.hosts.exclude
 $ vi dfs.hosts.exclude
 ```
 添加如下主机名称（要退役的节点）  
+```
 node04
+```
 2、在namenode的hdfs-site.xml配置文件中增加dfs.hosts.exclude属性  
 ```
 <property>
