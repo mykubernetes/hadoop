@@ -21,20 +21,20 @@ Oozie的安装与部署
     	<!-- 配置 MapReduce JobHistory Server 地址 ，默认端口10020 -->
 	<property>
 	        <name>mapreduce.jobhistory.address</name>
-	        <value>hadoop-senior01.itguigu.com:10020</value>
+	        <value>node001:10020</value>
 	</property>
 	
 	<!-- 配置 MapReduce JobHistory Server web ui 地址， 默认端口19888 -->
 	<property>
 		<name>mapreduce.jobhistory.webapp.address</name>
-		<value>hadoop-senior01.itguigu.com:19888</value>
+		<value>node001:19888</value>
 	</property>
 					 
     yarn-site.xml
 	<!-- 任务历史服务 -->
 	<property> 
 		<name>yarn.log.server.url</name> 
-		<value>http://hadoop-senior01.itguigu.com:19888/jobhistory/logs/</value> 
+		<value>http://node001:19888/jobhistory/logs/</value> 
 	</property> 
 
 	完成后：记得scp同步到其他机器节点
