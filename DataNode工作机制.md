@@ -188,8 +188,8 @@ Time Stamp               Iteration#  Bytes Already Moved  Bytes Left To Move  By
 1）datanode也可以配置成多个目录，每个目录存储的数据不一样。即：数据不是副本。  
 2）具体配置如下：  
 ```
-	hdfs-site.xml
-  	<property>
+hdfs-site.xml
+    <property>
         <name>dfs.datanode.data.dir</name>
         <value>file:///${hadoop.tmp.dir}/dfs/data1,file:///${hadoop.tmp.dir}/dfs/data2</value>
     </property>
