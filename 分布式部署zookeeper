@@ -1,11 +1,11 @@
 分布式安装部署
 
 0）集群规划
-在hadoop2、hadoop3和hadoop4三个节点上部署Zookeeper。
+在node001、node002和node003三个节点上部署Zookeeper。
 
 1）解压安装
 （1）解压zookeeper安装包到/opt/module/目录下
-	[atguigu@hadoop102 software]$ tar -zxvf zookeeper-3.4.10.tar.gz -C /opt/module/
+	$ tar -zxvf zookeeper-3.4.10.tar.gz -C /opt/module/
 （2）在/opt/module/zookeeper-3.4.10/这个目录下创建data/zkData
 	mkdir -p data/zkData
 （3）重命名/opt/module/zookeeper-3.4.10/conf这个目录下的zoo_sample.cfg为zoo.cfg
@@ -16,9 +16,9 @@
 	dataDir=/opt/module/zookeeper-3.4.10/data/zkData
 	增加如下配置
 	#######################cluster##########################
-	server.1=hadoop102:2888:3888
-	server.2=hadoop103:2888:3888
-	server.3=hadoop104:2888:3888
+	server.1=node001:2888:3888
+	server.2=node002:2888:3888
+	server.3=node003:2888:3888
 	（2）配置参数解读
 	Server.A=B:C:D。
 	A是一个数字，表示这个是第几号服务器；
@@ -35,8 +35,8 @@
 	vi myid
 	在文件中添加与server对应的编号：如2
 	（3）拷贝配置好的zookeeper到其他机器上
-	scp -r zookeeper-3.4.10/ root@hadoop3.atguigu.com:/opt/app/
-	scp -r zookeeper-3.4.10/ root@hadoop4.atguigu.com:/opt/app/
+	scp -r zookeeper-3.4.10/ root@node002:/opt/app/
+	scp -r zookeeper-3.4.10/ root@node003.atguigu.com:/opt/app/
 	并分别修改myid文件中内容为3、4
 
 4）分别启动zookeeper
