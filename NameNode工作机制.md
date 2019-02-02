@@ -190,18 +190,18 @@ data  name  namesecondary
 	（3）bin/hdfs dfsadmin -safemode leave	（功能描述：离开安全模式状态）  
 	（4）bin/hdfs dfsadmin -safemode wait	（功能描述：等待安全模式状态）  
 3）案例    
-	模拟等待安全模式  
-	1、先进入安全模式  
-		bin/hdfs dfsadmin -safemode enter  
-	2、执行下面的脚本  
+  模拟等待安全模式  
+  1、先进入安全模式  
+	bin/hdfs dfsadmin -safemode enter  
+  2、执行下面的脚本  
 		编辑一个脚本  
 ```
-		#!/bin/bash\n
-		bin/hdfs dfsadmin -safemode wait\n
-		bin/hdfs dfs -put ~/hello.txt /root/hello.txt\n
+#!/bin/bash
+bin/hdfs dfsadmin -safemode wait
+bin/hdfs dfs -put ~/hello.txt /root/hello.txt
 ```
-3、再打开一个窗口，执行  
-		bin/hdfs dfsadmin -safemode leave  
+  3、再打开一个窗口，执行  
+	bin/hdfs dfsadmin -safemode leave  
 
 
 七、 Namenode多目录配置  
