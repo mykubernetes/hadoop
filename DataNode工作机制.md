@@ -30,7 +30,7 @@ datanode进程死亡或者网络故障造成datanode无法与namenode通信，na
 
 四、 DataNode的目录结构  
 和namenode不同的是，datanode的存储目录是初始阶段自动创建的，不需要额外格式化。  
-1）在/opt/module/hadoop-2.7.2/data/tmp/dfs/data/current这个目录下查看版本号  
+1、在/opt/module/hadoop-2.7.2/data/tmp/dfs/data/current这个目录下查看版本号  
 ```
 $ cat VERSION   
 storageID=DS-1b998a1d-71a3-43d5-82dc-c0ff3294921b  
@@ -40,21 +40,21 @@ datanodeUuid=970b2daf-63b8-4e17-a514-d81741392165
 storageType=DATA_NODE  
 layoutVersion=-56  
 ```
-2）具体解释  
+2、具体解释  
 	（1）storageID：存储id号  
 	（2）clusterID集群id，全局唯一  
 	（3）cTime属性标记了datanode存储系统的创建时间，对于刚刚格式化的存储系统，这个属性为0；但是在文件系统升级之后，该值会更新到新的时间戳。  
 	（4）datanodeUuid：datanode的唯一识别码  
 	（5）storageType：存储类型  
 	（6）layoutVersion是一个负整数。通常只有HDFS增加新特性时才会更新这个版本号。  
-3）在/opt/module/hadoop-2.7.2/data/tmp/dfs/data/current/BP-97847618-192.168.10.102-1493726072779/current这个目录下查看该数据块的版本号  
+3、在/opt/module/hadoop-2.7.2/data/tmp/dfs/data/current/BP-97847618-192.168.10.102-1493726072779/current这个目录下查看该数据块的版本号  
 $ cat VERSION   
 #Mon May 08 16:30:19 CST 2017  
 namespaceID=1933630176  
 cTime=0  
 blockpoolID=BP-97847618-192.168.10.102-1493726072779  
 layoutVersion=-56  
-4）具体解释  
+4、具体解释  
 （1）namespaceID：是datanode首次访问namenode的时候从namenode处获取的storageID对每个datanode来说是唯一的（但对于单个datanode中所有存储目录来说则是相同的），namenode可用这个属性来区分不同datanode。  
 （2）cTime属性标记了datanode存储系统的创建时间，对于刚刚格式化的存储系统，这个属性为0；但是在文件系统升级之后，该值会更新到新的时间戳。  
 （3）blockpoolID：一个block pool id标识一个block pool，并且是跨集群的全局唯一。当一个新的Namespace被创建的时候(format过程的一部分)会创建并持久化一个唯一ID。在创建过程构建全局唯一的BlockPoolID比人为的配置更可靠一些。NN将BlockPoolID持久化到磁盘中，在后续的启动过程中，会再次load并使用。  
@@ -64,7 +64,7 @@ layoutVersion=-56
 1、需求：  
 随着公司业务的增长，数据量越来越大，原有的数据节点的容量已经不能满足存储数据的需求，需要在原有集群基础上动态添加新的数据节点。  
 2、环境准备  
-	（1）克隆一台虚拟机  
+	（1）准备新加入的节点  
 	（2）修改ip地址和主机名称  
 	（3）将其他配置好的机器的hadoop配置文件scp到新加入节点    
 	（4）删除原来HDFS文件系统留存的文件  
@@ -121,7 +121,7 @@ Time Stamp               Iteration#  Bytes Already Moved  Bytes Left To Move  By
 ```
 
 六、退役旧数据节点  
-1）在namenode的/opt/module/hadoop-2.7.2/etc/hadoop目录下创建dfs.hosts.exclude文件  
+1、在namenode的/opt/module/hadoop-2.7.2/etc/hadoop目录下创建dfs.hosts.exclude文件  
 ```
 $ pwd  
 /opt/module/hadoop-2.7.2/etc/hadoop  
@@ -130,34 +130,35 @@ $ vi dfs.hosts.exclude
 ```
 添加如下主机名称（要退役的节点）  
 hadoop105  
-2）在namenode的hdfs-site.xml配置文件中增加dfs.hosts.exclude属性  
+2、在namenode的hdfs-site.xml配置文件中增加dfs.hosts.exclude属性  
 ```
 <property>
       <name>dfs.hosts.exclude</name>
       <value>/opt/module/hadoop-2.7.2/etc/hadoop/dfs.hosts.exclude</value>
 </property>
 ```
-3）刷新namenode、刷新resourcemanager  
+3、刷新namenode、刷新resourcemanager  
 ```
 $ hdfs dfsadmin -refreshNodes  
 Refresh nodes successful  
 $ yarn rmadmin -refreshNodes 
 ```
 17/06/24 14:55:56 INFO client.RMProxy: Connecting to ResourceManager at hadoop103/192.168.1.103:8033  
-4）检查web浏览器，退役节点的状态为decommission in progress（退役中），说明数据节点正在复制块到其他节点。  
+4、检查web浏览器，退役节点的状态为decommission in progress（退役中），说明数据节点正在复制块到其他节点。  
  
-5）等待退役节点状态为decommissioned（所有块已经复制完成），停止该节点及节点资源管理器。注意：如果副本数是3，服役的节点小于等于3，是不能退役成功的，需要修改副本数后才能退役。·  
- 
-$ sbin/hadoop-daemon.sh stop datanode  
-stopping datanode  
-$ sbin/yarn-daemon.sh stop nodemanager  
-stopping nodemanager  
-6）从include文件中删除退役节点，再运行刷新节点的命令  
+5、等待退役节点状态为decommissioned（所有块已经复制完成），停止该节点及节点资源管理器。注意：如果副本数是3，服役的节点小于等于3，是不能退役成功的，需要修改副本数后才能退役。·  
+```
+$ sbin/hadoop-daemon.sh stop datanode
+stopping datanode
+$ sbin/yarn-daemon.sh stop nodemanager
+stopping nodemanager
+```
+6、从include文件中删除退役节点，再运行刷新节点的命令  
 (1）从namenode的dfs.hosts文件中删除退役节点hadoop105  
 ```
-hadoop102  
-hadoop103  
-hadoop104  
+node01
+node02
+node03
 ```
 (2）刷新namenode，刷新resourcemanager  
 ```	
@@ -166,14 +167,18 @@ $hdfs dfsadmin -refreshNodes
 $yarn rmadmin -refreshNodes  
 ```
 17/06/24 14:55:56 INFO client.RMProxy: Connecting to ResourceManager at hadoop103/192.168.1.103:8033  
-7）从namenode的slave文件中删除退役节点hadoop105  
-hadoop102  
-hadoop103  
-hadoop104  
-8）如果数据不均衡，可以用命令实现集群的再平衡  
- bin/start-balancer.sh   
-starting balancer, logging to /opt/module/hadoop-2.7.2/logs/hadoop-atguigu-balancer-hadoop102.out  
-Time Stamp               Iteration#  Bytes Already Moved  Bytes Left To Move  Bytes Being Moved  
+7、从namenode的slave文件中删除退役节点hadoop105  
+```
+node01
+node02
+node03
+```
+8、如果数据不均衡，可以用命令实现集群的再平衡  
+```
+bin/start-balancer.sh   
+starting balancer, logging to /opt/module/hadoop-2.7.2/logs/hadoop-atguigu-balancer-hadoop102.out
+Time Stamp               Iteration#  Bytes Already Moved  Bytes Left To Move  Bytes Being Moved
+```
 
 七、 Datanode多目录配置  
 1）datanode也可以配置成多个目录，每个目录存储的数据不一样。即：数据不是副本。  
