@@ -1,19 +1,26 @@
 Storm集群搭建
 
 1、 集群规划
-hadoop102					hadoop103				hadoop104
-zk							zk						zk
-storm						storm					storm
+hadoop102				hadoop103			hadoop104
+zk					zk				zk
+storm					storm				storm
+
 2、 jar包下载
 	（1）官方网址：http://storm.apache.org/
 	（2）安装集群步骤：
-http://storm.apache.org/releases/1.1.0/Setting-up-a-Storm-cluster.html
+		http://storm.apache.org/releases/1.1.0/Setting-up-a-Storm-cluster.html
 
 3、 安装jdk
-	 
+	$ tar -zxf /opt/softwares/jdk-8u121-linux-x64.gz -C /opt/modules/
+	2 JDK环境变量配置
+	# vi /etc/profile
+	#JAVA_HOME
+	export JAVA_HOME=/opt/modules/jdk1.8.0_121
+	export PATH=$PATH:$JAVA_HOME/bin
+	
 4、 安装Zookeeper
       0）集群规划
-      在hadoop102、hadoop103和hadoop104三个节点上部署Zookeeper。
+      在node001、node002和node003三个节点上部署Zookeeper。
       
       1）解压安装
       （1）解压zookeeper安装包到/opt/module/目录下
@@ -81,12 +88,12 @@ Storm集群部署
         vi storm.yaml
       # 设置Zookeeper的主机名称
       storm.zookeeper.servers:
-           - "hadoop102"
-           - "hadoop103"
-           - "hadoop104"
+           - "node001"
+           - "node002"
+           - "node003"
 
       # 设置主节点的主机名称
-      nimbus.seeds: ["hadoop102"]
+      nimbus.seeds: ["node001"]
 
       # 设置Storm的数据存储路径
       storm.local.dir: "/opt/module/storm/data"
@@ -116,7 +123,7 @@ Storm集群部署
           bin/storm ui
     
     9）通过浏览器查看集群状态
-          http://hadoop102:8080/index.html
+          http://node001:8080/index.html
  
     
     
