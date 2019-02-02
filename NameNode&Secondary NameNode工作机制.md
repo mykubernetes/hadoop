@@ -42,5 +42,5 @@ NameNode工作机制
     <name>dfs.namenode.checkpoint.check.period</name>  
     <value>60</value>  
   <description> 1分钟检查一次操作次数</description>  
-  </property>
+  </property>]
   
