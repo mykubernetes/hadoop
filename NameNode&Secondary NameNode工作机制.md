@@ -44,4 +44,9 @@ NameNode工作机制
   <description> 1分钟检查一次操作次数</description>  
   </property> -->
  ![image](https://github.com/mykubernetes/hadoop/blob/master/image/%E5%8F%82%E6%95%B0.png)
-
+```
+<property>
+  <name>dfs.namenode.checkpoint.period</name>
+  <value>3600</value>
+</property>
+```
