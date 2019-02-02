@@ -66,18 +66,18 @@ Hadoop存档文件或HAR文件，是一个更高效的文件存档工具，它�
 		<value>1</value>
 	    </property>
 	3）查看回收站
-	    回收站在集群中的；路径：/user/atguigu/.Trash/….
+	    回收站在集群中的；路径：/user/hadoop/.Trash/….
 	4）修改访问垃圾回收站用户名称
 	    进入垃圾回收站用户名称，默认是dr.who，修改为atguigu用户
 	    [core-site.xml]
 	  <property>
 	    <name>hadoop.http.staticuser.user</name>
-	    <value>atguigu</value>
+	    <value>hadoop</value>
 	  </property>
-5）通过程序删除的文件不会经过回收站，需要调用moveToTrash()才进入回收站
-	  Trash trash = New Trash(conf);
-	  trash.moveToTrash(path);
-6）恢复回收站数据
-  	hadoop fs -mv /user/atguigu/.Trash/Current/user/atguigu/input    /user/atguigu/input
-7）清空回收站
-  	hdfs dfs -expunge
+	5）通过程序删除的文件不会经过回收站，需要调用moveToTrash()才进入回收站
+		  Trash trash = New Trash(conf);
+		  trash.moveToTrash(path);
+	6）恢复回收站数据
+		hadoop fs -mv /user/hadoop/.Trash/Current/user/hadoop/input    /user/hadoop/input
+	7）清空回收站
+		hdfs dfs -expunge
