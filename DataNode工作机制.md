@@ -31,6 +31,7 @@ datanode进程死亡或者网络故障造成datanode无法与namenode通信，na
 四、 DataNode的目录结构  
 和namenode不同的是，datanode的存储目录是初始阶段自动创建的，不需要额外格式化。  
 1）在/opt/module/hadoop-2.7.2/data/tmp/dfs/data/current这个目录下查看版本号  
+```
 $ cat VERSION   
 storageID=DS-1b998a1d-71a3-43d5-82dc-c0ff3294921b  
 clusterID=CID-1f2bf8d1-5ad2-4202-af1c-6713ab381175  
@@ -38,6 +39,7 @@ cTime=0
 datanodeUuid=970b2daf-63b8-4e17-a514-d81741392165  
 storageType=DATA_NODE  
 layoutVersion=-56  
+```
 2）具体解释  
 	（1）storageID：存储id号  
 	（2）clusterID集群id，全局唯一  
@@ -64,7 +66,7 @@ layoutVersion=-56
 2、环境准备  
 	（1）克隆一台虚拟机  
 	（2）修改ip地址和主机名称  
-	（3）修改xcall和xsync文件，增加新增节点的同步  
+	（3）将其他配置好的机器的hadoop配置文件scp到新加入节点    
 	（4）删除原来HDFS文件系统留存的文件  
 		/opt/module/hadoop-2.7.2/data  
 3、服役新节点具体步骤  
@@ -90,29 +92,33 @@ node004
 </property>
 ```
 (3)刷新namenode   
-```$ hdfs dfsadmin -refreshNodes  ```
+```$ hdfs dfsadmin -refreshNodes  ```  
 Refresh nodes successful  
 (4）更新resourcemanager节点  
-```$ yarn rmadmin -refreshNodes  ```
+```$ yarn rmadmin -refreshNodes  ```  
 17/06/24 14:17:11 INFO client.RMProxy: Connecting to ResourceManager at hadoop103/192.168.1.103:8033  
 (5)在namenode的slaves文件中增加新主机名称  
-		增加105  不需要分发  
+	增加105  不需要分发  
 ```
 node001
 node002
 node003
 node004
 ```
-(6)单独命令启动新的数据节点和节点管理器  
-$ sbin/hadoop-daemon.sh start datanode  
-starting datanode, logging to /opt/module/hadoop-2.7.2/logs/hadoop-atguigu-datanode-hadoop105.out  
-$ sbin/yarn-daemon.sh start nodemanager  
-starting nodemanager, logging to /opt/module/hadoop-2.7.2/logs/yarn-atguigu-nodemanager-hadoop105.out  
+(6)单独命令启动新的数据节点和节点管理器 
+```
+$ sbin/hadoop-daemon.sh start datanode
+starting datanode, logging to /opt/module/hadoop-2.7.2/logs/hadoop-atguigu-datanode-hadoop105.out
+$ sbin/yarn-daemon.sh start nodemanager
+starting nodemanager, logging to /opt/module/hadoop-2.7.2/logs/yarn-atguigu-nodemanager-hadoop105.out
+```
 (7)在web浏览器上检查是否ok  
 4、如果数据不均衡，可以用命令实现集群的再平衡  
-$ ./start-balancer.sh  
-starting balancer, logging to /opt/module/hadoop-2.7.2/logs/hadoop-atguigu-balancer-hadoop102.out  
-Time Stamp               Iteration#  Bytes Already Moved  Bytes Left To Move  Bytes Being Moved  
+```
+$ ./start-balancer.sh
+starting balancer, logging to /opt/module/hadoop-2.7.2/logs/hadoop-atguigu-balancer-hadoop102.out
+Time Stamp               Iteration#  Bytes Already Moved  Bytes Left To Move  Bytes Being Moved
+```
 
 六、退役旧数据节点  
 1）在namenode的/opt/module/hadoop-2.7.2/etc/hadoop目录下创建dfs.hosts.exclude文件  
