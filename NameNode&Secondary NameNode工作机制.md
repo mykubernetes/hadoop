@@ -28,10 +28,10 @@ NameNode工作机制
 4）chkpoint检查时间参数设置  
 （1）通常情况下，SecondaryNameNode每隔一小时执行一次。  
     [hdfs-default.xml]  
-  <property>  
+ #<property>  
     <name>dfs.namenode.checkpoint.period</name>  
     <value>3600</value>  
-  </property>  
+ # </property>  
 （2）一分钟检查一次操作次数，当操作次数达到1百万时，SecondaryNameNode执行一次。  
   <property>  
     <name>dfs.namenode.checkpoint.txns</name>  
