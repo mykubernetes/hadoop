@@ -5,7 +5,7 @@ HDFS其他功能
 	scp -r root@node002:/user/atguigu/hello.txt  hello.txt		// 拉 pull
 	scp -r root@node002:/user/atguigu/hello.txt root@node003:/user/atguigu   //是通过本地主机中转实现两个远程主机的文件复制；如果在两个远程主机之间ssh没有配置的情况下可以使用该方式。
 2）采用discp命令实现两个hadoop集群之间的递归数据复制
-bin/hadoop distcp hdfs://node002:9000/user/atguigu/hello.txt hdfs://node003:9000/user/atguigu/hello.txt
+	bin/hadoop distcp hdfs://node002:9000/user/atguigu/hello.txt hdfs://node003:9000/user/atguigu/hello.txt
 
 二、 Hadoop存档
 1）理论概述
@@ -16,12 +16,12 @@ Hadoop存档文件或HAR文件，是一个更高效的文件存档工具，它�
 	start-yarn.sh
 （2）归档文件
 	归档成一个叫做xxx.har的文件夹，该文件夹下有相应的数据文件。Xx.har目录是一个整体，该目录看成是一个归档文件即可。
-bin/hadoop archive -archiveName myhar.har -p /user/src   /user/dst
+	bin/hadoop archive -archiveName myhar.har -p /user/src   /user/dst
 （3）查看归档
 	hadoop fs -lsr /user/my/myhar.har
-  hadoop fs -lsr har:///myhar.har
+  	hadoop fs -lsr har:///myhar.har
 （4）解归档文件
-hadoop fs -cp har:/// user/my/myhar.har /* /user/src
+	hadoop fs -cp har:/// user/my/myhar.har /* /user/src
 
 三、快照管理
 快照相当于对目录做一个备份。并不会立即复制所有文件，而是指向同一个文件。当写入发生时，才会产生新文件。
@@ -54,30 +54,30 @@ hadoop fs -cp har:/// user/my/myhar.har /* /user/src
       hdfs dfs -cp /user/atguigu/input/.snapshot/s20170708-134303.027 /user
 
 四、 回收站
-1）默认回收站
-  默认值fs.trash.interval=0，0表示禁用回收站，可以设置删除文件的存活时间。
-  默认值fs.trash.checkpoint.interval=0，检查回收站的间隔时间。
-  要求fs.trash.checkpoint.interval<=fs.trash.interval。
- 
-2）启用回收站
-  修改core-site.xml，配置垃圾回收时间为1分钟。
-    <property>
-        <name>fs.trash.interval</name>
-        <value>1</value>
-    </property>
-3）查看回收站
-    回收站在集群中的；路径：/user/atguigu/.Trash/….
-4）修改访问垃圾回收站用户名称
-    进入垃圾回收站用户名称，默认是dr.who，修改为atguigu用户
-    [core-site.xml]
-  <property>
-    <name>hadoop.http.staticuser.user</name>
-    <value>atguigu</value>
-  </property>
+	1）默认回收站
+	  默认值fs.trash.interval=0，0表示禁用回收站，可以设置删除文件的存活时间。
+	  默认值fs.trash.checkpoint.interval=0，检查回收站的间隔时间。
+	  要求fs.trash.checkpoint.interval<=fs.trash.interval。
+
+	2）启用回收站
+	  修改core-site.xml，配置垃圾回收时间为1分钟。
+	    <property>
+		<name>fs.trash.interval</name>
+		<value>1</value>
+	    </property>
+	3）查看回收站
+	    回收站在集群中的；路径：/user/atguigu/.Trash/….
+	4）修改访问垃圾回收站用户名称
+	    进入垃圾回收站用户名称，默认是dr.who，修改为atguigu用户
+	    [core-site.xml]
+	  <property>
+	    <name>hadoop.http.staticuser.user</name>
+	    <value>atguigu</value>
+	  </property>
 5）通过程序删除的文件不会经过回收站，需要调用moveToTrash()才进入回收站
-  Trash trash = New Trash(conf);
-  trash.moveToTrash(path);
+	  Trash trash = New Trash(conf);
+	  trash.moveToTrash(path);
 6）恢复回收站数据
-  hadoop fs -mv /user/atguigu/.Trash/Current/user/atguigu/input    /user/atguigu/input
+  	hadoop fs -mv /user/atguigu/.Trash/Current/user/atguigu/input    /user/atguigu/input
 7）清空回收站
-  hdfs dfs -expunge
+  	hdfs dfs -expunge
