@@ -1,7 +1,12 @@
 分布式安装部署
 
-0）集群规划
-在node001、node002和node003三个节点上部署Zookeeper。
+0）首先安装jdk
+	$ tar -zxf /opt/softwares/jdk-8u121-linux-x64.gz -C /opt/modules/
+	2 JDK环境变量配置
+	# vi /etc/profile
+	#JAVA_HOME
+	export JAVA_HOME=/opt/modules/jdk1.8.0_121
+	export PATH=$PATH:$JAVA_HOME/bin
 
 1）解压安装
 （1）解压zookeeper安装包到/opt/module/目录下
