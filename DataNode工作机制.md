@@ -143,9 +143,9 @@ node004
 ```
 3、刷新namenode、刷新resourcemanager  
 ```
-$ hdfs dfsadmin -refreshNodes  
-Refresh nodes successful  
-$ yarn rmadmin -refreshNodes 
+$ hdfs dfsadmin -refreshNodes
+Refresh nodes successful
+$ yarn rmadmin -refreshNodes
 17/06/24 14:55:56 INFO client.RMProxy: Connecting to ResourceManager at node002/192.168.1.103:8033
 ```
 4、检查web浏览器，退役节点的状态为decommission in progress（退役中），说明数据节点正在复制块到其他节点。  
@@ -158,7 +158,7 @@ $ sbin/yarn-daemon.sh stop nodemanager
 stopping nodemanager
 ```
 6、从include文件中删除退役节点，再运行刷新节点的命令  
-(1）从namenode的dfs.hosts文件中删除退役节点hadoop105  
+(1）从namenode的dfs.hosts文件中删除退役节点node004  
 ```
 node001
 node002
@@ -166,12 +166,12 @@ node003
 ```
 (2）刷新namenode，刷新resourcemanager  
 ```	
-$hdfs dfsadmin -refreshNodes  
- Refresh nodes successful  
-$yarn rmadmin -refreshNodes  
+$hdfs dfsadmin -refreshNodes
+ Refresh nodes successful
+$yarn rmadmin -refreshNodes
+17/06/24 14:55:56 INFO client.RMProxy: Connecting to ResourceManager at hadoop103/192.168.1.103:8033
 ```
-17/06/24 14:55:56 INFO client.RMProxy: Connecting to ResourceManager at hadoop103/192.168.1.103:8033  
-7、从namenode的slave文件中删除退役节点hadoop105  
+7、从namenode的slave文件中删除退役节点node004  
 ```
 node001
 node002
