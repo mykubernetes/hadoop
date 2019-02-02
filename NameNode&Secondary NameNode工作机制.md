@@ -1,5 +1,5 @@
-NameNode工作机制
-1 NameNode&Secondary NameNode工作机制
+NameNode工作机制  
+NameNode&Secondary NameNode工作机制
 
 ![image](https://github.com/mykubernetes/hadoop/blob/master/image/nn.png)
 
