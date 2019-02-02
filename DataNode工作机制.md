@@ -1,18 +1,18 @@
 DataNode工作机制  
  ![image](https://github.com/mykubernetes/hadoop/blob/master/image/datanode.png)
-一、DataNode工作机制 
+一、DataNode工作机制  
 1）一个数据块在datanode上以文件形式存储在磁盘上，包括两个文件，一个是数据本身，一个是元数据包括数据块的长度，块数据的校验和，以及时间戳。  
 2）DataNode启动后向namenode注册，通过后，周期性（1小时）的向namenode上报所有的块信息。  
-3）心跳是每3秒一次，心跳返回结果带有namenode给该datanode的命令如复制块数据到另一台机器，或删除某个数据块。如果超过10分钟没有收到某个datanode的心跳，则认为该节点不可用。
+3）心跳是每3秒一次，心跳返回结果带有namenode给该datanode的命令如复制块数据到另一台机器，或删除某个数据块。如果超过10分钟没有收到某个datanode的心跳，则认为该节点不可用。  
 4）集群运行中可以安全加入和退出一些机器
 
-二、 数据完整性
-1）当DataNode读取block的时候，它会计算checksum
-2）如果计算后的checksum，与block创建时值不一样，说明block已经损坏。
-3）client读取其他DataNode上的block.
-4）datanode在其文件创建后周期验证checksum
+二、 数据完整性  
+1）当DataNode读取block的时候，它会计算checksum  
+2）如果计算后的checksum，与block创建时值不一样，说明block已经损坏  
+3）client读取其他DataNode上的block.  
+4）datanode在其文件创建后周期验证checksum  
 
-三、 掉线时限参数设置
+三、 掉线时限参数设置  
 datanode进程死亡或者网络故障造成datanode无法与namenode通信，namenode不会立即把该节点判定为死亡，要经过一段时间，这段时间暂称作超时时长。HDFS默认的超时时长为10分钟+30秒。如果定义超时时间为timeout，则超时时长的计算公式为：  
 	timeout  = 2 * dfs.namenode.heartbeat.recheck-interval + 10 * dfs.heartbeat.interval。  
 	而默认的dfs.namenode.heartbeat.recheck-interval 大小为5分钟，dfs.heartbeat.interval默认为3秒。  
