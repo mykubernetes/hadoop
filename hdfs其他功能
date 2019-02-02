@@ -1,11 +1,11 @@
 HDFS其他功能
 一、 集群间数据拷贝
 1）scp实现两个远程主机之间的文件复制
-	scp -r hello.txt root@node002:/user/atguigu/hello.txt		// 推 push
-	scp -r root@node002:/user/atguigu/hello.txt  hello.txt		// 拉 pull
-	scp -r root@node002:/user/atguigu/hello.txt root@node003:/user/atguigu   //是通过本地主机中转实现两个远程主机的文件复制；如果在两个远程主机之间ssh没有配置的情况下可以使用该方式。
+	scp -r hello.txt root@node002:/user/hadoop/hello.txt		// 推 push
+	scp -r root@node002:/user/hadoop/hello.txt  hello.txt		// 拉 pull
+	scp -r root@node002:/user/hadoop/hello.txt root@node003:/user/hadoop   //是通过本地主机中转实现两个远程主机的文件复制；如果在两个远程主机之间ssh没有配置的情况下可以使用该方式。
 2）采用discp命令实现两个hadoop集群之间的递归数据复制
-	bin/hadoop distcp hdfs://node002:9000/user/atguigu/hello.txt hdfs://node003:9000/user/atguigu/hello.txt
+	bin/hadoop distcp hdfs://node002:9000/user/hadoop/hello.txt hdfs://node003:9000/user/hadoop/hello.txt
 
 二、 Hadoop存档
 1）理论概述
