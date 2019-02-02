@@ -71,7 +71,7 @@ oiv                  apply the offline fsimage viewer to an fsimage
 oev                  apply the offline edits viewer to an edits file
 ```
 （2）基本语法  
-hdfs oiv -p 文件类型 -i镜像文件 -o 转换后文件输出路径  
+	hdfs oiv -p 文件类型 -i镜像文件 -o 转换后文件输出路径  
 （3）案例实操  
 ```
 /opt/module/hadoop-2.7.2/data/tmp/dfs/name/current
@@ -81,7 +81,7 @@ cat /opt/module/hadoop-2.7.2/fsimage.xml
 将显示的xml文件内容拷贝到eclipse中创建的xml文件中，并格式化。  
 3）oev查看edits文件  
 （1）基本语法  
-hdfs oev -p 文件类型 -i编辑日志 -o 转换后文件输出路径  
+	hdfs oev -p 文件类型 -i编辑日志 -o 转换后文件输出路径  
 （2）案例实操  
 ```
 hdfs oev -p XML -i edits_0000000000000000012-0000000000000000013 -o /opt/module/hadoop-2.7.2/edits.xml
@@ -95,7 +95,7 @@ cat /opt/module/hadoop-2.7.2/edits.xml
 三、滚动编辑日志  
 正常情况HDFS文件系统有更新操作时，就会滚动编辑日志。也可以用命令强制滚动编辑日志。  
 1）滚动编辑日志（前提必须启动集群）  
-hdfs dfsadmin -rollEdits  
+	hdfs dfsadmin -rollEdits  
 2）镜像文件什么时候产生  
 Namenode启动时加载镜像文件和编辑日志  
  
@@ -140,11 +140,11 @@ SecondaryNameNode的namesecondary/current目录和主namenode的current目录的
 模拟namenode故障，并采用方法一，恢复namenode数据  
 （1）kill -9 namenode进程  
 （2）删除namenode存储的数据（/opt/module/hadoop-2.7.2/data/tmp/dfs/name）  
-rm -rf /opt/module/hadoop-2.7.2/data/tmp/dfs/name/*  
+	rm -rf /opt/module/hadoop-2.7.2/data/tmp/dfs/name/*  
 （3）拷贝SecondaryNameNode中数据到原namenode存储数据目录  
 		cp -R /opt/module/hadoop-2.7.2/data/tmp/dfs/namesecondary/* /opt/module/hadoop-2.7.2/data/tmp/dfs/name/  
 （4）重新启动namenode  
-sbin/hadoop-daemon.sh start namenode  
+	sbin/hadoop-daemon.sh start namenode  
 2）案例实操（二）：  
 模拟namenode故障，并采用方法二，恢复namenode数据  
 （0）修改hdfs-site.xml中的  
