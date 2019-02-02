@@ -59,15 +59,15 @@ layoutVersion=-56
 （4）layoutVersion是一个负整数。通常只有HDFS增加新特性时才会更新这个版本号。  
 
 五、 服役新数据节点  
-0）需求：  
+1、需求：  
 随着公司业务的增长，数据量越来越大，原有的数据节点的容量已经不能满足存储数据的需求，需要在原有集群基础上动态添加新的数据节点。  
-1）环境准备  
+2、环境准备  
 	（1）克隆一台虚拟机  
 	（2）修改ip地址和主机名称  
 	（3）修改xcall和xsync文件，增加新增节点的同步  
 	（4）删除原来HDFS文件系统留存的文件  
 		/opt/module/hadoop-2.7.2/data  
-2）服役新节点具体步骤  
+3、服役新节点具体步骤  
 	（1）在namenode的/opt/module/hadoop-2.7.2/etc/hadoop目录下创建dfs.hosts文件  
 ```
 $ pwd
@@ -76,11 +76,13 @@ $ touch dfs.hosts
 $ vi dfs.hosts
 ```
 添加如下主机名称（包含新服役的节点）  
-hadoop102  
-hadoop103  
-hadoop104  
-hadoop105  
-	（2）在namenode的hdfs-site.xml配置文件中增加dfs.hosts属性  
+```
+node001
+node002
+node003
+node004
+```
+(2）在namenode的hdfs-site.xml配置文件中增加dfs.hosts属性  
 ```
 <property>
       <name>dfs.hosts</name>
@@ -95,18 +97,20 @@ Refresh nodes successful
 17/06/24 14:17:11 INFO client.RMProxy: Connecting to ResourceManager at hadoop103/192.168.1.103:8033  
 (5)在namenode的slaves文件中增加新主机名称  
 		增加105  不需要分发  
-hadoop102  
-hadoop103  
-hadoop104  
-hadoop105  
-	（6）单独命令启动新的数据节点和节点管理器  
-[atguigu@hadoop105 hadoop-2.7.2]$ sbin/hadoop-daemon.sh start datanode  
+```
+node001
+node002
+node003
+node004
+```
+(6)单独命令启动新的数据节点和节点管理器  
+$ sbin/hadoop-daemon.sh start datanode  
 starting datanode, logging to /opt/module/hadoop-2.7.2/logs/hadoop-atguigu-datanode-hadoop105.out  
-[atguigu@hadoop105 hadoop-2.7.2]$ sbin/yarn-daemon.sh start nodemanager  
+$ sbin/yarn-daemon.sh start nodemanager  
 starting nodemanager, logging to /opt/module/hadoop-2.7.2/logs/yarn-atguigu-nodemanager-hadoop105.out  
-	（7）在web浏览器上检查是否ok  
-3）如果数据不均衡，可以用命令实现集群的再平衡  
-	$ ./start-balancer.sh  
+(7)在web浏览器上检查是否ok  
+4、如果数据不均衡，可以用命令实现集群的再平衡  
+$ ./start-balancer.sh  
 starting balancer, logging to /opt/module/hadoop-2.7.2/logs/hadoop-atguigu-balancer-hadoop102.out  
 Time Stamp               Iteration#  Bytes Already Moved  Bytes Left To Move  Bytes Being Moved  
 
