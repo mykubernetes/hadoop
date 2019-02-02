@@ -172,25 +172,25 @@ Namenode启动时，首先将映像文件（fsimage）载入内存，并执行�
 如果满足“最小副本条件”，namenode会在30秒钟之后就退出安全模式。所谓的最小副本条件指的是在整个文件系统中99.9%的块满足最小副本级别（默认值：dfs.replication.min=1）。在启动一个刚刚格式化的HDFS集群时，因为系统中还没有任何块，所以namenode不会进入安全模式。
 2）基本语法  
 集群处于安全模式，不能执行重要操作（写操作）。集群启动完成后，自动退出安全模式。  
-（1）bin/hdfs dfsadmin -safemode get		（功能描述：查看安全模式状态）  
+（1）bin/hdfs dfsadmin -safemode get	（功能描述：查看安全模式状态）  
 （2）bin/hdfs dfsadmin -safemode enter  	（功能描述：进入安全模式状态）  
 （3）bin/hdfs dfsadmin -safemode leave	（功能描述：离开安全模式状态）  
 （4）bin/hdfs dfsadmin -safemode wait	（功能描述：等待安全模式状态）  
-3）案例  
-	模拟等待安全模式
-	1）先进入安全模式
-		bin/hdfs dfsadmin -safemode enter
-	2）执行下面的脚本
-		编辑一个脚本
-		#!/bin/bash
-		bin/hdfs dfsadmin -safemode wait
-		bin/hdfs dfs -put ~/hello.txt /root/hello.txt
-	3）再打开一个窗口，执行
-		bin/hdfs dfsadmin -safemode leave
-五、 Namenode多目录配置
-	1）namenode的本地目录可以配置成多个，且每个目录存放内容相同，增加了可靠性。
-	2）具体配置如下：
-	hdfs-site.xml
+3）案例    
+	模拟等待安全模式  
+	1）先进入安全模式  
+		bin/hdfs dfsadmin -safemode enter  
+	2）执行下面的脚本  
+		编辑一个脚本  
+		#!/bin/bash  
+		bin/hdfs dfsadmin -safemode wait  
+		bin/hdfs dfs -put ~/hello.txt /root/hello.txt  
+	3）再打开一个窗口，执行  
+		bin/hdfs dfsadmin -safemode leave  
+五、 Namenode多目录配置  
+	1）namenode的本地目录可以配置成多个，且每个目录存放内容相同，增加了可靠性。  
+	2）具体配置如下：  
+	hdfs-site.xml  
 ```
 <property>
     <name>dfs.namenode.name.dir</name>
