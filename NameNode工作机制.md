@@ -163,7 +163,7 @@ SecondaryNameNode的namesecondary/current目录和主namenode的current目录的
 （2）删除namenode存储的数据（/opt/module/hadoop-2.7.2/data/tmp/dfs/name）  
 		rm -rf /opt/module/hadoop-2.7.2/data/tmp/dfs/name/*  
 （3）如果SecondaryNameNode不和Namenode在一个主机节点上，需要将SecondaryNameNode存储数据的目录拷贝到Namenode存储数据的平级目录。  
- ```
+```
  pwd
 /opt/module/hadoop-2.7.2/data/tmp/dfs
 ls
@@ -191,16 +191,16 @@ data  name  namesecondary
 	（4）bin/hdfs dfsadmin -safemode wait	（功能描述：等待安全模式状态）  
 3）案例    
 	模拟等待安全模式  
-	1）先进入安全模式  
+	1、先进入安全模式  
 		bin/hdfs dfsadmin -safemode enter  
-	2）执行下面的脚本  
+	2、执行下面的脚本  
 		编辑一个脚本  
-		```
-		#!/bin/bash
-		bin/hdfs dfsadmin -safemode wait
-		bin/hdfs dfs -put ~/hello.txt /root/hello.txt
-		```
-	3）再打开一个窗口，执行  
+```
+		#!/bin/bash\n
+		bin/hdfs dfsadmin -safemode wait\n
+		bin/hdfs dfs -put ~/hello.txt /root/hello.txt\n
+```
+3、再打开一个窗口，执行  
 		bin/hdfs dfsadmin -safemode leave  
 
 
