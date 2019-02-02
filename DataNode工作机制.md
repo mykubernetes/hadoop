@@ -98,7 +98,7 @@ node004
 Refresh nodes successful  
 (4）更新resourcemanager节点  
 ```$ yarn rmadmin -refreshNodes  ```  
-17/06/24 14:17:11 INFO client.RMProxy: Connecting to ResourceManager at node003/192.168.1.103:8033  
+17/06/24 14:17:11 INFO client.RMProxy: Connecting to ResourceManager at node002/192.168.1.103:8033  
 (5)在namenode的slaves文件中增加新主机名称  
 	增加node004  不需要分发  
 ```
@@ -132,7 +132,7 @@ $ vi dfs.hosts.exclude
 ```
 添加如下主机名称（要退役的节点）  
 ```
-node04
+node004
 ```
 2、在namenode的hdfs-site.xml配置文件中增加dfs.hosts.exclude属性  
 ```
@@ -146,8 +146,8 @@ node04
 $ hdfs dfsadmin -refreshNodes  
 Refresh nodes successful  
 $ yarn rmadmin -refreshNodes 
+17/06/24 14:55:56 INFO client.RMProxy: Connecting to ResourceManager at node002/192.168.1.103:8033
 ```
-17/06/24 14:55:56 INFO client.RMProxy: Connecting to ResourceManager at hadoop103/192.168.1.103:8033  
 4、检查web浏览器，退役节点的状态为decommission in progress（退役中），说明数据节点正在复制块到其他节点。  
  
 5、等待退役节点状态为decommissioned（所有块已经复制完成），停止该节点及节点资源管理器。注意：如果副本数是3，服役的节点小于等于3，是不能退役成功的，需要修改副本数后才能退役。·  
