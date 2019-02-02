@@ -98,9 +98,9 @@ node004
 Refresh nodes successful  
 (4）更新resourcemanager节点  
 ```$ yarn rmadmin -refreshNodes  ```  
-17/06/24 14:17:11 INFO client.RMProxy: Connecting to ResourceManager at hadoop103/192.168.1.103:8033  
+17/06/24 14:17:11 INFO client.RMProxy: Connecting to ResourceManager at node003/192.168.1.103:8033  
 (5)在namenode的slaves文件中增加新主机名称  
-	增加105  不需要分发  
+	增加node004  不需要分发  
 ```
 node001
 node002
@@ -158,9 +158,9 @@ stopping nodemanager
 6、从include文件中删除退役节点，再运行刷新节点的命令  
 (1）从namenode的dfs.hosts文件中删除退役节点hadoop105  
 ```
-node01
-node02
-node03
+node001
+node002
+node003
 ```
 (2）刷新namenode，刷新resourcemanager  
 ```	
@@ -171,9 +171,9 @@ $yarn rmadmin -refreshNodes
 17/06/24 14:55:56 INFO client.RMProxy: Connecting to ResourceManager at hadoop103/192.168.1.103:8033  
 7、从namenode的slave文件中删除退役节点hadoop105  
 ```
-node01
-node02
-node03
+node001
+node002
+node003
 ```
 8、如果数据不均衡，可以用命令实现集群的再平衡  
 ```
