@@ -1,7 +1,7 @@
 NameNode工作机制
 1 NameNode&Secondary NameNode工作机制
 
-![image](https://github.com/mykubernetes/hadoop/blob/master/image/nn%E5%92%8Csnn.png)
+![image](https://github.com/mykubernetes/hadoop/blob/master/image/nn.png)
 
 1）第一阶段：namenode启动  
 （1）第一次启动namenode格式化后，创建fsimage和edits文件。如果不是第一次启动，直接加载编辑日志和镜像文件到内存。  
