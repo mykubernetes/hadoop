@@ -43,3 +43,4 @@ NameNode工作机制
     <value>60</value>  
   <description> 1分钟检查一次操作次数</description>  
   </property> -->
+ ![image](https://github.com/mykubernetes/hadoop/blob/master/image/%E5%8F%82%E6%95%B0.png)
