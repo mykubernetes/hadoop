@@ -97,7 +97,7 @@ hdfs dfsadmin -rollEdits
 2）镜像文件什么时候产生  
 Namenode启动时加载镜像文件和编辑日志  
  
-四、 namenode版本号
+四、 namenode版本号  
 1）查看namenode版本号  
 在/opt/module/hadoop-2.7.2/data/tmp/dfs/name/current这个目录下查看VERSION
 ```
