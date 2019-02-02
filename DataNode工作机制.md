@@ -48,12 +48,14 @@ layoutVersion=-56
 	（5）storageType：存储类型  
 	（6）layoutVersion是一个负整数。通常只有HDFS增加新特性时才会更新这个版本号。  
 3、在/opt/module/hadoop-2.7.2/data/tmp/dfs/data/current/BP-97847618-192.168.10.102-1493726072779/current这个目录下查看该数据块的版本号  
-$ cat VERSION   
-#Mon May 08 16:30:19 CST 2017  
-namespaceID=1933630176  
-cTime=0  
-blockpoolID=BP-97847618-192.168.10.102-1493726072779  
-layoutVersion=-56  
+```
+$ cat VERSION
+#Mon May 08 16:30:19 CST 2017
+namespaceID=1933630176
+cTime=0
+blockpoolID=BP-97847618-192.168.10.102-1493726072779
+layoutVersion=-56
+```
 4、具体解释  
 （1）namespaceID：是datanode首次访问namenode的时候从namenode处获取的storageID对每个datanode来说是唯一的（但对于单个datanode中所有存储目录来说则是相同的），namenode可用这个属性来区分不同datanode。  
 （2）cTime属性标记了datanode存储系统的创建时间，对于刚刚格式化的存储系统，这个属性为0；但是在文件系统升级之后，该值会更新到新的时间戳。  
@@ -70,7 +72,7 @@ layoutVersion=-56
 	（4）删除原来HDFS文件系统留存的文件  
 		/opt/module/hadoop-2.7.2/data  
 3、服役新节点具体步骤  
-	（1）在namenode的/opt/module/hadoop-2.7.2/etc/hadoop目录下创建dfs.hosts文件  
+（1）在namenode的/opt/module/hadoop-2.7.2/etc/hadoop目录下创建dfs.hosts文件  
 ```
 $ pwd
 /opt/module/hadoop-2.7.2/etc/hadoop
@@ -129,7 +131,7 @@ $ touch dfs.hosts.exclude
 $ vi dfs.hosts.exclude
 ```
 添加如下主机名称（要退役的节点）  
-hadoop105  
+node04
 2、在namenode的hdfs-site.xml配置文件中增加dfs.hosts.exclude属性  
 ```
 <property>
