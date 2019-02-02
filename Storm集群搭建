@@ -111,7 +111,9 @@ Storm集群部署
         export PATH=$PATH:$STORM_HOME/bin
       source /etc/profile
     7）分发配置好的Storm安装包
-      
+      	scp -rp /opt/module/storm node002:/opt/module/storm
+	scp -rp /opt/module/storm node003:/opt/module/storm
+	
     8）启动集群分别在每台机器
         （1）后台启动nimbus
           bin/storm nimbus &
