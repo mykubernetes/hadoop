@@ -36,22 +36,22 @@ Hadoop存档文件或HAR文件，是一个更高效的文件存档工具，它�
 	（8）hdfs dfs -deleteSnapshot <path> <snapshotName>  （功能描述：删除快照）
 2）案例实操
 	（1）开启/禁用指定目录的快照功能
-      hdfs dfsadmin -allowSnapshot /user/atguigu/data		
-      hdfs dfsadmin -disallowSnapshot /user/atguigu/data	
+      hdfs dfsadmin -allowSnapshot /user/hadoop/data		
+      hdfs dfsadmin -disallowSnapshot /user/hadoop/data	
 	（2）对目录创建快照
-      hdfs dfs -createSnapshot /user/atguigu/data		// 对目录创建快照
-通过web访问hdfs://hadoop102:9000/user/atguigu/data/.snapshot/s…..// 快照和源文件使用相同数据块
-      hdfs dfs -lsr /user/atguigu/data/.snapshot/
+      hdfs dfs -createSnapshot /user/hadoop/data		// 对目录创建快照
+通过web访问hdfs://hadoop102:9000/user/hadoop/data/.snapshot/s…..// 快照和源文件使用相同数据块
+      hdfs dfs -lsr /user/hadoop/data/.snapshot/
 	（3）指定名称创建快照
-      hdfs dfs -createSnapshot /user/atguigu/data miao170508		
+      hdfs dfs -createSnapshot /user/hadoop/data miao170508		
 	（4）重命名快照
-      hdfs dfs -renameSnapshot /user/atguigu/data/ miao170508 atguigu170508		
+      hdfs dfs -renameSnapshot /user/hadoop/data/ miao170508 atguigu170508		
 	（5）列出当前用户所有可快照目录
       hdfs lsSnapshottableDir	
 	（6）比较两个快照目录的不同之处
-      hdfs snapshotDiff /user/atguigu/data/  .  .snapshot/atguigu170508	
+      hdfs snapshotDiff /user/hadoop/data/  .  .snapshot/hadoop170508	
 	（7）恢复快照
-      hdfs dfs -cp /user/atguigu/input/.snapshot/s20170708-134303.027 /user
+      hdfs dfs -cp /user/hadoop/input/.snapshot/s20170708-134303.027 /user
 
 四、 回收站
 	1）默认回收站
