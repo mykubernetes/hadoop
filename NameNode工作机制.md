@@ -195,9 +195,11 @@ data  name  namesecondary
 		bin/hdfs dfsadmin -safemode enter  
 	2）执行下面的脚本  
 		编辑一个脚本  
-		#!/bin/bash  
-		bin/hdfs dfsadmin -safemode wait  
-		bin/hdfs dfs -put ~/hello.txt /root/hello.txt  
+		```
+		#!/bin/bash
+		bin/hdfs dfsadmin -safemode wait
+		bin/hdfs dfs -put ~/hello.txt /root/hello.txt
+		```
 	3）再打开一个窗口，执行  
 		bin/hdfs dfsadmin -safemode leave  
 
