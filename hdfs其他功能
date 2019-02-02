@@ -16,12 +16,12 @@ Hadoop存档文件或HAR文件，是一个更高效的文件存档工具，它�
 	start-yarn.sh
 （2）归档文件
 	归档成一个叫做xxx.har的文件夹，该文件夹下有相应的数据文件。Xx.har目录是一个整体，该目录看成是一个归档文件即可。
-bin/hadoop archive -archiveName myhar.har -p /user/srcfile   /user/dstfile
+bin/hadoop archive -archiveName myhar.har -p /user/src   /user/dst
 （3）查看归档
 	hadoop fs -lsr /user/my/myhar.har
   hadoop fs -lsr har:///myhar.har
 （4）解归档文件
-hadoop fs -cp har:/// user/my/myhar.har /* /user/hadoop
+hadoop fs -cp har:/// user/my/myhar.har /* /user/src
 
 三、快照管理
 快照相当于对目录做一个备份。并不会立即复制所有文件，而是指向同一个文件。当写入发生时，才会产生新文件。
