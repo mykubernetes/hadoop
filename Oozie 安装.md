@@ -95,7 +95,7 @@ Oozie的安装与部署
 2)创建oozie数据库  
 ``` $ mysql> create database oozie;  ```  
 10、初始化Oozie的配置  
-1)上传Oozie目录下的yarn.tar.gz文件到HDFS（尖叫提示：yarn.tar.gz文件会自行解压）  
+1)上传Oozie目录下的yarn.tar.gz文件到HDFS（提示：yarn.tar.gz文件会自行解压）  
 ``` $ bin/oozie-setup.sh sharelib create -fs hdfs://node01:8020 -locallib oozie-sharelib-4.0.0-cdh5.3.6-yarn.tar.gz ``` 
 					
 执行成功之后，去50070检查对应目录有没有文件生成。  
