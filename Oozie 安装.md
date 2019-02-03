@@ -17,7 +17,7 @@ Oozie的安装与部署
 		<value>*</value>
 	 	</property>
 ```  
-    配置JobHistoryServer服务(必须)  
+配置JobHistoryServer服务(必须)  
 * mapred-site.xml  
 ```
     	<!-- 配置 MapReduce JobHistory Server 地址 ，默认端口10020 -->
@@ -31,7 +31,8 @@ Oozie的安装与部署
 		<name>mapreduce.jobhistory.webapp.address</name>
 		<value>node001:19888</value>
 	</property>
-```  					 
+```  
+
 * yarn-site.xml  
 ```
 	<!-- 任务历史服务 -->
@@ -40,6 +41,7 @@ Oozie的安装与部署
 		<value>http://node001:19888/jobhistory/logs/</value> 
 	</property> 
 ```  
+
 完成后：记得scp同步到其他机器节点
 			
 3、开启Hadoop集群  
@@ -62,10 +64,10 @@ Oozie的安装与部署
 ``` $ cp -a /opt/softwares/mysql-connector-java-5.1.27/mysql-connector-java-5.1.27-bin.jar /opt/modules/cdh/oozie-4.0.0-cdh5.3.6/libext/ ```
 
  7、将ext-2.2.zip拷贝到libext/目录下  
-``` $ cp /opt/softwares/ext-2.2.zip libext/  
+``` $ cp /opt/softwares/ext-2.2.zip libext/  ```
 			
- 8、修改Oozie配置文件  
-* oozie-site.xml
+8、修改Oozie配置文件  
+* oozie-site.xml  
 ```
 		** JDBC驱动
 			oozie.service.JPAService.jdbc.driver
@@ -91,7 +93,7 @@ Oozie的安装与部署
 1)进入数据库  
 ``` $ mysql -uroot -p123456 ```  
 2)创建oozie数据库  
-``` $ mysql> create database oozie;  
+``` $ mysql> create database oozie;  ```
 10、初始化Oozie的配置  
 1)上传Oozie目录下的yarn.tar.gz文件到HDFS（尖叫提示：yarn.tar.gz文件会自行解压）  
 ``` $ bin/oozie-setup.sh sharelib create -fs hdfs://node01:8020 -locallib oozie-sharelib-4.0.0-cdh5.3.6-yarn.tar.gz ``` 
