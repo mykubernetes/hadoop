@@ -50,7 +50,7 @@ ssh无秘钥登录
 
 二、安装  
 首先安装jdk  
-``` $ tar -zxf /opt/softwares/jdk-8u121-linux-x64.gz -C /opt/modules/ ```
+``` $ tar -zxf /opt/softwares/jdk-8u121-linux-x64.gz -C /opt/modules/ ```  
 	2 JDK环境变量配置  
 ```
 # vi /etc/profile
