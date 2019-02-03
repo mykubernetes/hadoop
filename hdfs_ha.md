@@ -236,7 +236,26 @@ node03
 启动服务  
 
 初始化ha在zookeeper中的状态  
-```$ bin/hdfs zkfc -formatZK ```
+```$ bin/hdfs zkfc -formatZK ```  
+
+启动各个进程  
+``` sbin/start-dfs.sh ```  
+
+查看各进程状态  
+```
+$ jps
+13810 NameNode     
+14096 JournalNode                  namenode  editlog备份
+14350 Jps
+3246 QuorumPeerMain                zookeeper进程
+13908 DataNode                     数据节点
+14264 DFSZKFailoverController      namedode故障自动转移
+```
+
+以下为手动启动方法按顺序启动  
+————————————————————————————————————————————————————————
+初始化ha在zookeeper中的状态  
+```$ bin/hdfs zkfc -formatZK ```  
 
 在各个JournalNode节点上，输入以下命令启动journalnode服务：  
 
@@ -258,7 +277,7 @@ $ sbin/hadoop-daemon.sh start namenode
 查看服务状态  
 ``` $ bin/hdfs haadmin -getServiceState nn1 ```
 	
-
+——————————————————————————————————————————————————————————
 
 重启各个服务  
 访问web地址  
