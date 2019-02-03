@@ -13,7 +13,7 @@ HBase的安装与部署
     export HBASE_MANAGES_ZK=false
   
   2、hbase-site.xml
-  注意：如果是name是高可用的配置集群名如下，如果name是单节点的配置  <value>hdfs://node01:8020/hbase</value> 
+  注意：如果是name是高可用的配置集群名如下，如果name是单节点的配置hdfs://node01:8020/hbase  
     <!--  设置hbase的跟地址，为namenode所在位置 -->
     <property>
        <name>hbase.rootdir</name>
