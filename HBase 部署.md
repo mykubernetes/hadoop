@@ -1,9 +1,9 @@
 HBase的安装与部署  
 1、Zookeeper集群的正常部署并启动  
-``` $ /opt/modules/cdh/zookeeper-3.4.5-cdh5.3.6/bin/zkServer.sh start ```
+``` $ /opt/modules/cdh/zookeeper-3.4.5-cdh5.3.6/bin/zkServer.sh start ```  
 2、Hadoop集群的正常部署并启动  
-``` $ /opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/sbin/start-dfs.sh ```
-``` $ /opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/sbin/start-yarn.sh ```
+``` $ /opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/sbin/start-dfs.sh ```  
+``` $ /opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/sbin/start-yarn.sh ```  
 
 3、解压HBase  
 ``` $ tar -zxf /opt/softwares/hbase-0.98.6-cdh5.3.6.tar.gz -C /opt/modules/cdh/ ```  
@@ -141,10 +141,6 @@ $ scp -r conf/ node03:/opt/modules/cdh/hbase-0.98.6-cdh5.3.6/
 
 
 
-
-
-
-
 HBase常用操作  
     1、进入HBase客户端命令操作界面  
 ``` $ bin/hbase shell ```
@@ -154,7 +150,7 @@ HBase常用操作
 ``` hbase(main):002:0> list ```
     4、创建一张表  
 ``` hbase(main):003:0>  create 'student','info' ```
-    5、向表中存储一些数据 
+    5、向表中存储一些数据  
 ```
 hbase(main):004:0> put 'student','1001','info:name','Thomas'
 hbase(main):005:0> put 'student','1001','info:sex','male'
@@ -190,6 +186,6 @@ hbase(main):006:0> put 'student','1001','info:age','18'
 
    12、删除表  
     首先需要先让该表为disable状态，使用命令：  
- hbase(main):018:0> disable 'student'  然后才能drop这个表，使用命令： hbase(main):019:0> drop 'student' (尖叫提示：如果直接drop表，会报错：Drop the named table. Table must first be disabled) 
+ hbase(main):018:0> disable 'student'  然后才能drop这个表，使用命令： hbase(main):019:0> drop 'student' (尖叫提示：如果直接drop表，会报错：Drop the named table. Table must first be disabled)  
     13、统计一张表有多少行数据  
 ```hbase(main):020:0> count 'student' ```
