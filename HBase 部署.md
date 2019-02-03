@@ -174,7 +174,7 @@ hbase(main):006:0> put 'student','1001','info:age','18'
 9、查看指定行的数据  
 ``` hbase(main):012:0> get 'student','1001' ```  
 
-    或：查看指定行指定列或列族的数据  
+ 或：查看指定行指定列或列族的数据  
 ``` hbase(main):013:0> get 'student','1001','info:name' ```  
 10、删除数据  
     1）删除某一个rowKey全部的数据  
