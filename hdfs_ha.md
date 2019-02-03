@@ -234,6 +234,10 @@ node03
 ```
 命令操作：  
 启动服务  
+
+初始化ha在zookeeper中的状态  
+```$ bin/hdfs zkfc -formatZK ```
+
 在各个JournalNode节点上，输入以下命令启动journalnode服务：  
 
 ``` $ sbin/hadoop-daemon.sh start journalnode ```
@@ -254,8 +258,7 @@ $ sbin/hadoop-daemon.sh start namenode
 查看服务状态  
 ``` $ bin/hdfs haadmin -getServiceState nn1 ```
 	
-初始化ha在zookeeper中的状态  
-```$ bin/hdfs zkfc -formatZK ```
+
 
 重启各个服务  
 访问web地址  
