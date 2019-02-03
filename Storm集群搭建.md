@@ -1,15 +1,15 @@
 Storm集群搭建  
 ============
-1、 集群规划  
+一、 集群规划  
 ```
 node001			node002			node003
 zk			zk			zk
 storm			storm			storm
 ```  
-2、 jar包下载  
+二、 jar包下载  
 官方网址：http://storm.apache.org/  
 
-3、 安装jdk  
+三、 安装jdk  
 ```
 $ tar -zxf /opt/softwares/jdk-8u121-linux-x64.gz -C /opt/modules/
 JDK环境变量配置
@@ -18,7 +18,7 @@ JDK环境变量配置
 export JAVA_HOME=/opt/modules/jdk1.8.0_121
 export PATH=$PATH:$JAVA_HOME/bin
 ```  
-4、 安装Zookeeper  
+四、 安装Zookeeper  
 1）解压安装  
 （1）解压zookeeper安装包到/opt/module/目录下  
 ```  tar -zxvf zookeeper-3.4.10.tar.gz -C /opt/module/ ```  
@@ -72,16 +72,16 @@ Using config: /opt/module/zookeeper-3.4.10/bin/../conf/zoo.cfg
 ```
 
 
-5、Storm集群部署  
+五、Storm集群部署  
 
 (1） 配置集群  
 1）拷贝jar包到hadoop102的/opt/software目录下  
 2）解压jar包到/opt/module目录下  
 ``` tar -zxvf apache-storm-1.1.0.tar.gz -C /opt/module/ ```  
 3）修改解压后的apache-storm-1.1.0.tar.gz文件名称为storm  
-``` mv apache-storm-1.1.0/ storm ```
+``` mv apache-storm-1.1.0/ storm ```  
 4）在/opt/module/storm/目录下创建data文件夹  
-``` mkdir data ```
+``` mkdir data ```  
 5）修改配置文件  
 ```
  pwd
@@ -138,7 +138,7 @@ scp -rp /opt/module/storm node003:/opt/module/storm
     
     
     
-Storm日志信息查看  
+六、Storm日志信息查看  
 
 1、查看nimbus的日志信息  
  ```
@@ -176,7 +176,7 @@ bin/storm logviewer &
  
 
 
-Storm命令行操作  
+七、Storm命令行操作  
 
  1、nimbus：启动nimbus守护进程  
  ``` storm nimbus ```  
