@@ -122,11 +122,11 @@ $ scp -r /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/ node03:/opt/modules/cdh/
 
 HMaster的高可用  
     1、确保HBase集群已正常停止  
-``` $ bin/stop-hbase.sh
+``` $ bin/stop-hbase.sh ```
     2、在conf目录下创建backup-masters文件  
-``` $ touch conf/backup-masters
+``` $ touch conf/backup-masters ```
     3、在backup-masters文件中配置高可用HMaster节点  
-``` $ echo node02 > conf/backup-masters
+``` $ echo node02 > conf/backup-masters ```
     4、将整个conf目录scp到其他节点  
 ```
 $ scp -r conf/ node02:/opt/modules/cdh/hbase-0.98.6-cdh5.3.6/
@@ -147,19 +147,20 @@ $ scp -r conf/ node03:/opt/modules/cdh/hbase-0.98.6-cdh5.3.6/
 
 HBase常用操作  
     1、进入HBase客户端命令操作界面  
-``` $ bin/hbase shell
+``` $ bin/hbase shell ```
     2、查看帮助命令  
-``` hbase(main):001:0> help
+``` hbase(main):001:0> help ```
     3、查看当前数据库中有哪些表  
-``` hbase(main):002:0> list
+``` hbase(main):002:0> list ```
     4、创建一张表  
-``` hbase(main):003:0>  create 'student','info'
+``` hbase(main):003:0>  create 'student','info' ```
     5、向表中存储一些数据 
 ```
 hbase(main):004:0> put 'student','1001','info:name','Thomas'
 hbase(main):005:0> put 'student','1001','info:sex','male'
 hbase(main):006:0> put 'student','1001','info:age','18'
 ```
+
     6、扫描查看存储的数据  
 ``` hbase(main):007:0> scan 'student' ```  
 
