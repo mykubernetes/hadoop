@@ -142,50 +142,50 @@ $ scp -r conf/ node03:/opt/modules/cdh/hbase-0.98.6-cdh5.3.6/
 
 
 HBase常用操作  
-    1、进入HBase客户端命令操作界面  
+1、进入HBase客户端命令操作界面  
 ``` $ bin/hbase shell ```  
-    2、查看帮助命令  
+2、查看帮助命令  
 ``` hbase(main):001:0> help ```  
-    3、查看当前数据库中有哪些表  
+3、查看当前数据库中有哪些表  
 ``` hbase(main):002:0> list ```  
-    4、创建一张表  
+4、创建一张表  
 ``` hbase(main):003:0>  create 'student','info' ```  
-    5、向表中存储一些数据  
+5、向表中存储一些数据  
 ```
 hbase(main):004:0> put 'student','1001','info:name','Thomas'
 hbase(main):005:0> put 'student','1001','info:sex','male'
 hbase(main):006:0> put 'student','1001','info:age','18'
 ```
 
-   6、扫描查看存储的数据  
+6、扫描查看存储的数据  
 ``` hbase(main):007:0> scan 'student' ```  
+或：查看某个rowkey范围内的数据  
 
-   或：查看某个rowkey范围内的数据  
 ``` hbase(main):014:0> scan 'student',{STARTROW => '1001',STOPROW => '1007'} ```  
-   7、查看表结构  
+7、查看表结构  
 ``` hbase(main):009:0> describe 'student' ```  
 
 
-   8、更新指定字段的数据  
+8、更新指定字段的数据  
 ``` hbase(main):009:0> put 'student','1001','info:name','Nick' ```  
 
 ``` hbase(main):010:0> put 'student','1001','info:age','100' ```  
   
-   9、查看指定行的数据  
+9、查看指定行的数据  
 ``` hbase(main):012:0> get 'student','1001' ```  
 
     或：查看指定行指定列或列族的数据  
 ``` hbase(main):013:0> get 'student','1001','info:name' ```  
-   10、删除数据  
-        1、删除某一个rowKey全部的数据  
+10、删除数据  
+    1）删除某一个rowKey全部的数据  
        ``` hbase(main):015:0> deleteall 'student','1001' ```  
-        2、删除掉某个rowKey中某一列的数据  
+    2）删除掉某个rowKey中某一列的数据  
        ``` hbase(main):016:0> delete 'student','1001','info:sex' ```  
-   11、清空表数据  
+11、清空表数据  
 ``` hbase(main):017:0> truncate 'student'  ```  
 
-   12、删除表  
+12、删除表  
     首先需要先让该表为disable状态，使用命令：  
  hbase(main):018:0> disable 'student'  然后才能drop这个表，使用命令： hbase(main):019:0> drop 'student' (尖叫提示：如果直接drop表，会报错：Drop the named table. Table must first be disabled)  
-    13、统计一张表有多少行数据  
+13、统计一张表有多少行数据  
 ```hbase(main):020:0> count 'student' ```
