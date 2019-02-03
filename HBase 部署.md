@@ -104,38 +104,38 @@ $ scp -r /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/ node03:/opt/modules/cdh/
 ```
 将Hadoop配置文件软连接到HBase的conf目录下  
       * core-site.xml  
-``` $ ln -s /opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/etc/hadoop/core-site.xml /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/conf/core-site.xml ```
+``` $ ln -s /opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/etc/hadoop/core-site.xml /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/conf/core-site.xml ```  
       * hdfs-site.xml  
-``` $ ln -s /opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/etc/hadoop/hdfs-site.xml /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/conf/hdfs-site.xml ```
+``` $ ln -s /opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/etc/hadoop/hdfs-site.xml /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/conf/hdfs-site.xml ```  
 （提示：不要忘记其他几台机器也要做此操作）  
 
 启动服务  
 ```
 $ bin/hbase-daemon.sh start master 
 $ bin/hbase-daemon.sh start regionserver
-```
+```  
 或者：  
-``` $ bin/start-hbase.sh ```
+``` $ bin/start-hbase.sh ```  
 对应的停止命令：  
-``` $ bin/stop-hbase.sh ```
+``` $ bin/stop-hbase.sh ```  
 
 
 HMaster的高可用  
-    1、确保HBase集群已正常停止  
+1、确保HBase集群已正常停止  
 ``` $ bin/stop-hbase.sh ```  
-    2、在conf目录下创建backup-masters文件  
+2、在conf目录下创建backup-masters文件  
 ``` $ touch conf/backup-masters ```  
-    3、在backup-masters文件中配置高可用HMaster节点  
+3、在backup-masters文件中配置高可用HMaster节点  
 ``` $ echo node02 > conf/backup-masters ```  
-    4、将整个conf目录scp到其他节点  
+4、将整个conf目录scp到其他节点  
 ```
 $ scp -r conf/ node02:/opt/modules/cdh/hbase-0.98.6-cdh5.3.6/
 $ scp -r conf/ node03:/opt/modules/cdh/hbase-0.98.6-cdh5.3.6/
 ```
-    5、打开页面测试  
+5、打开页面测试  
 ``` http://node01:60010 ```  
 
-       最后，可以尝试关闭第一台机器的HMaster：  
+最后，可以尝试关闭第一台机器的HMaster：  
 ``` $ bin/hbase-daemon.sh stop master ```  
        然后查看第二台的HMaster是否会直接启用  
 
