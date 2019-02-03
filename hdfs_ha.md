@@ -226,11 +226,11 @@ mkdir /opt/modules/cdh/hadoop/data/jn
 完成后远程拷贝给其他服务器  
 
 配置数据节点  
+* slaves
 ```
-   slave
-	node01
-	node02
-	node03
+node01
+node02
+node03
 ```
 命令操作：  
 启动服务  
