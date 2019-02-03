@@ -27,7 +27,7 @@ export PATH=$PATH:$JAVA_HOME/bin
 （2）在/opt/module/zookeeper-3.4.10/这个目录下创建zkData  
 ``` mkdir -p zkData ```  
 （3）重命名/opt/module/zookeeper-3.4.10/conf这个目录下的zoo_sample.cfg为zoo.cfg  
-```` mv zoo_sample.cfg zoo.cfg ```  
+``` mv zoo_sample.cfg zoo.cfg ```  
 
 2）配置zoo.cfg文件  
 ```
@@ -74,7 +74,7 @@ Using config: /opt/module/zookeeper-3.4.10/bin/../conf/zoo.cfg
 ```
 
 
-Storm集群部署  
+5、Storm集群部署  
   1 配置集群  
 ```
     1）拷贝jar包到hadoop102的/opt/software目录下
@@ -108,7 +108,7 @@ Storm集群部署
           - 6703
 ```
 
-6）配置环境变量  
+2）配置环境变量  
 ```
 $ vi /etc/profile
     #STORM_HOME
@@ -117,13 +117,13 @@ $ vi /etc/profile
 $ source /etc/profile
 ```  
 
-7）分发配置好的Storm安装包  
+3）分发配置好的Storm安装包  
 ```
 scp -rp /opt/module/storm node002:/opt/module/storm
 scp -rp /opt/module/storm node003:/opt/module/storm
 ```  
 
-8）启动集群分别在每台机器  
+4）启动集群分别在每台机器  
 （1）后台启动nimbus  
 ``` bin/storm nimbus & ```  
         
@@ -133,7 +133,7 @@ scp -rp /opt/module/storm node003:/opt/module/storm
 （3）启动Storm ui   一台机器  
 ``` bin/storm ui ```  
     
-9）通过浏览器查看集群状态  
+5）通过浏览器查看集群状态  
 ``` http://node001:8080/index.html ```
  
     
@@ -141,35 +141,35 @@ scp -rp /opt/module/storm node003:/opt/module/storm
     
 Storm日志信息查看  
 
-1）查看nimbus的日志信息  
+1、查看nimbus的日志信息  
  ```
 在nimbus的服务器上
 cd /opt/module/storm/logs
 tail -100f /opt/module/storm/logs/nimbus.log
  ```  
  
-2）查看ui运行日志信息  
+2、查看ui运行日志信息  
  ```
 在ui的服务器上，一般和nimbus一个服务器
 cd /opt/module/storm/logs
 tail -100f /opt/module/storm/logs/ui.log
 ```  
 
-3）查看supervisor运行日志信息  
+3、查看supervisor运行日志信息  
 ```
 在supervisor服务上
 cd /opt/module/storm/logs
 tail -100f /opt/module/storm/logs/supervisor.log
 ```  
 
-4）查看supervisor上worker运行日志信息  
+4、查看supervisor上worker运行日志信息  
 ```
 在supervisor服务上
 cd /opt/module/storm/logs
 tail -100f /opt/module/storm/logs/worker-6702.log
 ```  
 
-5）logviewer，可以在web页面点击相应的端口号即可查看日志  
+5、logviewer，可以在web页面点击相应的端口号即可查看日志  
 ```
 分别在supervisor节点上执行：
 bin/storm logviewer &
@@ -179,25 +179,25 @@ bin/storm logviewer &
 
 Storm命令行操作  
 
- 1）nimbus：启动nimbus守护进程  
+ 1、nimbus：启动nimbus守护进程  
  ``` storm nimbus ```  
- 2）supervisor：启动supervisor守护进程  
+ 2、supervisor：启动supervisor守护进程  
  ``` storm supervisor ```  
- 3）ui：启动UI守护进程。  
+ 3、ui：启动UI守护进程。  
  ``` storm ui ```  
- 4）list：列出正在运行的拓扑及其状态  
+ 4、list：列出正在运行的拓扑及其状态  
  ``` storm list ```  
- 5）logviewer：Logviewer提供一个web接口查看Storm日志文件。  
+ 5、logviewer：Logviewer提供一个web接口查看Storm日志文件。  
  ``` storm logviewer ```  
- 6）jar：  
+ 6、jar：  
  ``` storm jar 【jar路径】 【拓扑包名.拓扑类名】 【拓扑名称】 ```
- 7）kill：杀死名为Topology-name的拓扑  
+ 7、kill：杀死名为Topology-name的拓扑  
  ``` storm kill topology-name [-w wait-time-secs] ```
  ``` -w：等待多久后杀死拓扑 ```  
- 8）active：激活指定的拓扑spout。 ```  
+ 8、active：激活指定的拓扑spout。  
  ``` storm activate topology-name ```  
- 9）deactivate：禁用指定的拓扑Spout。 ```  
+ 9、deactivate：禁用指定的拓扑Spout。  
  ``` storm deactivate topology-name  ```  
- 10）help：打印一条帮助消息或者可用命令的列表。  
+ 10、help：打印一条帮助消息或者可用命令的列表。  
  ``` storm help ```  
  ``` storm help <command> ```  
