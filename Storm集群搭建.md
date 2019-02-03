@@ -7,9 +7,7 @@ zk			zk			zk
 storm			storm			storm
 ```  
 2、 jar包下载  
-（1）官方网址：http://storm.apache.org/  
-（2）安装集群步骤：  
-http://storm.apache.org/releases/1.1.0/Setting-up-a-Storm-cluster.html  
+官方网址：http://storm.apache.org/  
 
 3、 安装jdk  
 ```
@@ -75,40 +73,41 @@ Using config: /opt/module/zookeeper-3.4.10/bin/../conf/zoo.cfg
 
 
 5、Storm集群部署  
-  1 配置集群  
+
+(1） 配置集群  
+1）拷贝jar包到hadoop102的/opt/software目录下  
+2）解压jar包到/opt/module目录下  
+``` tar -zxvf apache-storm-1.1.0.tar.gz -C /opt/module/ ```  
+3）修改解压后的apache-storm-1.1.0.tar.gz文件名称为storm  
+``` mv apache-storm-1.1.0/ storm ```
+4）在/opt/module/storm/目录下创建data文件夹  
+``` mkdir data ```
+5）修改配置文件  
 ```
-    1）拷贝jar包到hadoop102的/opt/software目录下
-    2）解压jar包到/opt/module目录下
-        tar -zxvf apache-storm-1.1.0.tar.gz -C /opt/module/
-    3）修改解压后的apache-storm-1.1.0.tar.gz文件名称为storm
-        mv apache-storm-1.1.0/ storm
-    4）在/opt/module/storm/目录下创建data文件夹
-	      mkdir data
-    5）修改配置文件
-        pwd
-        /opt/module/storm/conf
-        vi storm.yaml
-      # 设置Zookeeper的主机名称
-      storm.zookeeper.servers:
-           - "node001"
-           - "node002"
-           - "node003"
+ pwd
+ /opt/module/storm/conf
+vi storm.yaml
+# 设置Zookeeper的主机名称
+storm.zookeeper.servers:
+     - "node001"
+     - "node002"
+     - "node003"
 
-      # 设置主节点的主机名称
-      nimbus.seeds: ["node001"]
+# 设置主节点的主机名称
+nimbus.seeds: ["node001"]
 
-      # 设置Storm的数据存储路径
-      storm.local.dir: "/opt/module/storm/data"
+# 设置Storm的数据存储路径
+ storm.local.dir: "/opt/module/storm/data"
 
-      # 设置Worker的端口号
-      supervisor.slots.ports:
-          - 6700
-          - 6701
-          - 6702
-          - 6703
+# 设置Worker的端口号
+supervisor.slots.ports:
+    - 6700
+    - 6701
+    - 6702
+    - 6703
 ```
 
-2）配置环境变量  
+(2）配置环境变量  
 ```
 $ vi /etc/profile
     #STORM_HOME
@@ -117,7 +116,7 @@ $ vi /etc/profile
 $ source /etc/profile
 ```  
 
-3）分发配置好的Storm安装包  
+(3）分发配置好的Storm安装包  
 ```
 scp -rp /opt/module/storm node002:/opt/module/storm
 scp -rp /opt/module/storm node003:/opt/module/storm
@@ -190,7 +189,7 @@ Storm命令行操作
  5、logviewer：Logviewer提供一个web接口查看Storm日志文件。  
  ``` storm logviewer ```  
  6、jar：  
- ``` storm jar 【jar路径】 【拓扑包名.拓扑类名】 【拓扑名称】 ```
+ ``` storm jar 【jar路径】 【拓扑包名.拓扑类名】 【拓扑名称】 ```  
  7、kill：杀死名为Topology-name的拓扑  
  ``` storm kill topology-name [-w wait-time-secs] ```
  ``` -w：等待多久后杀死拓扑 ```  
