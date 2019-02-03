@@ -59,7 +59,7 @@ Oozie的安装与部署
 			
 6、拷贝一些依赖的Jar包  
 1)将hadooplibs里面的jar包，拷贝到libext目录下  
-``` $ cp -ra /opt/modules/cdh/oozie-4.0.0-cdh5.3.6/hadooplibs/hadooplib-2.5.0-cdh5.3.6.oozie-4.0.0-cdh5.3.6/* libext/ ```
+``` $ cp -ra /opt/modules/cdh/oozie-4.0.0-cdh5.3.6/hadooplibs/hadooplib-2.5.0-cdh5.3.6.oozie-4.0.0-cdh5.3.6/* libext/ ```  
 2)拷贝Mysql驱动包到libext目录下  
 ``` $ cp -a /opt/softwares/mysql-connector-java-5.1.27/mysql-connector-java-5.1.27-bin.jar /opt/modules/cdh/oozie-4.0.0-cdh5.3.6/libext/ ```
 
@@ -93,7 +93,7 @@ Oozie的安装与部署
 1)进入数据库  
 ``` $ mysql -uroot -p123456 ```  
 2)创建oozie数据库  
-``` $ mysql> create database oozie;  ```
+``` $ mysql> create database oozie;  ```  
 10、初始化Oozie的配置  
 1)上传Oozie目录下的yarn.tar.gz文件到HDFS（尖叫提示：yarn.tar.gz文件会自行解压）  
 ``` $ bin/oozie-setup.sh sharelib create -fs hdfs://node01:8020 -locallib oozie-sharelib-4.0.0-cdh5.3.6-yarn.tar.gz ``` 
@@ -102,7 +102,7 @@ Oozie的安装与部署
 2)创建oozie.sql文件  
 ``` $ bin/oozie-setup.sh db create -run -sqlfile oozie.sql ```  
 3)打包项目，生成war包  
-``` $ bin/oozie-setup.sh prepare-war ```
+``` $ bin/oozie-setup.sh prepare-war ```  
 11、启动Oozie服务  
 ``` $ bin/oozied.sh start ```  
 （关闭Oozie服务：$ bin/oozied.sh stop）  
