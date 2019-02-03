@@ -238,6 +238,17 @@ node03
 初始化ha在zookeeper中的状态  
 ```$ bin/hdfs zkfc -formatZK ```  
 
+在[nn1]上，对其进行格式化，并启动  
+```
+$ bin/hdfs namenode -format
+$ sbin/hadoop-daemon.sh start namenode
+```
+在[nn2]上，同步nn1的元数据信息，并启动  
+```
+$ bin/hdfs namenode -bootstrapStandby
+$ sbin/hadoop-daemon.sh start namenode
+```  
+
 启动各个进程  
 ``` sbin/start-dfs.sh ```  
 
