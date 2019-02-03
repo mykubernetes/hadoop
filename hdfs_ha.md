@@ -51,7 +51,7 @@ ssh无秘钥登录
 二、安装  
 首先安装jdk  
 ``` $ tar -zxf /opt/softwares/jdk-8u121-linux-x64.gz -C /opt/modules/ ```  
-	2 JDK环境变量配置  
+2 JDK环境变量配置  
 ```
 # vi /etc/profile
 #JAVA_HOME
@@ -59,8 +59,8 @@ export JAVA_HOME=/opt/modules/jdk1.8.0_121
 export PATH=$PATH:$JAVA_HOME/bin
 ```
 zookeeper  
-	1、修改zoo.cfg配置文件  
-		修改conf目录下的zoo.cfg文件，如果没有该文件，请自行重命名sample.cfg文件，修改内容为：  
+1、修改zoo.cfg配置文件  
+修改conf目录下的zoo.cfg文件，如果没有该文件，请自行重命名sample.cfg文件，修改内容为：  
 ```
 dataDir=/opt/modules/zookeeper/zkData
 dataLogDir=/opt/modules/zookeeper/zkLog
@@ -68,8 +68,8 @@ server.1=node01:2888:3888
 server.2=node02:2888:3888
 server.3=node03:2888:3888
 ```
-		同时创建dataDir属性值所指定的目录  
-	2、在zkData目录下创建myid文件，修改值为1，如：  
+同时创建dataDir属性值所指定的目录  
+2、在zkData目录下创建myid文件，修改值为1，如：  
 ```
 $ cd /opt/modules/zookeeper/zkData
 $ touch myid
@@ -376,10 +376,10 @@ sbin/hadoop-daemon.sh start zkfc
 </configuration>
 ```
 
-*mapred-env.sh  
+* mapred-env.sh  
 ``` export JAVA_HOME=/opt/modules/jdk1.8.0_121 ```
 	
-*mapred-site.xml  
+* mapred-site.xml  
 ```
 <configuration>
     <-- 指定mr运行在yarn上 -->
