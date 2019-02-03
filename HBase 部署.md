@@ -2,13 +2,13 @@ HBase的安装与部署
 ================
 
 1、Zookeeper集群的正常部署并启动  
-``` $ /opt/modules/zookeeper-3.4.5-cdh5.3.6/bin/zkServer.sh start ```  
+``` $ /opt/modules/zookeeper-3.4.5/bin/zkServer.sh start ```  
 2、Hadoop集群的正常部署并启动  
-``` $ /opt/modules/hadoop-2.5.0-cdh5.3.6/sbin/start-dfs.sh ```  
-``` $ /opt/modules/hadoop-2.5.0-cdh5.3.6/sbin/start-yarn.sh ```  
+``` $ /opt/modules/hadoop-2.5.0/sbin/start-dfs.sh ```  
+``` $ /opt/modules/hadoop-2.5.0/sbin/start-yarn.sh ```  
 
 3、解压HBase  
-``` $ tar -zxf /opt/softwares/hbase-0.98.6-cdh5.3.6.tar.gz -C /opt/modules/ ```  
+``` $ tar -zxf /opt/softwares/hbase-0.98.6.tar.gz -C /opt/modules/ ```  
 4、修改HBase配置文件  
   1)hbase-env.sh  
 ```
