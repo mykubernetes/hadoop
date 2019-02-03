@@ -47,20 +47,20 @@ export HBASE_MANAGES_ZK=false
 node01
 node02
 node03
-```      
+```  
 安装完毕  
 
 可选操作  
   为避免Hbase里的jar包和Hadoop里的jar包文件不一样产生不必要的麻烦需要操作，一样则可以不操作  
   替换HBase根目录下的lib目录下的jar包，以解决兼容问题  
-      * 删除原有Jar包  
+  * 删除原有Jar包  
 ```
       $ rm -rf /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/lib/hadoop-*  
       $ rm -rf lib/zookeeper-3.4.6.jar 
 ```  
-    （提示：如果lib目录下的zookeeper包不匹配也需要替换）* 拷贝新的Jar包  
+(提示：如果lib目录下的zookeeper包不匹配也需要替换）* 拷贝新的Jar包  
 
-      这里涉及到的jar包大概是：  
+这里涉及到的jar包大概是：  
 ```
           hadoop-annotations-2.5.0.jar
           hadoop-auth-2.5.0-cdh5.3.6.jar
@@ -88,7 +88,7 @@ node03
           hadoop-yarn-server-web-proxy-2.5.0-cdh5.3.6.jar
           zookeeper-3.4.5-cdh5.3.6.jar
 ```  
-    我们可以通过find命令快速进行定位，例如我们可以执行：  
+我们可以通过find命令快速进行定位，例如我们可以执行：  
 ``` $ find /opt/modules/ -name hadoop-hdfs-2.5.0-cdh5.3.6.jar ```
  
     然后将查找出来的Jar包根据指定位置复制到HBase的lib目录下，在这里我给大家整合好到一个文件夹中了，请依次执行：  
