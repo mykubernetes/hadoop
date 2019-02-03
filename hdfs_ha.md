@@ -348,16 +348,16 @@ $ sbin/hadoop-daemon.sh start namenode
 ```
 
 完成后远程拷贝给其他服务器  
-``` $ scp etc/hadoop/yarn-site.xml node02:/opt/modules/hadoop-2.5.0/etc/hadoop/ ```
+``` $ scp etc/hadoop/yarn-site.xml node02:/opt/modules/hadoop-2.5.0/etc/hadoop/ ```  
 通过jps查看每个服务器的zookeeper服务QuorumPeerMain已经运行，没有运行则开启，方式前文已经说过，不再赘述。  
 在resourcemanager节点中启动（node02）中执行：  
-``` $ sbin/start-yarn.sh ```
+``` $ sbin/start-yarn.sh ```  
 在resourcemanager备份节点启动（node03）中执行：  
-``` $ sbin/yarn-daemon.sh start resourcemanager ```
+``` $ sbin/yarn-daemon.sh start resourcemanager ```  
 查看服务状态  
-``` $ bin/yarn rmadmin -getServiceState rm1 ```
+``` $ bin/yarn rmadmin -getServiceState rm1 ```  
 访问web地址  
-``` http://node:8088 ```
+``` http://node:8088 ```  
 
 测试  
 ```$ bin/yarn jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.5.0.jar wordcount /input/ /output/ ```
