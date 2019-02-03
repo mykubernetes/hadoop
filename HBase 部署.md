@@ -91,7 +91,7 @@ $ rm -rf lib/zookeeper-3.4.6.jar
 我们可以通过find命令快速进行定位，例如我们可以执行：  
 ``` $ find /opt/modules/ -name hadoop-hdfs-2.5.0-cdh5.3.6.jar ```
  
-    然后将查找出来的Jar包根据指定位置复制到HBase的lib目录下，在这里我给大家整合好到一个文件夹中了，请依次执行：  
+然后将查找出来的Jar包根据指定位置复制到HBase的lib目录下，在这里我给大家整合好到一个文件夹中了，请依次执行：  
 ```     
 $ tar -zxf /opt/softwares/CDH_HadoopJar.tar.gz -C /opt/softwares/
 $ cp -a /opt/softwares/HadoopJar/* /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/lib/
@@ -122,11 +122,11 @@ $ bin/hbase-daemon.sh start regionserver
 
 HMaster的高可用  
     1、确保HBase集群已正常停止  
-``` $ bin/stop-hbase.sh ```
+``` $ bin/stop-hbase.sh ```  
     2、在conf目录下创建backup-masters文件  
-``` $ touch conf/backup-masters ```
+``` $ touch conf/backup-masters ```  
     3、在backup-masters文件中配置高可用HMaster节点  
-``` $ echo node02 > conf/backup-masters ```
+``` $ echo node02 > conf/backup-masters ```  
     4、将整个conf目录scp到其他节点  
 ```
 $ scp -r conf/ node02:/opt/modules/cdh/hbase-0.98.6-cdh5.3.6/
@@ -143,13 +143,13 @@ $ scp -r conf/ node03:/opt/modules/cdh/hbase-0.98.6-cdh5.3.6/
 
 HBase常用操作  
     1、进入HBase客户端命令操作界面  
-``` $ bin/hbase shell ```
+``` $ bin/hbase shell ```  
     2、查看帮助命令  
-``` hbase(main):001:0> help ```
+``` hbase(main):001:0> help ```  
     3、查看当前数据库中有哪些表  
-``` hbase(main):002:0> list ```
+``` hbase(main):002:0> list ```  
     4、创建一张表  
-``` hbase(main):003:0>  create 'student','info' ```
+``` hbase(main):003:0>  create 'student','info' ```  
     5、向表中存储一些数据  
 ```
 hbase(main):004:0> put 'student','1001','info:name','Thomas'
