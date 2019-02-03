@@ -179,9 +179,9 @@ hbase(main):006:0> put 'student','1001','info:age','18'
  或：查看指定行指定列或列族的数据  
 ``` hbase(main):013:0> get 'student','1001','info:name' ```  
 10、删除数据  
-    1）删除某一个rowKey全部的数据  
+>> 1）删除某一个rowKey全部的数据  
        ``` hbase(main):015:0> deleteall 'student','1001' ```  
-    2）删除掉某个rowKey中某一列的数据  
+>> 2）删除掉某个rowKey中某一列的数据  
        ``` hbase(main):016:0> delete 'student','1001','info:sex' ```  
 11、清空表数据  
 ``` hbase(main):017:0> truncate 'student'  ```  
