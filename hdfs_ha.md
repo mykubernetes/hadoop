@@ -288,8 +288,8 @@ $ sbin/hadoop-daemon.sh start namenode
 ``` $ bin/hdfs haadmin -getServiceState nn1 ```  
 
 在各个节点启动数据节点  
-``` $ sbin/hadoop-daemon.sh start datanode ```
-启动元数据故障转移
+``` $ sbin/hadoop-daemon.sh start datanode ```  
+启动元数据故障转移  
 ```
 sbin/hadoop-daemon.sh start zkfc
 ```
