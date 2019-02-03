@@ -218,6 +218,11 @@ source /etc/profile
 	</property>
 </configuration>
 ```
+创建配置文件里的数据目录和journalnode目录
+```
+mkdir /opt/modules/cdh/hadoop/data
+mkdir /opt/modules/cdh/hadoop/data/jn
+```
 完成后远程拷贝给其他服务器  
 
 配置数据节点  
