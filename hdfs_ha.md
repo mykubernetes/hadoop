@@ -353,7 +353,7 @@ $ sbin/hadoop-daemon.sh start namenode
 在resourcemanager节点中启动（node02）中执行：  
 ``` $ sbin/start-yarn.sh ```
 在resourcemanager备份节点启动（node03）中执行：  
-``` $ sbin/yarn-daemon.sh start resourcemanager ``
+``` $ sbin/yarn-daemon.sh start resourcemanager ```
 查看服务状态  
 ``` $ bin/yarn rmadmin -getServiceState rm1 ```
 访问web地址  
