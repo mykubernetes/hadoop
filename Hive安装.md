@@ -69,7 +69,7 @@ flush privileges;
 ``` $ cp -a mysql-connector-java-5.1.27-bin.jar /opt/modules/cdh/hive-0.13.1-cdh5.3.6/lib/ ```  
 
 ** 启动Hive  
-本地启动
+本地启动  
 ``` $ bin/hive ```  
 启动远程模式   本地启动  
 ``` $hive --service metastore &   #启动远程模式，否则你只能在本地登录 ```  
@@ -121,7 +121,7 @@ $ jps
 	</property>
 ```  
 ** 创建数据库  
-``` hive> create database staff; ``
+``` hive> create database staff; ```
 
 ** 创建表操作  
 ``` hive> create table t1(eid int, name string, sex string) row format delimited fields terminated by '\t'; ```  
@@ -133,7 +133,7 @@ $ jps
 3	Alice	female
 ```  	
 ** 导入数据  
-*** 从本地导入
-``` load data local inpath '文件路径' into table; ```
-*** 从HDFS系统导入  #无local
-``` load data inpath '文件路径' into table; ```
+*** 从本地导入  
+``` load data local inpath '文件路径' into table; ```  
+*** 从HDFS系统导入  #无local  
+``` load data inpath '文件路径' into table; ```  
