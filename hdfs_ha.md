@@ -269,7 +269,6 @@ $ jps
 ```$ bin/hdfs zkfc -formatZK ```  
 
 在各个JournalNode节点上，输入以下命令启动journalnode服务：  
-
 ``` $ sbin/hadoop-daemon.sh start journalnode ```
 
 在[nn1]上，对其进行格式化，并启动  
@@ -288,10 +287,8 @@ $ sbin/hadoop-daemon.sh start namenode
 查看服务状态  
 ``` $ bin/hdfs haadmin -getServiceState nn1 ```  
 
-在各个节点启动数据节点
-```
-$ sbin/hadoop-daemon.sh start datanode
-```
+在各个节点启动数据节点  
+``` $ sbin/hadoop-daemon.sh start datanode ```
 启动元数据故障转移
 ```
 sbin/hadoop-daemon.sh start zkfc
@@ -402,6 +399,32 @@ sbin/hadoop-daemon.sh start zkfc
 ``` $ sbin/yarn-daemon.sh start resourcemanager ```  
 查看服务状态  
 ``` $ bin/yarn rmadmin -getServiceState rm1 ```  
+
+启动jobhistoryserver进程  
+``` $ sbin/mr-jobhistory-daemon.sh start historyserver ```
+
+两台机器分别查看jobhistoryserver  resourcemanager nodemanager进程  
+```
+$ jps
+15111 Jps
+14663 NodeManager
+13810 NameNode
+14096 JournalNode
+15024 JobHistoryServer    
+3246 QuorumPeerMain
+13908 DataNode
+14264 DFSZKFailoverController
+
+$ jps
+14901 ResourceManager
+15098 Jps
+14305 NodeManager
+13580 DataNode
+12326 QuorumPeerMain
+13772 DFSZKFailoverController
+13516 NameNode
+13668 JournalNode
+```
 访问web地址  
 ``` http://node:8088 ```  
 
