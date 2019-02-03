@@ -2,13 +2,13 @@ HBase的安装与部署
 ================
 
 1、Zookeeper集群的正常部署并启动  
-``` $ /opt/modules/cdh/zookeeper-3.4.5-cdh5.3.6/bin/zkServer.sh start ```  
+``` $ /opt/modules/zookeeper-3.4.5-cdh5.3.6/bin/zkServer.sh start ```  
 2、Hadoop集群的正常部署并启动  
-``` $ /opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/sbin/start-dfs.sh ```  
-``` $ /opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/sbin/start-yarn.sh ```  
+``` $ /opt/modules/hadoop-2.5.0-cdh5.3.6/sbin/start-dfs.sh ```  
+``` $ /opt/modules/hadoop-2.5.0-cdh5.3.6/sbin/start-yarn.sh ```  
 
 3、解压HBase  
-``` $ tar -zxf /opt/softwares/hbase-0.98.6-cdh5.3.6.tar.gz -C /opt/modules/cdh/ ```  
+``` $ tar -zxf /opt/softwares/hbase-0.98.6-cdh5.3.6.tar.gz -C /opt/modules/ ```  
 4、修改HBase配置文件  
   1)hbase-env.sh  
 ```
@@ -41,7 +41,7 @@ export HBASE_MANAGES_ZK=false
      <!--  Zookeeper保存属性信息的文件，默认为/tmp 重启后丢失 -->
     <property>
        <name>hbase.zookeeper.property.dataDir</name>
-       <value>/opt/modules/cdh/zookeeper-3.4.5-cdh5.3.6/dataDir</value>
+       <value>/opt/modules/zookeeper-3.4.5/dataDir</value>
     </property>
 ```
   3)regionservers  
@@ -57,7 +57,7 @@ node03
   替换HBase根目录下的lib目录下的jar包，以解决兼容问题  
   * 删除原有Jar包  
 ```
-$ rm -rf /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/lib/hadoop-*  
+$ rm -rf /opt/modules/cdh/hbase-0.98.6/lib/hadoop-*  
 $ rm -rf lib/zookeeper-3.4.6.jar 
 ```  
 (提示：如果lib目录下的zookeeper包不匹配也需要替换）* 拷贝新的Jar包  
@@ -91,24 +91,24 @@ $ rm -rf lib/zookeeper-3.4.6.jar
  zookeeper-3.4.5-cdh5.3.6.jar
 ```  
 我们可以通过find命令快速进行定位，例如我们可以执行：  
-``` $ find /opt/modules/ -name hadoop-hdfs-2.5.0-cdh5.3.6.jar ```
+``` $ find /opt/modules/ -name hadoop-hdfs-2.5.0.jar ```
  
 然后将查找出来的Jar包根据指定位置复制到HBase的lib目录下，在这里我给大家整合好到一个文件夹中了，请依次执行：  
 ```     
-$ tar -zxf /opt/softwares/CDH_HadoopJar.tar.gz -C /opt/softwares/
-$ cp -a /opt/softwares/HadoopJar/* /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/lib/
+$ tar -zxf /opt/softwares/HadoopJar.tar.gz -C /opt/softwares/
+$ cp -a /opt/softwares/HadoopJar/* /opt/modules/cdh/hbase-0.98.6/lib/
 ```
 
 将整理好的HBase安装目录scp到其他机器节点  
 ```
-$ scp -r /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/ node02:/opt/modules/cdh/
-$ scp -r /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/ node03:/opt/modules/cdh/
+$ scp -r /opt/modules/hbase-0.98.6/ node02:/opt/modules/
+$ scp -r /opt/modules/hbase-0.98.6/ node03:/opt/modules/
 ```
 将Hadoop配置文件软连接到HBase的conf目录下  
       * core-site.xml  
-``` $ ln -s /opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/etc/hadoop/core-site.xml /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/conf/core-site.xml ```  
+``` $ ln -s /opt/modules/cdh/hadoop-2.5.0/etc/hadoop/core-site.xml /opt/modules/hbase-0.98.6-cdh5.3.6/conf/core-site.xml ```  
       * hdfs-site.xml  
-``` $ ln -s /opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/etc/hadoop/hdfs-site.xml /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/conf/hdfs-site.xml ```  
+``` $ ln -s /opt/modules/cdh/hadoop-2.5.0/etc/hadoop/hdfs-site.xml /opt/modules/hbase-0.98.6-cdh5.3.6/conf/hdfs-site.xml ```  
 （提示：不要忘记其他几台机器也要做此操作）  
 
 启动服务  
@@ -131,8 +131,8 @@ HMaster的高可用
 ``` $ echo node02 > conf/backup-masters ```  
 4、将整个conf目录scp到其他节点  
 ```
-$ scp -r conf/ node02:/opt/modules/cdh/hbase-0.98.6-cdh5.3.6/
-$ scp -r conf/ node03:/opt/modules/cdh/hbase-0.98.6-cdh5.3.6/
+$ scp -r conf/ node02:/opt/modules/hbase-0.98.6-cdh5.3.6/
+$ scp -r conf/ node03:/opt/modules/hbase-0.98.6-cdh5.3.6/
 ```
 5、打开页面测试  
 ``` http://node01:60010 ```  
