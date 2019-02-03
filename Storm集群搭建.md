@@ -75,7 +75,7 @@ Using config: /opt/module/zookeeper-3.4.10/bin/../conf/zoo.cfg
 五、Storm集群部署  
 
 (1） 配置集群  
-1）拷贝jar包到hadoop102的/opt/software目录下  
+1）拷贝jar包到node001的/opt/software目录下  
 2）解压jar包到/opt/module目录下  
 ``` tar -zxvf apache-storm-1.1.0.tar.gz -C /opt/module/ ```  
 3）修改解压后的apache-storm-1.1.0.tar.gz文件名称为storm  
