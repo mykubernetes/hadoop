@@ -55,38 +55,38 @@ node03
   替换HBase根目录下的lib目录下的jar包，以解决兼容问题  
   * 删除原有Jar包  
 ```
-      $ rm -rf /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/lib/hadoop-*  
-      $ rm -rf lib/zookeeper-3.4.6.jar 
+$ rm -rf /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/lib/hadoop-*  
+$ rm -rf lib/zookeeper-3.4.6.jar 
 ```  
 (提示：如果lib目录下的zookeeper包不匹配也需要替换）* 拷贝新的Jar包  
 
 这里涉及到的jar包大概是：  
 ```
-          hadoop-annotations-2.5.0.jar
-          hadoop-auth-2.5.0-cdh5.3.6.jar
-          hadoop-client-2.5.0-cdh5.3.6.jar
-          hadoop-common-2.5.0-cdh5.3.6.jar
-          hadoop-hdfs-2.5.0-cdh5.3.6.jar
-          hadoop-mapreduce-client-app-2.5.0-cdh5.3.6.jar
-          hadoop-mapreduce-client-common-2.5.0-cdh5.3.6.jar
-          hadoop-mapreduce-client-core-2.5.0-cdh5.3.6.jar
-          hadoop-mapreduce-client-hs-2.5.0-cdh5.3.6.jar
-          hadoop-mapreduce-client-hs-plugins-2.5.0-cdh5.3.6.jar
-          hadoop-mapreduce-client-jobclient-2.5.0-cdh5.3.6.jar
-          hadoop-mapreduce-client-jobclient-2.5.0-cdh5.3.6-tests.jar
-          hadoop-mapreduce-client-shuffle-2.5.0-cdh5.3.6.jar
-          hadoop-yarn-api-2.5.0-cdh5.3.6.jar
-          hadoop-yarn-applications-distributedshell-2.5.0-cdh5.3.6.jar
-          hadoop-yarn-applications-unmanaged-am-launcher-2.5.0-cdh5.3.6.jar
-          hadoop-yarn-client-2.5.0-cdh5.3.6.jar
-          hadoop-yarn-common-2.5.0-cdh5.3.6.jar
-          hadoop-yarn-server-applicationhistoryservice-2.5.0-cdh5.3.6.jar
-          hadoop-yarn-server-common-2.5.0-cdh5.3.6.jar
-          hadoop-yarn-server-nodemanager-2.5.0-cdh5.3.6.jar
-          hadoop-yarn-server-resourcemanager-2.5.0-cdh5.3.6.jar
-          hadoop-yarn-server-tests-2.5.0-cdh5.3.6.jar
-          hadoop-yarn-server-web-proxy-2.5.0-cdh5.3.6.jar
-          zookeeper-3.4.5-cdh5.3.6.jar
+ hadoop-annotations-2.5.0.jar
+ hadoop-auth-2.5.0-cdh5.3.6.jar
+ hadoop-client-2.5.0-cdh5.3.6.jar
+ hadoop-common-2.5.0-cdh5.3.6.jar
+ hadoop-hdfs-2.5.0-cdh5.3.6.jar
+ hadoop-mapreduce-client-app-2.5.0-cdh5.3.6.jar
+ hadoop-mapreduce-client-common-2.5.0-cdh5.3.6.jar
+ hadoop-mapreduce-client-core-2.5.0-cdh5.3.6.jar
+ hadoop-mapreduce-client-hs-2.5.0-cdh5.3.6.jar
+ hadoop-mapreduce-client-hs-plugins-2.5.0-cdh5.3.6.jar
+ hadoop-mapreduce-client-jobclient-2.5.0-cdh5.3.6.jar
+ hadoop-mapreduce-client-jobclient-2.5.0-cdh5.3.6-tests.jar
+ hadoop-mapreduce-client-shuffle-2.5.0-cdh5.3.6.jar
+ hadoop-yarn-api-2.5.0-cdh5.3.6.jar
+ hadoop-yarn-applications-distributedshell-2.5.0-cdh5.3.6.jar
+ hadoop-yarn-applications-unmanaged-am-launcher-2.5.0-cdh5.3.6.jar
+ hadoop-yarn-client-2.5.0-cdh5.3.6.jar
+ hadoop-yarn-common-2.5.0-cdh5.3.6.jar
+ hadoop-yarn-server-applicationhistoryservice-2.5.0-cdh5.3.6.jar
+ hadoop-yarn-server-common-2.5.0-cdh5.3.6.jar
+ hadoop-yarn-server-nodemanager-2.5.0-cdh5.3.6.jar
+ hadoop-yarn-server-resourcemanager-2.5.0-cdh5.3.6.jar
+ hadoop-yarn-server-tests-2.5.0-cdh5.3.6.jar
+ hadoop-yarn-server-web-proxy-2.5.0-cdh5.3.6.jar
+ zookeeper-3.4.5-cdh5.3.6.jar
 ```  
 我们可以通过find命令快速进行定位，例如我们可以执行：  
 ``` $ find /opt/modules/ -name hadoop-hdfs-2.5.0-cdh5.3.6.jar ```
@@ -103,16 +103,16 @@ $ scp -r /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/ node02:/opt/modules/cdh/
 $ scp -r /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/ node03:/opt/modules/cdh/
 ```
 将Hadoop配置文件软连接到HBase的conf目录下  
-      * core-site.xml
+      * core-site.xml  
 ``` $ ln -s /opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/etc/hadoop/core-site.xml /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/conf/core-site.xml ```
-      * hdfs-site.xml
+      * hdfs-site.xml  
 ``` $ ln -s /opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/etc/hadoop/hdfs-site.xml /opt/modules/cdh/hbase-0.98.6-cdh5.3.6/conf/hdfs-site.xml ```
 （提示：不要忘记其他几台机器也要做此操作）  
 
 启动服务  
 ```
-      $ bin/hbase-daemon.sh start master 
-      $ bin/hbase-daemon.sh start regionserver
+$ bin/hbase-daemon.sh start master 
+$ bin/hbase-daemon.sh start regionserver
 ```
 或者：  
 ``` $ bin/start-hbase.sh ```
