@@ -50,9 +50,9 @@ Step1、确定Mysql服务的正常开启
 Step2、在Mysql中创建一张表
 mysql> create database company;
 mysql> create table staff(
-			id int(4) primary key not null auto_increment, 
-			name varchar(255) not null, 
-			sex varchar(255) not null);
+	id int(4) primary key not null auto_increment, 
+	name varchar(255) not null, 
+	sex varchar(255) not null);
 mysql> insert into staff(name, sex) values('Thomas', 'Male');  
 Step3、操作数据
 ```  
