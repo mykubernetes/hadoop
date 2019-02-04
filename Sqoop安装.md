@@ -2,10 +2,10 @@ Sqoop
 =====  
 二、安装：  
 1、开启Zookeeper  
-2、开启hdfs集群服务 
-3、解压缩安装包
+2、开启hdfs集群服务  
+3、解压缩安装包  
 ``` tar -xvf sqoop-1.4.5-cdh5.3.6.tar.gz -C modules/ ```  
-4、修改配置文件名
+4、修改配置文件名  
 ``` cp sqoop-env-template.sh sqoop-env.sh ```  
 5、配置文件：  
 ```
