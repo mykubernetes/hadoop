@@ -63,7 +63,7 @@ server.3=node003:2888:3888
 3）集群操作  
 （1）在/opt/module/zookeeper-3.4.10/zkData目录下创建一个myid的文件  
 ``` echo 1 > myid ```	
-（2）拷贝配置好的zookeeper到其他机器上
+（2）拷贝配置好的zookeeper到其他机器上  
 ```
 scp -r zookeeper-3.4.10/ root@node002:/opt/app/
 scp -r zookeeper-3.4.10/ root@node003:/opt/app/
@@ -141,7 +141,7 @@ $ source /etc/profile
 ```  
  6）分发安装包  
 ``` scp -rp /opt/module/kafka node02:/opt/module/ ```  
-``` scp -rp /opt/module/kafka node02:/opt/module/ ```  
+``` scp -rp /opt/module/kafka node03:/opt/module/ ```  
  7）分别在node002和node003上修改配置文件/opt/module/kafka/config/server.properties中的broker.id=1、broker.id=2  
 	注：broker.id不得重复  
   
@@ -154,7 +154,7 @@ $ source /etc/profile
   1）查看当前服务器中的所有topic  
 ``` $ bin/kafka-topics.sh --list --zookeeper node001:2181 ```  
   2）创建topic  
-``` $ bin/kafka-topics.sh --create --zookeeper node001:2181 --replication-factor 3 --partitions 1 --topic first ```
+``` $ bin/kafka-topics.sh --create --zookeeper node001:2181 --replication-factor 3 --partitions 1 --topic first ```  
   选项说明：  
     --topic 定义topic名  
     --replication-factor  定义副本数  
