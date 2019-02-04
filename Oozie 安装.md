@@ -69,25 +69,25 @@ Oozie的安装与部署
 8、修改Oozie配置文件  
 * oozie-site.xml  
 ```
-		** JDBC驱动
-			oozie.service.JPAService.jdbc.driver
-			com.mysql.jdbc.Driver
+** JDBC驱动
+	oozie.service.JPAService.jdbc.driver
+	com.mysql.jdbc.Driver
 
-		** Mysql的oozie数据库的配置
-			oozie.service.JPAService.jdbc.url
-			jdbc:mysql://192.168.122.20:3306/oozie
+** Mysql的oozie数据库的配置
+	oozie.service.JPAService.jdbc.url
+	jdbc:mysql://192.168.122.20:3306/oozie
 
-		** 数据库用户名
-			oozie.service.JPAService.jdbc.username
-			root
+** 数据库用户名
+	oozie.service.JPAService.jdbc.username
+	root
 
-		** 数据库密码
-			oozie.service.JPAService.jdbc.password
-			123456
+** 数据库密码
+	oozie.service.JPAService.jdbc.password
+	123456
 
-		** 让Oozie引用Hadoop的配置文件
-			oozie.service.HadoopAccessorService.hadoop.configurations
-			真的就是这样：--> *=/opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/etc/hadoop
+** 让Oozie引用Hadoop的配置文件
+	oozie.service.HadoopAccessorService.hadoop.configurations
+	真的就是这样：--> *=/opt/modules/cdh/hadoop-2.5.0-cdh5.3.6/etc/hadoop
 ```  
 9、在Mysql中创建Oozie的数据库  
 1)进入数据库  
