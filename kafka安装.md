@@ -2,9 +2,9 @@ Kafka集群部署
 ============
 一、 集群规划  
 ```
-hadoop102				hadoop103			hadoop104
-zk				   	zk			  	zk
-kafka				  	kafka		  		kafka
+node001			node002			node003
+zk			zk			zk
+kafka			kafka		  	kafka
 ```
 
 2、 jar包下载  
@@ -65,35 +65,35 @@ server.3=node003:2888:3888
       vi myid	
 （3）拷贝配置好的zookeeper到其他机器上
 ```
-  	scp -r zookeeper-3.4.10/ root@node002:/opt/app/
-  	scp -r zookeeper-3.4.10/ root@node003:/opt/app/
-	  并分别修改myid文件中内容为2、3
+scp -r zookeeper-3.4.10/ root@node002:/opt/app/
+scp -r zookeeper-3.4.10/ root@node003:/opt/app/
+并分别修改myid文件中内容为2、3
 ```  
 （4）分别启动zookeeper  
 ``` bin/zkServer.sh start ```  
        
 （5）查看状态  
 ```
-        [root@node001 zookeeper-3.4.10]# bin/zkServer.sh status
-        JMX enabled by default
-        Using config: /opt/module/zookeeper-3.4.10/bin/../conf/zoo.cfg
-        Mode: follower
+[root@node001 zookeeper-3.4.10]# bin/zkServer.sh status
+JMX enabled by default
+Using config: /opt/module/zookeeper-3.4.10/bin/../conf/zoo.cfg
+Mode: follower
 	
-        [root@node002 zookeeper-3.4.10]# bin/zkServer.sh status
-        JMX enabled by default
-        Using config: /opt/module/zookeeper-3.4.10/bin/../conf/zoo.cfg
-        Mode: leader
+[root@node002 zookeeper-3.4.10]# bin/zkServer.sh status
+JMX enabled by default
+Using config: /opt/module/zookeeper-3.4.10/bin/../conf/zoo.cfg
+Mode: leader
 	
-        [root@node003 zookeeper-3.4.5]# bin/zkServer.sh status
-        JMX enabled by default
-        Using config: /opt/module/zookeeper-3.4.10/bin/../conf/zoo.cfg
-        Mode: follower
+[root@node003 zookeeper-3.4.5]# bin/zkServer.sh status
+JMX enabled by default
+Using config: /opt/module/zookeeper-3.4.10/bin/../conf/zoo.cfg
+Mode: follower
 ```  
 
 
 四、Kafka集群部署    
  1）解压安装包  
-``` $ tar -zxvf kafka_2.11-0.11.0.0.tgz -C /opt/module/  
+``` $ tar -zxvf kafka_2.11-0.11.0.0.tgz -C /opt/module/ ```
   
  2）修改解压后的文件名称  
 ``` $ mv kafka_2.11-0.11.0.0/ kafka ```  
