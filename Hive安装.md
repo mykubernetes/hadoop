@@ -66,6 +66,7 @@ flush privileges;
 ``` hive.log.dir=/opt/modules/cdh/hive-0.13.1-cdh5.3.6/logs ```  
 
 ** 拷贝数据库驱动包到Hive根目录下的lib文件夹  
+https://github.com/mykubernetes/hadoop/blob/master/image/mysql-connector-java-5.1.37-bin.jar
 ``` $ cp -a mysql-connector-java-5.1.27-bin.jar /opt/modules/cdh/hive-0.13.1-cdh5.3.6/lib/ ```  
 
 ** 启动Hive  
