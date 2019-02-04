@@ -113,7 +113,7 @@ $ bin/sqoop import
 
 RDBMS --> Hive  
 1、在Hive中创建表（不需要提前创建表，会自动创建）  
-``` hive (company)> create table staff_hive(id int, name string, sex string) row format delimited fields terminated by '\t'; ```
+``` hive (company)> create table staff_hive(id int, name string, sex string) row format delimited fields terminated by '\t'; ```  
 2、向Hive中导入数据  
 ```
 $ bin/sqoop import 
