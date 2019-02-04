@@ -147,7 +147,7 @@ $ source /etc/profile
   
  8）启动集群  
       依次在node001、node002、node003节点上启动kafka  
-``` $ bin/kafka-server-start.sh config/server.properties ```   
+``` $ nohup bin/kafka-server-start.sh config/server.properties & ```   
       
       
 五、Kafka命令行操作  
