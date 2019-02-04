@@ -13,13 +13,13 @@ kafka			kafka		  	kafka
 二、安装jdk  
 1、卸载现有jdk  
 （1）查询是否安装java软件：  
-``` rpm -qa|grep java ```  
+``` $ rpm -qa|grep java ```  
 （2）如果安装的版本低于1.7，卸载该jdk：  
-``` rpm -e 软件包 ```  
+``` $ rpm -e 软件包 ```  
 2、在linux系统下的opt目录中查看软件包是否导入成功。  
-``` jdk-7u79-linux-x64.gz  hadoop-2.7.2.tar.gz ```  
+``` $ jdk-7u79-linux-x64.gz  hadoop-2.7.2.tar.gz ```  
 3、解压jdk到/opt/module目录下  
-``` tar -zxf jdk-7u79-linux-x64.gz -C /opt/module/ ```  
+``` $ tar -zxf jdk-7u79-linux-x64.gz -C /opt/module/ ```  
 4、配置jdk环境变量  
 （1）先获取jdk路径：  
 ``` $ pwd ```  
@@ -36,8 +36,8 @@ export PATH=$PATH:$JAVA_HOME/bin
 ``` $ source  /etc/profile ```   
 （4）测试jdk安装成功  
 ```
-java -version
-java version "1.7.0_79"
+$ java -version
+$ java version "1.7.0_79"
 ```  
 
 三、安装Zookeeper  
@@ -45,9 +45,9 @@ java version "1.7.0_79"
 （1）解压zookeeper安装包到/opt/module/目录下  
 ``` $ tar -zxvf zookeeper-3.4.10.tar.gz -C /opt/module/ ```  
 （2）在/opt/module/zookeeper-3.4.10/这个目录下创建zkData  
-``` mkdir -p zkData ```  
+``` $ mkdir -p zkData ```  
 （3）重命名/opt/module/zookeeper-3.4.10/conf这个目录下的zoo_sample.cfg为zoo.cfg  
-``` mv zoo_sample.cfg zoo.cfg ```  
+``` $ mv zoo_sample.cfg zoo.cfg ```  
 
 2）配置zoo.cfg文件
 ```
@@ -62,15 +62,15 @@ server.3=node003:2888:3888
 
 3）集群操作  
 （1）在/opt/module/zookeeper-3.4.10/zkData目录下创建一个myid的文件  
-``` echo 1 > myid ```	
+``` $ echo 1 > myid ```	
 （2）拷贝配置好的zookeeper到其他机器上  
 ```
-scp -r zookeeper-3.4.10/ root@node002:/opt/app/
-scp -r zookeeper-3.4.10/ root@node003:/opt/app/
+$ scp -r zookeeper-3.4.10/ root@node002:/opt/app/
+$ scp -r zookeeper-3.4.10/ root@node003:/opt/app/
 并分别修改myid文件中内容为2、3
 ```  
 （3）分别启动zookeeper  
-``` bin/zkServer.sh start ```  
+``` $ bin/zkServer.sh start ```  
        
 （4）查看状态  
 ```
@@ -140,14 +140,14 @@ $ cat /etc/profile
 $ source /etc/profile
 ```  
  6）分发安装包  
-``` scp -rp /opt/module/kafka node02:/opt/module/ ```  
-``` scp -rp /opt/module/kafka node03:/opt/module/ ```  
+``` $ scp -rp /opt/module/kafka node02:/opt/module/ ```  
+``` $ scp -rp /opt/module/kafka node03:/opt/module/ ```  
  7）分别在node002和node003上修改配置文件/opt/module/kafka/config/server.properties中的broker.id=1、broker.id=2  
 	注：broker.id不得重复  
   
  8）启动集群  
       依次在node001、node002、node003节点上启动kafka  
-``` bin/kafka-server-start.sh config/server.properties ```   
+``` $ bin/kafka-server-start.sh config/server.properties ```   
       
       
 五、Kafka命令行操作  
