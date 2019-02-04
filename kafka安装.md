@@ -6,9 +6,9 @@ node001			node002			node003
 zk			zk			zk
 kafka			kafka		  	kafka
 ```
-
-2、 jar包下载  
-	http://kafka.apache.org/downloads.html   
+![image](https://github.com/mykubernetes/hadoop/blob/master/image/kafka.png)
+jar包下载  
+http://kafka.apache.org/downloads.html   
 
 二、安装jdk  
 1、卸载现有jdk  
