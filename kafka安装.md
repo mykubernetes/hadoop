@@ -62,17 +62,17 @@ server.3=node003:2888:3888
 
 3）集群操作  
 （1）在/opt/module/zookeeper-3.4.10/zkData目录下创建一个myid的文件  
-      vi myid	
-（3）拷贝配置好的zookeeper到其他机器上
+``` echo 1 > myid ```	
+（2）拷贝配置好的zookeeper到其他机器上
 ```
 scp -r zookeeper-3.4.10/ root@node002:/opt/app/
 scp -r zookeeper-3.4.10/ root@node003:/opt/app/
 并分别修改myid文件中内容为2、3
 ```  
-（4）分别启动zookeeper  
+（3）分别启动zookeeper  
 ``` bin/zkServer.sh start ```  
        
-（5）查看状态  
+（4）查看状态  
 ```
 [root@node001 zookeeper-3.4.10]# bin/zkServer.sh status
 JMX enabled by default
@@ -133,11 +133,11 @@ zookeeper.connect=node001:2181,node002:2181,node003:2181
 ```  
  5）配置环境变量  
 ```
-     cat /etc/profile
-        #KAFKA_HOME
-        export KAFKA_HOME=/opt/module/kafka
-        export PATH=$PATH:$KAFKA_HOME/bin
-     	source /etc/profile
+$ cat /etc/profile
+   #KAFKA_HOME
+   export KAFKA_HOME=/opt/module/kafka
+   export PATH=$PATH:$KAFKA_HOME/bin
+$ source /etc/profile
 ```  
  6）分发安装包  
 ``` scp -rp /opt/module/kafka node02:/opt/module/ ```  
@@ -164,11 +164,11 @@ zookeeper.connect=node001:2181,node002:2181,node003:2181
     需要server.properties中设置delete.topic.enable=true否则只是标记删除或者直接重启。  
   4）发送消息  
 ```
-    $ bin/kafka-console-producer.sh --broker-list node001:9092 --topic first
-    >hello world
-    >kafka  kafka
+$ bin/kafka-console-producer.sh --broker-list node001:9092 --topic first
+>hello world
+>kafka  kafka
 ```  
   5）消费消息    
-``` $ bin/kafka-console-consumer.sh --zookeeper node001:2181 --from-beginning --topic first ```
+``` $ bin/kafka-console-consumer.sh --zookeeper node001:2181 --from-beginning --topic first ```  
   6）查看某个Topic的详情  
 ``` $ bin/kafka-topics.sh --topic first --describe --zookeeper node001:2181 ```  
