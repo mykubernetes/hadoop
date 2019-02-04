@@ -62,7 +62,7 @@ server.3=node003:2888:3888
 
 3）集群操作  
 （1）在/opt/module/zookeeper-3.4.10/zkData目录下创建一个myid的文件  
-``` $ echo 1 > myid ```	
+``` $ echo 1 > myid ```	 
 （2）拷贝配置好的zookeeper到其他机器上  
 ```
 $ scp -r zookeeper-3.4.10/ root@node002:/opt/app/
