@@ -47,10 +47,8 @@ $conf['conf_dir'] = $conf['gweb_confdir'] . '/conf';
 
 三、所有节点安装ganglia  
 ```
-[root@master ganglia]# cp ganglia-3.6.0.tar.gz /tmp/ganglia/
-# cd /ganglia
-# tar zxf ganglia-3.6.0.tar.gz
-# cd ganglia-3.6.0
+# tar zxf ganglia-3.6.0.tar.gz -C /opt/
+# cd /opt/ganglia-3.6.0
 #./configure --prefix=/usr/local/ganglia --with-gmetad --enable-gexec --with-python=/usr/bin/python2.6
 #make && make install
 ```  
@@ -58,8 +56,6 @@ $conf['conf_dir'] = $conf['gweb_confdir'] . '/conf';
 四、安装ganglia-web中文版（主节点）  
 * conf.php  
 ```
-# cp ganglia-asiainfo-linkage-cn.tar.gz /tmp/ganglia
-# cd /ganglia
 # tar -zxf ganglia-asiainfo-linkage-cn.tar.gz -C /usr/local/apache2/htdocs/ 
 # cd /usr/local/apache2/htdocs/ganglia
 
