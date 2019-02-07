@@ -42,33 +42,8 @@ $conf['conf_dir'] = $conf['gweb_confdir'] . '/conf';
 
 二、主机安装前必装包检查  
 ```
-# rpm -q gcc glibc glibc-common rrdtool rrdtool-devel expat expat-devel dejavu-lgc-sans-mono-fonts dejavu-sans-mono-fonts apr  apr-devel pcre pcre-devel libconfuse libconfuse-devel zlib zlib-devel 
-
-gcc-4.4.7-4.el6.x86_64
-glibc-2.12-1.132.el6.x86_64
-glibc-common-2.12-1.132.el6.x86_64
-package rrdtool is not installed
-package rrdtool-devel is not installed
-expat-2.0.1-11.el6_2.x86_64
-package expat-devel is not installed
-package dejavu-lgc-sans-mono-fonts is not installed
-dejavu-sans-mono-fonts-2.30-2.el6.noarch
-apr-1.3.9-5.el6_2.x86_64
-package apr-devel is not installed
-pcre-7.8-6.el6.x86_64
-package pcre-devel is not installed
-package libconfuse is not installed       libconfuse-2.7-4.el6.x86_64.rpm
-package libconfuse-devel is not installed  libconfuse-devel-2.7-4.el6.x86_64.rpm
-zlib-1.2.3-29.el6.x86_64
-zlib-devel-1.2.3-29.el6.x86_64
+#yum install -y gcc glibc glibc-common rrdtool rrdtool-devel expat expat-devel dejavu-lgc-sans-mono-fonts dejavu-sans-mono-fonts apr  apr-devel pcre pcre-devel libconfuse libconfuse-devel zlib zlib-devel 
 ```  
-没有安装的在有条件访问互联网时可以通过 yum –y install  XXXX 来安装  
-```
-libconfuse，libconfuse-devel 无法通过yum 安装，需要下载rpm 包来进行安装
-package libconfuse is not installed       libconfuse-2.7-4.el6.x86_64.rpm
-package libconfuse-devel is not installed  libconfuse-devel-2.7-4.el6.x86_64.rpm
-```
-
 
 三、所有节点安装ganglia  
 ```
@@ -182,34 +157,16 @@ cluster {
 # service gmond  restart		或者: /etc/init.d/gmond start
 # chkconfig --add  gmond
 ```  
-
-
-
-
 8	访问http://ip/ganglia  
 如果提示404, 访问http://ip/ganglia、 不知道为什么别名没有起作用. 暂时先这么访问.  http://192.168.1.132/ganglia   
 
 
-
-
-
-
-
 9	多节点安装ganglia  
-
-
-执行  
-主机安装前必装包检查  
-所有节点安装ganglia  
-所有节点配置gmond  
-
-：在slave1, slaven上分别安装ganglia. 在./configure时确保能出现ganglia图案,然后make && make install  
 
 192.168.1.132（master）作为主节点（数据收集节点，gmetad+gmond），192.168.1.133（slave1），192.168.1.n（slaven）作为数据监测节点（gmond）  
 gmetad → meta -- 元数据		HDFS中的NameNode -- 名称节点 → 元数据节点 -- 管理数据节点的元数据， 因此gmetad可以看做管理gmond的元数据  
 gmond → mon -- monitor -- 监测	监测自己主机的信息，发送给元数据节点gmetad。好比DataNode将自己主机上的数据块报告给NameNode  
 
-详细配置样例（修改点用红色表示，被注视的用灰色表示）  
 ```
 master: /usr/local/ganglia/etc/gmetad.conf
 data_source "hadoop" 10 192.168.1.132
@@ -270,8 +227,6 @@ tcp_accept_channel {
   #  gzip_output = no
 }
 ```  
-master, slave1, slaven的globals, cluster, udp_send_channel的配置都是一样的.   
-master的udp_recv_channel要指定bind和port, 而slave1, slaven的udp_recv_channel和tcp_accept_channel都要注释掉  
 
 最后在master上重启service gmetad restart和service gmond restart  
 在slave1, slaven上重启service gmond restart  
@@ -298,4 +253,4 @@ nodemanager.sink.ganglia.servers= master:8649
 maptask.sink.ganglia.servers= master:8649
 reducetask.sink.ganglia.servers= master:8649
 ```  
-在主节点上执行start-dfs.sh和start-yarn.sh. 然后访问http://ip/ganglia-web 查看metrics多了hadoop的相关度量信息.  
+在主节点上执行start-dfs.sh和start-yarn.sh. 然后访问http://ip/ganglia-web 
