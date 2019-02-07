@@ -1,35 +1,17 @@
 ganglia 安装及hadoop监控
 ======================
-1	安装环境  
-
-Host Name	OS	IP	Software	安装路径  
-Master	CentOS release 6.5 (Final)	192.168.1.132	ganglia-3.6.0、ganglia-asiainfo-linkage-cn.tar.gz  
-php2.26  
-apache  
-hadoop（namenode）	ganglia :/usr/local/ganglia  
-ganglia-asiainfo-linkage-cn: /usr/local/apache2/htdocs/  
-php2.26:  
-apache: /usr/local/apache2  
-Slave	CentOS release 6.5 (Final)	192.168.1.133	ganglia-3.6.0  
-hadoop（datanode）	ganglia :/usr/local/ganglia  
-apache 和php 的安装可以参看本人所写 nagios安装中文版 ，内有详细介绍  
-hadoop 安装可以参看本人所有hadoop 安装，内有详细介绍  
-至此 nagios ganglia hadoop 三个安装文件全部写完，谢谢互联网提供大量参看资料，及同事的帮忙。  
 
 
-
-ganglia-asiainfo-linkage-cn.tar.gz 这个版本来源于自己打包，是根据互联网上的汉化版，后经过开发时需要进行的重新打包，如不想使用此包可以参看如下进行修改  
-汉化版安装:  网上提供的ganglia-web汉化版是3.5.2版本，和当前使用的ganglia-web-3.5.10的一些配置文件有变化  
+一、汉化版安装: 
 ```
 # tar zxf ganglia-cn.tar.gz -C /usr/local/apache2/htdocs/
 # cd /usr/local/apache2/htdocs
 # mv ganglia-web-3.5.10 /ganglia	不用ganglia-web-3.5.10英文版本, 移动到/ganglia下备份
 # mv ganglia-cn ganglia		
-```  
 然后从上面的conf.php开始操作.  注意到ganglia-cn并没有以下配置项  
-``` $conf['gweb_confdir'] = "/usr/local/apache2/htdocs/ganglia"; ```
+$conf['gweb_confdir'] = "/usr/local/apache2/htdocs/ganglia"; 
 还要修改compiled, cache, views, conf, filter将gmetad_root更改为gweb_confdir  
-```
+
 #$conf['gmetad_root'] = "/var/lib/ganglia";
 $conf['gmetad_root'] = "/usr/local/ganglia";
 $conf['rrds'] = "${conf['gmetad_root']}/rrds";
@@ -45,25 +27,23 @@ $conf['conf_dir'] = $conf['gweb_confdir'] . '/conf';
 # Where to find filter configuration files, if not set filtering
 # will be disabled
 #$conf['filter_dir'] = "${conf['gweb_confdir']}/filters";
-```  
+
 为了方便, 将已经配置好的ganglia打包, 部署到别的机器(比如生产机器)上时只需要用这个打包好的文件即可.  
-``` # cd /usr/local/apache2/htdocs
-``` # tar zcf ganglia.tar.gz ganglia ```
+# cd /usr/local/apache2/htdocs
+# tar zcf ganglia.tar.gz ganglia 
 不需要更改里面的内容. 但是要确保配置项正确  
-```
+
 1. ganglia的prefix=/usr/local/ganglia
 2. rrds在/usr/local/ganglia下
 2. 将ganglia.tar.gz解压到cd /usr/local/apache2/htdocs下
-```  
+
 如果更改了ganglia-web在htdocs下的目录名, 下面的步骤中也要相应地修改: ganglia-web-3.5.10 → ganglia  
+```  
 
-
-
-
-
-2	主机安装前必装包检查  
+二、主机安装前必装包检查  
 ```
-[root@master ~]# rpm -q gcc glibc glibc-common rrdtool rrdtool-devel expat expat-devel dejavu-lgc-sans-mono-fonts dejavu-sans-mono-fonts apr  apr-devel pcre pcre-devel libconfuse libconfuse-devel zlib zlib-devel
+# rpm -q gcc glibc glibc-common rrdtool rrdtool-devel expat expat-devel dejavu-lgc-sans-mono-fonts dejavu-sans-mono-fonts apr  apr-devel pcre pcre-devel libconfuse libconfuse-devel zlib zlib-devel 
+
 gcc-4.4.7-4.el6.x86_64
 glibc-2.12-1.132.el6.x86_64
 glibc-common-2.12-1.132.el6.x86_64
@@ -90,40 +70,20 @@ package libconfuse-devel is not installed  libconfuse-devel-2.7-4.el6.x86_64.rpm
 ```
 
 
-3	所有节点安装ganglia  
+三、所有节点安装ganglia  
 ```
 [root@master ganglia]# cp ganglia-3.6.0.tar.gz /tmp/ganglia/
-
 # cd /ganglia
 # tar zxf ganglia-3.6.0.tar.gz
 # cd ganglia-3.6.0
 #./configure --prefix=/usr/local/ganglia --with-gmetad --enable-gexec --with-python=/usr/bin/python2.6
-
- 
-
 #make && make install
 ```  
-3.1	附录安装出现错误记录  
 
-slave1   安装过程中出现的错误   
+四、安装ganglia-web中文版（主节点）  
+* conf.php  
 ```
-libpcre not found, specify --with-libpcre=no to build without PCRE support
-[root@slave1 ganglia-3.6.0]# rpm -q pcre
-pcre-7.8-6.el6.x86_64
-
-[root@slave1 ganglia-3.6.0]# rpm -q pcre-devel
-package pcre-devel is not installed
-
-yum -y install pcre-devel
-补充安装 pcre-devel
-```
-
-
-
-4	安装ganglia-web中文版（主节点）			[conf.php]
-```
-[root@master ganglia]# cp ganglia-asiainfo-linkage-cn.tar.gz /tmp/ganglia
-
+# cp ganglia-asiainfo-linkage-cn.tar.gz /tmp/ganglia
 # cd /ganglia
 # tar -zxf ganglia-asiainfo-linkage-cn.tar.gz -C /usr/local/apache2/htdocs/ 
 # cd /usr/local/apache2/htdocs/ganglia
@@ -148,12 +108,11 @@ ini_set('date.timezone','PRC');
 ```
 # cd /usr/local/apache2/htdocs
 # tar zcf ganglia.tar.gz ganglia
-```  
+
 不需要更改里面的内容. 但是要确保配置项正确  
-```
 1. ganglia的prefix=/usr/local/ganglia
 2. rrds在/usr/local/ganglia下
-2. 将ganglia.tar.gz解压到cd /usr/local/apache2/htdocs下
+3. 将ganglia.tar.gz解压到cd /usr/local/apache2/htdocs下
 ```
 如果更改了ganglia-web在htdocs下的目录名, 下面的步骤中也要相应地修改: ganglia  
 
