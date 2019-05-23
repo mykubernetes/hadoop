@@ -7,13 +7,15 @@ hdfs ha
 # date -R
 Thu, 21 Mar 2019 18:07:27 -0400
 ```
-注意这里，如果显示的时区不是+0800，你可以删除localtime文件夹后，再关联一个正确时区的链接过去，命令如下：  
+如果显示的时区不是+0800，可以删除localtime文件夹后，再关联一个正确时区的链接过去，命令如下：  
 ```
 # rm -rf /etc/localtime
 # ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-```
+```  
+
 2、同步时间  
 ``` # ntpdate pool.ntp.org ```  
+
 3、 修改NTP配置文件  
 ```
 # vi /etc/ntp.conf
@@ -54,18 +56,17 @@ fudge  127.127.1.0 stratum 10
 7、 重启定时任务  
 ```
 # systemctl restart crond.service
-```	
+```  
 
 8、ssh无秘钥登录  
 ```
 配置hadoop集群，首先需要配置集群中的各个主机的ssh无密钥访问  
-通过如下命令，生成一对公私钥对  
-$ ssh-keygen -t rsa，，会在/home/z/.ssh/目录下生成两个文件：id_rsa 和 id_rsa.pub，如图所示：  
-生成之后呢，把z01生成的公钥拷贝给node01,node02,node03这三台机器，包含当前机器。  
+$ ssh-keygen -t rsa
+把生成之后的公钥拷贝给node01,node02,node03这三台机器，包含当前机器。  
 $ ssh-copy-id node01  
 $ ssh-copy-id node02  
 $ ssh-copy-id node03  
-
+```  
 
 
 二、安装  
