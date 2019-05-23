@@ -2,51 +2,71 @@ hdfs ha
 =======
 一、Linux 其他准备操作  
 配置NTP时间服务器  
-	1、 检查时区  
-	对于我们当前这种案例，主要目标是把z01这台服务器设置为时间服务器，剩下的z02，z03这两台机器同步z01的时间，我们需要这样做的原因是因为，整个集群架构中的时间，要保持一致。
-	检查当前系统时区，使用命令：# date -R  
- 	注意这里，如果显示的时区不是+0800，你可以删除localtime文件夹后，再关联一个正确时区的链接过去，命令如下：  
-	# rm -rf /etc/localtime  
-	# ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime  
-	2、 同步时间  
-	# ntpdate pool.ntp.org  
-	3、 修改NTP配置文件  
-	# vi /etc/ntp.conf  
-	去掉下面这行前面的# ,并把网段修改成自己的网段：  
-	restrict 192.168.122.0 mask 255.255.255.0 nomodify notrap  
-	注释掉以下几行：  
-	#server 0.centos.pool.ntp.org  
-	#server 1.centos.pool.ntp.org  
-	#server 2.centos.pool.ntp.org  
-	把下面两行前面的#号去掉,如果没有这两行内容,需要手动添加  
-	server  127.127.1.0    # local clock  
-	fudge  127.127.1.0 stratum 10  
-	4、 重启ntp服务  
-	# systemctl start ntpd.service，注意，如果是centOS7以下的版本，使用命令：service ntpd start  
-	# systemctl enable ntpd.service，注意，如果是centOS7以下的版本，使用命令：chkconfig ntpd on  
-	5、 集群其他节点去同步这台时间服务器时间  
-	首先需要关闭这两台计算机的ntp服务  
-	# systemctl stop ntpd.service，centOS7以下，则：service ntpd stop  
-	# systemctl disable ntpd.service，centOS7以下，则：chkconfig ntpd off  
-	# systemctl status ntpd，查看ntp服务状态  
-	# pgrep ntpd，查看ntp服务进程id  
-	同步第一台服务器z01的时间：  
-	# ntpdate node01  
-	6、 制定计划任务,周期性同步时间  
-	# crontab -e  
-	*/10 * * * * /usr/sbin/ntpdate node01  
-	7、 重启定时任务  
-	# systemctl restart crond.service，centOS7以下使用：service crond restart，其他台机器的配置同理  
-	
-ssh无秘钥登录  
-	配置hadoop集群，首先需要配置集群中的各个主机的ssh无密钥访问  
-	在z04上，通过如下命令，生成一对公私钥对  
-	$ ssh-keygen -t rsa，，会在/home/z/.ssh/目录下生成两个文件：id_rsa 和 id_rsa.pub，如图所示：  
-	生成之后呢，把z01生成的公钥拷贝给node01,node02,node03这三台机器，包含当前机器。  
-	$ ssh-copy-id node01  
-	$ ssh-copy-id node02  
-	$ ssh-copy-id node03  
-	完成后，其他机器同理。   
+1、 检查时区  
+```
+# date -R
+Thu, 21 Mar 2019 18:07:27 -0400
+```
+注意这里，如果显示的时区不是+0800，你可以删除localtime文件夹后，再关联一个正确时区的链接过去，命令如下：  
+```
+# rm -rf /etc/localtime
+# ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+```
+2、同步时间  
+``` # ntpdate pool.ntp.org ```  
+3、 修改NTP配置文件  
+```
+# vi /etc/ntp.conf
+去掉下面这行前面的# ,并把网段修改成自己的网段：
+restrict 192.168.122.0 mask 255.255.255.0 nomodify notrap
+注释掉以下几行：
+#server 0.centos.pool.ntp.org
+#server 1.centos.pool.ntp.org
+#server 2.centos.pool.ntp.org
+把下面两行前面的#号去掉,如果没有这两行内容,需要手动添加
+server  127.127.1.0    # local clock
+fudge  127.127.1.0 stratum 10
+```  
+
+4、重启ntp服务  
+```
+# systemctl start ntpd.service
+# systemctl enable ntpd.service
+```  
+
+5、集群其他节点去同步这台时间服务器时间  
+首先需要关闭这两台计算机的ntp服务  
+```
+# systemctl stop ntpd.service
+# systemctl disable ntpd.service
+# systemctl status ntpd，查看ntp服务状态
+# pgrep ntpd，查看ntp服务进程id
+同步第一台服务器z01的时间：
+# ntpdate node01
+```  
+
+6、 制定计划任务,周期性同步时间  
+```
+# crontab -e  
+*/10 * * * * /usr/sbin/ntpdate node01  
+```  
+
+7、 重启定时任务  
+```
+# systemctl restart crond.service
+```	
+
+8、ssh无秘钥登录  
+```
+配置hadoop集群，首先需要配置集群中的各个主机的ssh无密钥访问  
+通过如下命令，生成一对公私钥对  
+$ ssh-keygen -t rsa，，会在/home/z/.ssh/目录下生成两个文件：id_rsa 和 id_rsa.pub，如图所示：  
+生成之后呢，把z01生成的公钥拷贝给node01,node02,node03这三台机器，包含当前机器。  
+$ ssh-copy-id node01  
+$ ssh-copy-id node02  
+$ ssh-copy-id node03  
+
+
 
 二、安装  
 首先安装jdk  
