@@ -11,10 +11,11 @@ http://ganglia.info/
 ```
 # vim /etc/ganglia/gmetad.conf   #修改以下两项
  data_source "Hadoop01" 192.168.101.66                  #拉取gmond数据地址，Hadoop01为集群名称
- case_sensitive_hostnames 1 
+ case_sensitive_hostnames 1                             #分主机名大小写
+ xml_port 8651                                          #数据汇总交换端口
+ interactive_port 8652                                  #web端获取数据端口
+ rrd_rootdir "/var/lib/ganglia/rrds"                    #rrd数据库存放路径，可以不用配置
 ```  
-- data_source，Hadoop是集群名字，后跟IP是集群中被监控节点地址。
-- case_sensitive_hostnames区分主机名大小写，默认是0，修改为1，否则节点中主机名有大写的将保存为小写，写到/var/lib/ganglia/rrds/Hadoop中，导致图形无数据。
  
  3、关联Apache，因为Ganglia自创建的配置ganglia.conf有问题，所以先删除，再创建个软连接到Apache根目录下。  
  ```
