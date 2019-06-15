@@ -49,8 +49,8 @@ rm -rf ganglia-web-3.7.2/
 ```
 cp conf_default.php conf.php 
 vi conf.php
-$conf['gweb_confdir'] = "/var/www/html/ganglia";  
-$conf['gmetad_root'] = "/var/www/html/ganglia"; 
+$conf['gweb_confdir'] = "/var/www/html/ganglia";             #ganglia-web的跟目录
+$conf['gmetad_root'] = "/var/lib/ganglia";                   #gmetad端收集的数据存放的路径
 ```  
 
 ```
