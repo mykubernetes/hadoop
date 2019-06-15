@@ -3,8 +3,9 @@ http://ganglia.info/
 
 1、CentOS7 YUM源自带epel网络源，直接安装  
 ```
-# yum install epel-release   
-# yum install ganglia-web ganglia-gmetad ganglia-gmond
+# yum install epel-release
+# yum update glib2
+# yum install ganglia-web ganglia-gmetad ganglia-gmond 
 ```  
 
 2.  配置监控端  
