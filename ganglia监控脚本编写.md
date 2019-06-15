@@ -86,3 +86,10 @@ do
   sleep 120
 done
 ```  
+
+- -n 表示要监控的指标名
+- -v 表示写入监控的指标值
+- -t 表示写入监控数据的类型 string|int8|uint8|int16|uint16|int32|uint32|float|double
+- -u 表示监控数据的单位  %，KB,G等
+- -d 表示监控数据的存活时间
+- -c 用于指定ganglia的配置文件位置
