@@ -51,6 +51,8 @@ cp conf_default.php conf.php
 vi conf.php
 $conf['gweb_confdir'] = "/var/www/html/ganglia";             #ganglia-web的跟目录
 $conf['gmetad_root'] = "/var/lib/ganglia";                   #gmetad端收集的数据存放的路径
+$conf['ganglia_ip'] = "127.0.0.1";                           #gmetad端地址，如果不在一台机器可以配置
+$conf['ganglia_port'] = 8652;                                #gmetad端口，如果不在一台机器可以配置
 ```  
 
 ```
