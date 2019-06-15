@@ -88,5 +88,6 @@ http://ganglia.info/
 # systemctl enable gmond
  ```  
  
- 
+ 8、web访问  
+ http://192.168.101.66/ganglia  
  
