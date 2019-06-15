@@ -50,7 +50,7 @@ rm -rf ganglia-web-3.7.2/
 cp conf_default.php conf.php 
 vi conf.php
 $conf['gweb_confdir'] = "/var/www/html/ganglia";  
-$conf['gmetad_root'] = "/opt/ganglia-web"; 
+$conf['gmetad_root'] = "/var/www/html/ganglia"; 
 ```  
 
 ```
@@ -154,15 +154,3 @@ cp ./gmond/python_modules/conf.d/*.pyconf /opt/ganglia/3.7.2/etc/conf.d/
 service gmond  restart
 chkconfig --add  gmond
 ```  
-
-ganglia-web端执行  
-```
-mkdir /var/lib/ganglia-web/conf
-touch /var/lib/ganglia-web/conf/{events.json,event_color.json}
-mkdir /opt/ganglia-web/rrds -p
-mkdir /var/lib/ganglia-web/dwoo/compiled
-mkdir /var/lib/ganglia-web/dwoo/cache
-chmod 777 /var/lib/ganglia-web/dwoo/compiled
-chmod 777 /var/lib/ganglia-web/dwoo/cache
-```  
-
