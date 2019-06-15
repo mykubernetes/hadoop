@@ -91,3 +91,5 @@ http://ganglia.info/
  8、web访问  
  http://192.168.101.66/ganglia  
  
+gmond调试模式，会运行到前台，输出日志，数值越高日志越详细，最大10  
+``` gmond -d 10 ```
