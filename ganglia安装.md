@@ -104,10 +104,10 @@ gmond调试模式，会运行到前台，输出日志，数值越高日志越详
 *.sink.ganglia.supportsparse=true
 *.sink.ganglia.slope=jvm.metrics.gcCount=zero,jvm.metrics.memHeapUsedM=both
 *.sink.ganglia.dmax=jvm.metrics.threadsBlocked=70,jvm.metrics.memHeapUsedM=40
-namenode.sink.ganglia.servers=192.168.18.215:8649    #当有多个ganglia监控系统时，以逗号分隔
-datanode.sink.ganglia.servers=192.168.18.215:8649     #都指定ganglia服务器
-resourcemanager.sink.ganglia.servers=192.168.18.215:8649
-nodemanager.sink.ganglia.servers=192.168.18.215:8649
+namenode.sink.ganglia.servers=192.168.101.66:8649    #当有多个ganglia监控系统时，以逗号分隔
+datanode.sink.ganglia.servers=192.168.101.66:8649     #都指定ganglia服务器
+resourcemanager.sink.ganglia.servers=192.168.101.66:8649
+nodemanager.sink.ganglia.servers=192.168.101.66:8649
 ```  
 
 添加HBase被Ganglia监控，添加如下（每台同样配置）
@@ -117,7 +117,7 @@ nodemanager.sink.ganglia.servers=192.168.18.215:8649
 *.sink.ganglia.class=org.apache.hadoop.metrics2.sink.ganglia.GangliaSink31  
 *.sink.ganglia.period=10  
 hbase.sink.ganglia.period=10  
-hbase.sink.ganglia.servers=192.168.18.215:8649
+hbase.sink.ganglia.servers=192.168.101.66:8649
 ```  
 
 重启Hadoop和HBase
