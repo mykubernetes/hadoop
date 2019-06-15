@@ -49,7 +49,7 @@ rm -rf ganglia-web-3.7.2/
 ```
 cp conf_default.php conf.php 
 vi conf.php
-$conf['gweb_confdir'] = "/opt/ganglia-web/3.5.12";  
+$conf['gweb_confdir'] = "/var/www/html/ganglia";  
 $conf['gmetad_root'] = "/opt/ganglia-web"; 
 ```  
 
