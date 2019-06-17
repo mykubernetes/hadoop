@@ -1,3 +1,6 @@
+ganglia官网  
+http://ganglia.info/  
+
 关闭selinux  
 ```
 setenforce 0
