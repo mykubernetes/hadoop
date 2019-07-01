@@ -45,9 +45,9 @@ D是万一集群中的Leader服务器挂了，需要一个端口来重新进行�
 在文件中添加与server对应的编号：如2
 （3）拷贝配置好的zookeeper到其他机器上
 ```
-	scp -r zookeeper-3.4.10/ root@node002:/opt/app/
-	scp -r zookeeper-3.4.10/ root@node003:/opt/app/
-	并分别修改myid文件中内容为3、4
+scp -r zookeeper-3.4.10/ root@node002:/opt/app/
+scp -r zookeeper-3.4.10/ root@node003:/opt/app/
+并分别修改myid文件中内容为3、4
 ```  
 4）分别启动zookeeper  
  ``` # bin/zkServer.sh start ```  
