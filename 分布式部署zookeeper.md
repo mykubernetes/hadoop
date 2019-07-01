@@ -42,8 +42,8 @@ D是万一集群中的Leader服务器挂了，需要一个端口来重新进行�
  添加myid文件，注意一定要在linux里面创建，在notepad++里面很可能乱码  
 （2）编辑myid文件  
 ``` vi myid ```  
-在文件中添加与server对应的编号：如1
-（3）拷贝配置好的zookeeper到其他机器上
+在文件中添加与server对应的编号：如1  
+（3）拷贝配置好的zookeeper到其他机器上  
 ```
 scp -r zookeeper-3.4.10/ root@node002:/opt/module/
 scp -r zookeeper-3.4.10/ root@node003:/opt/module/
