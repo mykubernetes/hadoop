@@ -21,6 +21,7 @@ export PATH=$PATH:$JAVA_HOME/bin
 （1）具体配置  
 ```
 dataDir=/opt/module/zookeeper-3.4.10/data/zkData
+dataLogDir=/opt//module/zookeeper-3.4.10/log
 增加如下配置
 #######################cluster##########################
 server.1=node001:2888:3888
