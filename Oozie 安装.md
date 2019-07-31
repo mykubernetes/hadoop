@@ -1,5 +1,7 @@
 Oozie的安装与部署  
 ================
+任务计划
+
 1、解压Oozie  
 ``` $ tar -zxf /opt/softwares/oozie-4.0.0-cdh5.3.6.tar.gz -C /opt/modules/cdh/ ```  
 2、Hadoop配置文件修改，完成后scp到其他机器节点  		
