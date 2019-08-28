@@ -87,6 +87,38 @@ do
 done
 ```  
 
+```
+#!/bin/sh
+HOST_NAME=`hostname`
+GMETRIC="/opt/ganglia/ganglia-3.6.0/bin/gmetric -d 300"
+for NET in `grep "ONBOOT=yes" /etc/sysconfig/network-scripts/ifcfg-* | grep -v -E 'lo|bond|.tar' | awk -F":" '{print $1}' | cut -d"-" -f 3`
+do
+   I=`/usr/sbin/ethtool $NET |awk '/Speed/{print $2}'`
+   linkstatus=` /usr/sbin/ethtool $NET |awk '/detected/{print $3}'`
+   if [ "$I"x = 'Unknown!'x ] || [  "$linkstatus"x = 'no'x ];then
+      status=0
+   else
+      netspeed=`echo $I | cut -d "M" -f 1`
+      if [ $netspeed -eq 1000 ];then
+        status=1000
+      elif [ $netspeed -eq 10000 ];then
+        status=10000
+      else
+        status=0
+      fi
+   fi
+  $GMETRIC -n $NET  -v $status -t uint32   -g "network"
+done
+
+#####ipables&firewalld########
+
+IT=`systemctl status iptables | grep -w active | wc -l`
+FW=`systemctl status firdwalld | grep -w active | wc -l`
+
+SUM=$[ $IT + $FW ]
+$GMETRIC -n iptables -v $SUM -t uint32 -g "iptables"
+```  
+
 - -n 表示要监控的指标名
 - -v 表示写入监控的指标值
 - -t 表示写入监控数据的类型 string|int8|uint8|int16|uint16|int32|uint32|float|double
