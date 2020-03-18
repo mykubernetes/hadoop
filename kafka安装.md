@@ -172,3 +172,58 @@ $ bin/kafka-console-producer.sh --broker-list node001:9092 --topic first
 ``` $ bin/kafka-console-consumer.sh --zookeeper node001:2181 --from-beginning --topic first ```  
   6）查看某个Topic的详情  
 ``` $ bin/kafka-topics.sh --topic first --describe --zookeeper node001:2181 ```  
+
+
+六、验证kafka用户密码
+1. 创建 2 个文件
+```
+# cd /home/kafka
+
+# vi  kafka_client_jaas.conf
+注意替换用户名密码
+
+KafkaClient {
+  org.apache.kafka.common.security.plain.PlainLoginModule required
+  username="root"
+  password="kafka";
+};
+
+# vi client-sasl.properties
+
+
+security.protocol=SASL_PLAINTEXT
+sasl.mechanism=PLAIN
+```
+
+2. 创建一个测试 topic，名字为  aaabbb
+```
+kafka-topics.sh --create \
+        --zookeeper zookeeper-default:2181/kafka \
+        --topic aaabbb \
+        --replication-factor 2 \
+        --partitions 32 \
+        --if-not-exists
+```
+
+3. 开始测试 producer，注意替换 broker-list 为 控制节点的 ip
+
+```
+# KAFKA_OPTS="-Djava.security.auth.login.config=/home/kafka/kafka_client_jaas.conf" \
+    kafka-console-producer.sh \
+    --broker-list 172.20.26.102:9092 \
+    --topic aaabbb \
+    --producer.config=/home/kafka/client-sasl.properties
+```
+
+
+4. 打开另外一个窗口，登陆到 kafka pod 里，测试消费，注意 bootstrap-server 的 ip 为 控制接点 ip，跟上面一样就行。
+```
+# KAFKA_OPTS="-Djava.security.auth.login.config=/home/kafka/kafka_client_jaas.conf" 、
+    kafka-console-consumer.sh \
+    --bootstrap-server 172.20.26.102:9092 \
+    --topic aaabbb  \
+    --consumer.config /home/kafka/client-sasl.properties \
+    --from-beginning
+```
+
+5. 在 producer 那边输入一些消息，看 consumer 有没有
