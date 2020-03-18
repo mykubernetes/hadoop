@@ -151,8 +151,8 @@ $ cat /etc/profile
 $ source /etc/profile
 ```  
  6）分发安装包  
-``` $ scp -rp /opt/module/kafka node02:/opt/module/ ```  
-``` $ scp -rp /opt/module/kafka node03:/opt/module/ ```  
+``` $ scp -rp /opt/module/kafka node002:/opt/module/ ```  
+``` $ scp -rp /opt/module/kafka node003:/opt/module/ ```  
  7）分别在node002和node003上修改配置文件/opt/module/kafka/config/server.properties中的broker.id=1、broker.id=2  
 	注：broker.id不得重复  
   
@@ -239,3 +239,23 @@ kafka-topics.sh --create \
 ```
 
 5. 在 producer 那边输入一些消息，看 consumer 有没有
+
+七、消费者组案例
+---
+测试同一个消费者组中的消费者，同一时刻只能有一个消费者消费。
+```
+在node001、node002上修改kafka/config/consumer.properties配置文件中的group.id属性为任意组名。
+# vi consumer.properties
+group.id=test001
+
+在node001、node002上分别启动消费者
+# bin/kafka-console-consumer.sh --zookeeper node001:2181 --topic first --consumer.config config/consumer.properties
+# bin/kafka-console-consumer.sh --zookeeper node001:2181 --topic first --consumer.config config/consumer.properties
+
+在node003上启动生产者
+# bin/kafka-console-producer.sh --broker-list node001:9092 --topic first
+>hello world
+
+查看node001和node002的接收者。
+同一时刻只有一个消费者接收到消息。
+```
