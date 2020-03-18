@@ -1,6 +1,7 @@
 Kafka集群部署
 ============
-一、 集群规划  
+一、 集群规划
+---
 ```
 node001			node002			node003
 zk			zk			zk
@@ -10,7 +11,8 @@ kafka			kafka		  	kafka
 jar包下载  
 http://kafka.apache.org/downloads.html   
 
-二、安装jdk  
+二、安装jdk
+---
 1、卸载现有jdk  
 （1）查询是否安装java软件：  
 ``` $ rpm -qa|grep java ```  
@@ -40,7 +42,8 @@ $ java -version
 $ java version "1.7.0_79"
 ```  
 
-三、安装Zookeeper  
+三、安装Zookeeper
+---
 1）解压安装  
 （1）解压zookeeper安装包到/opt/module/目录下  
 ``` $ tar -zxvf zookeeper-3.4.10.tar.gz -C /opt/module/ ```  
@@ -91,7 +94,8 @@ Mode: follower
 ```  
 
 
-四、Kafka集群部署    
+四、Kafka集群部署
+---
  1）解压安装包  
 ``` $ tar -zxvf kafka_2.11-0.11.0.0.tgz -C /opt/module/ ```
   
@@ -150,7 +154,8 @@ $ source /etc/profile
 ``` $ bin/kafka-server-start.sh -daemon config/server.properties ```   
       
       
-五、Kafka命令行操作  
+五、Kafka命令行操作
+---
   1）查看当前服务器中的所有topic  
 ``` $ bin/kafka-topics.sh --list --zookeeper node001:2181 ```  
   2）创建topic  
@@ -175,6 +180,7 @@ $ bin/kafka-console-producer.sh --broker-list node001:9092 --topic first
 
 
 六、验证kafka用户密码
+---
 1. 创建 2 个文件
 ```
 # cd /home/kafka
@@ -189,7 +195,6 @@ KafkaClient {
 };
 
 # vi client-sasl.properties
-
 
 security.protocol=SASL_PLAINTEXT
 sasl.mechanism=PLAIN
