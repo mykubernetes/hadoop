@@ -163,26 +163,32 @@ $ source /etc/profile
       
 五、Kafka命令行操作
 ---
-  1）查看当前服务器中的所有topic  
-``` $ bin/kafka-topics.sh --list --zookeeper node001:2181 ```  
-  2）创建topic  
+1）查看当前服务器中的所有topic  
+``` $ bin/kafka-topics.sh --list --zookeeper node001:2181 ```
+
+2）创建topic  
 ``` $ bin/kafka-topics.sh --create --zookeeper node001:2181 --replication-factor 3 --partitions 1 --topic first ```  
   选项说明：  
     --topic 定义topic名  
     --replication-factor  定义副本数  
-    --partitions  定义分区数  
-  3）删除topic  
+    --partitions  定义分区数
+
+3）删除topic
 ``` $ bin/kafka-topics.sh --delete --zookeeper node001:2181 --topic first ```  
-    需要server.properties中设置delete.topic.enable=true否则只是标记删除或者直接重启。  
-  4）发送消息  
+    需要server.properties中设置delete.topic.enable=true否则只是标记删除或者直接重启。
+
+4）发送消息
 ```
 $ bin/kafka-console-producer.sh --broker-list node001:9092 --topic first
 >hello world
 >kafka  kafka
-```  
-  5）消费消息    
+```
+
+5）消费消息    
 ``` $ bin/kafka-console-consumer.sh --zookeeper node001:2181 --from-beginning --topic first ```  
-  6）查看某个Topic的详情  
+- --from-beginning 从最开始读取
+
+6）查看某个Topic的详情  
 ``` $ bin/kafka-topics.sh --topic first --describe --zookeeper node001:2181 ```  
 
 注意： --zookeeper已经被弃用 改为 --bootstrap-server参数
