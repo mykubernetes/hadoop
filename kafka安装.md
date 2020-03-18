@@ -125,6 +125,7 @@ Mode: follower
 $ cd config/
 $ vim server.properties
 broker.id=0                              #broker的全局唯一编号，不能重复
+port=9092                                #用来监听链接的端口，producer或consumer将在此端口建立连接
 delete.topic.enable=true                 #删除topic功能使能
 num.network.threads=3                    #处理网络请求的线程数量
 num.io.threads=8                         #用来处理磁盘IO的现成数量
@@ -132,10 +133,16 @@ socket.send.buffer.bytes=102400          #发送套接字的缓冲区大小
 socket.receive.buffer.bytes=102400       #接收套接字的缓冲区大小
 socket.request.max.bytes=104857600       #请求套接字的缓冲区大小
 log.dirs=/opt/module/kafka/logs          #kafka运行日志存放的路径
+log.cleaner.enable=true                  #日志清理是否打开
 num.partitions=1                         #topic在当前broker上的分区个数
 num.recovery.threads.per.data.dir=1      #用来恢复和清理data下数据的线程数量
 log.retention.hours=168                  #segment文件保留的最长时间，超时将被删除
+log.roll.hours=168                       #滚动生成新的segment文件的最大时间
+log.segment.bytes=1073741824             #日志文件中每个segment的大小，默认为1G
+log.flush.interval.messages=10000        #partion buffer中，消息的条数达到阈值，将触发flush到磁盘
+log.flush.interval.ms=3000               #消息buffer的时间，达到阈值，将触发flush到磁盘
 zookeeper.connect=node001:2181,node002:2181,node003:2181       #配置连接Zookeeper集群地址
+zookeeper.connection.timeout.ms=6000     #zookeeper链接超时时间
 ```  
 
 5）配置环境变量  
