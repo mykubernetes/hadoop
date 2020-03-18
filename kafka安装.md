@@ -185,6 +185,8 @@ $ bin/kafka-console-producer.sh --broker-list node001:9092 --topic first
   6）查看某个Topic的详情  
 ``` $ bin/kafka-topics.sh --topic first --describe --zookeeper node001:2181 ```  
 
+注意： --zookeeper已经被弃用 改为 --bootstrap-server参数
+===
 
 六、验证kafka用户密码
 ---
