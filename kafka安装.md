@@ -111,46 +111,34 @@ Mode: follower
 
 四、Kafka集群部署
 ---
- 1）解压安装包  
+1）解压安装包  
 ``` $ tar -zxvf kafka_2.11-0.11.0.0.tgz -C /opt/module/ ```
   
- 2）修改解压后的文件名称  
+2）修改解压后的文件名称  
 ``` $ mv kafka_2.11-0.11.0.0/ kafka ```  
   
- 3）在/opt/module/kafka目录下创建logs文件夹  
+3）在/opt/module/kafka目录下创建logs文件夹  
 ``` $ mkdir logs ```  
   
- 4）修改配置文件  
+4）修改配置文件  
  ```
 $ cd config/
-$ vi server.properties
-输入以下内容：
-#broker的全局唯一编号，不能重复
-broker.id=0
-#删除topic功能使能
-delete.topic.enable=true
-#处理网络请求的线程数量
-num.network.threads=3
-#用来处理磁盘IO的现成数量
-num.io.threads=8
-#发送套接字的缓冲区大小
-socket.send.buffer.bytes=102400
-#接收套接字的缓冲区大小
-socket.receive.buffer.bytes=102400
-#请求套接字的缓冲区大小
-socket.request.max.bytes=104857600
-#kafka运行日志存放的路径
-log.dirs=/opt/module/kafka/logs
-#topic在当前broker上的分区个数
-num.partitions=1
-#用来恢复和清理data下数据的线程数量
-num.recovery.threads.per.data.dir=1
-#segment文件保留的最长时间，超时将被删除
-log.retention.hours=168
-#配置连接Zookeeper集群地址
-zookeeper.connect=node001:2181,node002:2181,node003:2181
+$ vim server.properties
+broker.id=0                              #broker的全局唯一编号，不能重复
+delete.topic.enable=true                 #删除topic功能使能
+num.network.threads=3                    #处理网络请求的线程数量
+num.io.threads=8                         #用来处理磁盘IO的现成数量
+socket.send.buffer.bytes=102400          #发送套接字的缓冲区大小
+socket.receive.buffer.bytes=102400       #接收套接字的缓冲区大小
+socket.request.max.bytes=104857600       #请求套接字的缓冲区大小
+log.dirs=/opt/module/kafka/logs          #kafka运行日志存放的路径
+num.partitions=1                         #topic在当前broker上的分区个数
+num.recovery.threads.per.data.dir=1      #用来恢复和清理data下数据的线程数量
+log.retention.hours=168                  #segment文件保留的最长时间，超时将被删除
+zookeeper.connect=node001:2181,node002:2181,node003:2181       #配置连接Zookeeper集群地址
 ```  
- 5）配置环境变量  
+
+5）配置环境变量  
 ```
 $ cat /etc/profile
    #KAFKA_HOME
@@ -158,28 +146,36 @@ $ cat /etc/profile
    export PATH=$PATH:$KAFKA_HOME/bin
 $ source /etc/profile
 ```  
- 6）分发安装包  
+
+6）分发安装包  
 ``` $ scp -rp /opt/module/kafka node002:/opt/module/ ```  
 ``` $ scp -rp /opt/module/kafka node003:/opt/module/ ```  
- 7）分别在node002和node003上修改配置文件/opt/module/kafka/config/server.properties中的broker.id=1、broker.id=2  
-	注：broker.id不得重复  
+
+7）分别在node002和node003上修改配置文件/opt/module/kafka/config/server.properties中的broker.id=1、broker.id=2  
+注：broker.id不得重复  
   
- 8）启动集群  
-      依次在node001、node002、node003节点上启动kafka  
+8）启动集群  
+依次在node001、node002、node003节点上启动kafka  
 ``` $ bin/kafka-server-start.sh -daemon config/server.properties ```   
-      
+ 
+9)关闭集群
+``` $ bin/kafka-server-stop.sh stop ```
       
 五、Kafka命令行操作
 ---
-1）查看当前服务器中的所有topic  
+
+
+1）创建topic  
+```
+$ bin/kafka-topics.sh --create --zookeeper node001:2181 --replication-factor 3 --partitions 1 --topic first
+```
+- --topic 定义topic名  
+- --replication-factor  定义副本数  
+- --partitions  定义分区数
+
+2）查看当前服务器中的所有topic  
 ``` $ bin/kafka-topics.sh --list --zookeeper node001:2181 ```
 
-2）创建topic  
-``` $ bin/kafka-topics.sh --create --zookeeper node001:2181 --replication-factor 3 --partitions 1 --topic first ```  
-  选项说明：  
-    --topic 定义topic名  
-    --replication-factor  定义副本数  
-    --partitions  定义分区数
 
 3）删除topic
 ``` $ bin/kafka-topics.sh --delete --zookeeper node001:2181 --topic first ```  
@@ -193,11 +189,24 @@ $ bin/kafka-console-producer.sh --broker-list node001:9092 --topic first
 ```
 
 5）消费消息    
-``` $ bin/kafka-console-consumer.sh --zookeeper node001:2181 --from-beginning --topic first ```  
-- --from-beginning 从最开始读取
+```
+$ bin/kafka-console-consumer.sh --zookeeper node001:2181 --topic first
+$ bin/kafka-console-consumer.sh --zookeeper node001:2181 --from-beginning --topic first
+
+$ bin/kafka-console-consumer.sh --bootstrap-server node001:9092 --from-beginning --topic first
+$ bin/kafka-console-consumer.sh --bootstrap-server node001:9092 --from-beginning --topic first
+```
+- --from-beginning 读取主题中所有的数据
 
 6）查看某个Topic的详情  
-``` $ bin/kafka-topics.sh --topic first --describe --zookeeper node001:2181 ```  
+```
+$ bin/kafka-topics.sh --topic first --describe --zookeeper node001:2181
+```
+
+7)修改分区数
+```
+$  bin/kafka-topics.sh  --zookeeper hadoop102:2181 --alter --topic first --partitions 6
+```
 
 注意： --zookeeper已经被弃用 改为 --bootstrap-server参数
 ===
