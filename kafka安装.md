@@ -14,7 +14,7 @@ Kafka工作流程分析
 ![image](https://github.com/mykubernetes/hadoop/blob/master/image/kafka.png)
 - Producer  ：消息生产者，就是向 kafka broker 发消息的客户端；
 - Consumer  ：消息消费者，向 kafka broker 取消息的客户端；
-- onsumer Group  （CG ）：消费者组，由多个 consumer 组成。 消费者组内每个消费者负责消费不同分区的数据，一个分区只能由一个 组内 消费者消费；消费者组之间互不影响。所有的消费者都属于某个消费者组，即 消费者组是逻辑上的一个订阅者。
+- Consumer Group  （CG ）：消费者组，由多个 consumer 组成。 消费者组内每个消费者负责消费不同分区的数据，一个分区只能由一个 组内 消费者消费；消费者组之间互不影响。所有的消费者都属于某个消费者组，即 消费者组是逻辑上的一个订阅者。
 - Broker  ：一台 kafka 服务器就是一个 broker。一个集群由多个 broker 组成。一个 broker可以容纳多个 topic。
 - Topic  ：可以理解为一个队列， 生产者和消费者面向的都是一个 topic；
 - Partition ：为了实现扩展性，一个非常大的 topic 可以分布到多个 broker（即服务器）上，一个 topic  可以分为多个 partition，每个 partition 是一个有序的队列；
