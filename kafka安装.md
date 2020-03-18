@@ -7,9 +7,16 @@ node001			node002			node003
 zk			zk			zk
 kafka			kafka		  	kafka
 ```
+
+Kafka工作流程分析
+---
 ![image](https://github.com/mykubernetes/hadoop/blob/master/image/kafka.png)
 jar包下载  
 http://kafka.apache.org/downloads.html   
+
+zookpeer存储结构
+---
+![image](https://github.com/mykubernetes/hadoop/blob/master/image/kafka_zk.png)
 
 二、安装jdk
 ---
