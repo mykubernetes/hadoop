@@ -217,8 +217,68 @@ $ bin/kafka-topics.sh --topic first --describe --zookeeper node001:2181
 $  bin/kafka-topics.sh  --zookeeper hadoop102:2181 --alter --topic first --partitions 6
 ```
 
+六、Kafka使用密码认证
+---
 
-六、验证kafka用户密码
+1、配置server端配置
+```
+# vim touch kafka_server_jaas.conf
+KafkaServer {
+  org.apache.kafka.common.security.plain.PlainLoginModule required
+  username="admin"
+  password="admin"
+  user_admin="admin"
+  user_alice="alice";
+　};
+```
+- username和password是broker用于初始化连接到其他的broker
+- admin用户为broker间的通讯
+- user_userName定义了所有连接到 broker和 broker验证的所有的客户端连接包括其他 broker的用户密码，user_userName必须配置admin用户，否则报错。
+
+2、配置client配置
+```
+# vim touch kafka_cilent_jaas.conf
+KafkaClient {
+  org.apache.kafka.common.security.plain.PlainLoginModule required
+  username="admin"
+  password="admin";
+　};
+```
+- username和password是客户端用来配置客户端连接broker的用户，在上面配置中，客户端使用admin用户连接到broker
+
+3、更改server.properties配置文件
+```
+listeners=SASL_PLAINTEXT://ip:9092                  #使用的认证协议 
+security.inter.broker.protocol=SASL_PLAINTEXT       #SASL机制 
+sasl.enabled.mechanisms=PLAIN  
+sasl.mechanism.inter.broker.protocol=PLAIN          #完成身份验证的类 
+authorizer.class.name=kafka.security.auth.SimpleAclAuthorizer    #如果没有找到ACL（访问控制列表）配置，则允许任何操作。 
+#allow.everyone.if.no.acl.found=true
+super.users=User:admin
+```
+
+4、修改consumer.properties和producer.properties，分别增加如下配置：
+```
+security.protocol=SASL_PLAINTEXT
+sasl.mechanism=PLAIN
+```
+
+5、修改启动参数
+JAAS文件作为每个broker的jvm参数，在kafka-server-start.sh脚本中增加如下配置（可在最上面）：
+```
+export KAFKA_OPTS=" -Djava.security.auth.login.config=/data/kafka/kafka_2.11-1.1.0/config/kafka_server_jaas.conf"
+```
+在kafka-console-consumer.sh和kafka-console-producer.sh中添加：
+```
+export KAFKA_OPTS=" -Djava.security.auth.login.config=/data/kafka/kafka_2.11-1.1.0/config/kafka_client_jaas.conf"
+```
+
+6、启动zookeeper和kafka
+```
+bin/kafka-server-start.sh config/server.properties &
+```
+
+七、验证kafka用户密码
 ---
 1. 创建 2 个文件
 ```
@@ -272,7 +332,7 @@ kafka-topics.sh --create \
 
 5. 在 producer 那边输入一些消息，看 consumer 有没有
 
-七、消费者组案例
+八、消费者组案例
 ---
 测试同一个消费者组中的消费者，同一时刻只能有一个消费者消费。
 ```
