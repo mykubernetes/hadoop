@@ -246,15 +246,13 @@ KafkaClient {
 ```
 - username和password是客户端用来配置客户端连接broker的用户，在上面配置中，客户端使用admin用户连接到broker
 
-3、更改server.properties配置文件
+3、配置文件
 ```
-listeners=SASL_PLAINTEXT://ip:9092                  #使用的认证协议 
-security.inter.broker.protocol=SASL_PLAINTEXT       #SASL机制 
-sasl.enabled.mechanisms=PLAIN  
-sasl.mechanism.inter.broker.protocol=PLAIN          #完成身份验证的类 
-authorizer.class.name=kafka.security.auth.SimpleAclAuthorizer    #如果没有找到ACL（访问控制列表）配置，则允许任何操作。 
-#allow.everyone.if.no.acl.found=true
-super.users=User:admin
+# vim server.properties
+listeners=SASL_PLAINTEXT://IP:9092
+security.inter.broker.protocol=SASL_PLAINTEXT
+sasl.enabled.mechanisms=PLAIN
+sasl.mechanism.inter.broker.protocol=PLAIN
 ```
 
 4、修改consumer.properties和producer.properties，分别增加如下配置：
