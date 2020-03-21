@@ -264,12 +264,16 @@ sasl.mechanism=PLAIN
 ```
 
 5、修改启动参数
-JAAS文件作为每个broker的jvm参数，在kafka-server-start.sh脚本中增加如下配置（可在最上面）：
 ```
+# vim kafka-server-start.sh
 export KAFKA_OPTS=" -Djava.security.auth.login.config=/data/kafka/kafka_2.11-1.1.0/config/kafka_server_jaas.conf"
 ```
-在kafka-console-consumer.sh和kafka-console-producer.sh中添加：
+
 ```
+# vim kafka-console-consumer.sh
+export KAFKA_OPTS=" -Djava.security.auth.login.config=/data/kafka/kafka_2.11-1.1.0/config/kafka_client_jaas.conf"
+
+# vim kafka-console-producer.sh
 export KAFKA_OPTS=" -Djava.security.auth.login.config=/data/kafka/kafka_2.11-1.1.0/config/kafka_client_jaas.conf"
 ```
 
