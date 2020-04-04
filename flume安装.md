@@ -1,6 +1,9 @@
 flume安装  
 ========
 
+官方配置说明文档  
+http://flume.apache.org/FlumeUserGuide.html
+
 1、Flume日志收集，也可以收集端口，程序将收集来的数据发给Kafka用来实时进行数据收集，Spark、Storm用来实时处理数据，impala用来实时查询。  
 
 
