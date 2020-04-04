@@ -35,8 +35,10 @@ export JAVA_HOME=/opt/modules/jdk1.8.0_121
 ```
 $ bin/flume-ng
 ```
-6、案例：
+6、案例
+===
 案例一：Flume监听端口，输出端口数据。
+---
 创建Flume Agent配置文件flume-telnet.conf
 ```
 # Name the components on this agent
@@ -84,6 +86,7 @@ $ telnet localhost 44444
 ```
 
 案例二：监听上传Hive日志文件到HDFS
+---
 拷贝Hadoop相关jar到Flume的lib目录下
 ```
 share/hadoop/common/lib/hadoop-auth-2.5.0-cdh5.3.6.jar
@@ -136,6 +139,7 @@ $ bin/flume-ng agent --conf conf/ --name a2 --conf-file conf/flume-hdfs.conf
 ```
 
 案例三：Flume监听整个目录
+---
 创建配置文件flume-dir.conf
 ```
 $ cp -a flume-hdfs.conf flume-dir.conf
