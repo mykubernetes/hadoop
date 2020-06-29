@@ -96,17 +96,13 @@ source /etc/profile
 
 
 3）集群操作  
-（1）在/opt/module/zookeeper-3.4.10/data/目录下创建一个myid的文件  
+（1）在/opt/module/zookeeper-3.4.10/data/目录下创建一个myid的文件并配置 
 ```
-touch myid
+touch /opt/module/zookeeper-3.4.10/data/myid
+echo 1 > /opt/module/zookeeper-3.4.10/data/myid
 ```  
- 添加myid文件，注意一定要在linux里面创建，在notepad++里面很可能乱码  
-（2）编辑myid文件  
-```
-vi myid
-```  
-在文件中添加与server对应的编号：如1  
-（3）拷贝配置好的zookeeper到其他机器上  
+ 
+（2）拷贝配置好的zookeeper到其他机器上并修改myid
 ```
 scp -r zookeeper-3.4.10/ root@node002:/opt/module/
 scp -r zookeeper-3.4.10/ root@node003:/opt/module/
@@ -208,107 +204,254 @@ ZooKeeper -server host:port cmd args
 ```
 create [-s] [-e] path data acl 选项介绍： -s用来指定节点特性为顺序节点；顺序节点：是创建时唯一且被独占的递增性整数作为其节点号码，此号码会被叠加在路径之后。 -e用来指定特性节点为临时节点,临时节点不允许有子目录；关于持久节点和临时节点请看上篇文章 若不指定，则表示持久节点 acl用来做权限控制
 
-
-1）启动客户端  
-``` $ bin/zkCli.sh ```  
-
-2）显示所有操作命令  
-``` [zk: localhost:2181(CONNECTED) 1] help ```
-
-3）查看当前znode中所包含的内容
+创建ZooKeeper持久节点
 ```
-[zk: localhost:2181(CONNECTED) 0] ls / 
-[zookeeper]
-```    
-4）查看当前节点数据并能看到更新次数等数据
+#创建持久节点permanent，关联字符串permanent
+[zk: localhost:2181(CONNECTED) 0] create /permanent "permanent"
+Created /permanent
+
+#在持久节点permanent下创建子目录zk-node1和zk-nod2
+[zk: localhost:2181(CONNECTED) 1] create /permanent/zk_node1 "zk_node1"
+Created /permanent/zk_node1
+[zk: localhost:2181(CONNECTED) 2] create /permanent/zk_node2 "zk_node2"
+Created /permanent/zk_node2
+
+#查看创建的zk数据文件
+[zk: localhost:2181(CONNECTED) 3] ls /
+[zookeeper, permanent]
+[zk: localhost:2181(CONNECTED) 4] ls /permanent
+[zk_node1, zk_node2]
 ```
-[zk: localhost:2181(CONNECTED) 1] ls2 /
-[zookeeper]
+
+创建ZooKeeper顺序节点
+```
+#创建顺序节点order，关联字符串order，创建好之后并不会以我们创建的order命名，zk会自动在后面加上一排递增数字来显示此文件夹，递增数据不会从重复
+[zk: localhost:2181(CONNECTED) 5] create -s /order "order"
+Created /order0000000004
+[zk: localhost:2181(CONNECTED) 6] ls /
+[zookeeper, permanent, order0000000004]
+
+#我们再次创建一个顺序节点，会发现后面的增至数字默认加1，并没有重复
+[zk: localhost:2181(CONNECTED) 8] create -s /tow_order "two_order"
+Created /tow_order0000000005
+[zk: localhost:2181(CONNECTED) 9] ls /
+[tow_order0000000005, zookeeper, permanent, order0000000004]
+
+#创建顺序节点order的子节点
+[zk: localhost:2181(CONNECTED) 10] create -s /order0000000004/order_node1 "order_node1"
+Created /order0000000004/order_node10000000000
+```
+
+创建ZooKeeper临时节点
+```
+#创建临时节点temp
+
+[zk: localhost:2181(CONNECTED) 15] create -e /temp "temp"
+Created /temp
+[zk: localhost:2181(CONNECTED) 16] ls /             #查看已经创建完成的临时节点temp
+[tow_order0000000005, temp, zookeeper, permanent, order0000000004]
+
+#在临时节点temp中创建子目录，
+[zk: localhost:2181(CONNECTED) 17] create -e /temp/two_temp "tow_temp"
+Ephemerals cannot have children: /temp/two_temp     #你会发现创建子目录，ZK给你报错误说”临时节点不允许子目录存在“，我们上面也说过了，临时节点不允许存在子目录
+[zk: localhost:2181(CONNECTED) 18] ls /temp         #查看临时节点/temp下，并没有我们所创建的two_temp子目录
+[]
+
+
+#测试临时节点
+#创建的临时节点如果当前客户端断开了连接后临时节点会自动消失，而持久节点和顺序节点则需要使用删除命令来消失
+#退出当前ZK连接，再次连接到ZK
+[zk: localhost:2181(CONNECTED) 19] quit                                 #退出当前ZK连接
+/application/zookeeper-3.4.14/bin/zkCli.sh -server localhost:2181       #再次连接到ZK
+
+#查看临时目录是否存在
+[zk: localhost:2181(CONNECTED) 0] ls /
+[tow_order0000000005, zookeeper, permanent, order0000000004]            #当我们结束当
+```
+
+读取节点命令 读取节点命令有以下四个
+```
+ls path [watch]
+ls2 path [watch]
+get path [watch]
+stat path [watch]
+```
+
+ls path [watch]
+```
+ls只显示列出目录下的数据节点
+[zk: localhost:2181(CONNECTED) 2] ls /          #列出当前/下的数据节点
+[tow_order0000000005, zookeeper, permanent, order0000000004]
+[zk: localhost:2181(CONNECTED) 3] ls /permanent #列出permanent下的数据节点
+[zk_node1, zk_node2]
+[zk: localhost:2181(CONNECTED) 4] ls /order0000000004  #列出order0000000004下的数据节点
+[order_node10000000000]
+```
+
+ls2 path [watch]
+```
+ls2列出节点数据内容和属性信息
+[zk: localhost:2181(CONNECTED) 7] ls2 /permanent
+[zk_node1, zk_node2]                            #ls2命令同样可以列出permanent下的子目录
+cZxid = 0x2e                                    #创建permanent节点时生成的事物ID
+ctime = Sat Jun 22 21:00:00 CST 2019            #创建permanent节点时的时区及时间
+mZxid = 0x2e                                    #修改permanent节点后改变的事物ID
+mtime = Sat Jun 22 21:00:00 CST 2019            #修改permanent节点后的时区及时间
+pZxid = 0x30
+cversion = 2                                    #permanent的znode子节点版本
+dataVersion = 0                                 #permanent数据节点版本信息
+aclVersion = 0                                  #permanent的znode的ACL版本
+ephemeralOwner = 0x0
+dataLength = 9                                  #permanent数据节点的关联字符长度
+numChildren = 2                                 #permanent数据节点下有两个子节点
+
+#列出/下的数据内容及属性信息
+[zk: localhost:2181(CONNECTED) 11] ls2 /
+[tow_order0000000005, zookeeper, permanent, order0000000004]
 cZxid = 0x0
 ctime = Thu Jan 01 08:00:00 CST 1970
 mZxid = 0x0
 mtime = Thu Jan 01 08:00:00 CST 1970
-pZxid = 0x0
-cversion = -1
+pZxid = 0x37
+cversion = 10
 dataVersion = 0
 aclVersion = 0
 ephemeralOwner = 0x0
 dataLength = 0
-numChildren = 1
-```  
-5）创建普通节点  
+numChildren = 4
 ```
-[zk: localhost:2181(CONNECTED) 2] create /app1 "hello app1"
-Created /app1
-[zk: localhost:2181(CONNECTED) 4] create /app1/server101 "192.168.1.101"
-Created /app1/server101
-```  
-6）获得节点的值
+
+get path [watch]
 ```
-[zk: localhost:2181(CONNECTED) 6] get /app1
-hello app1
-cZxid = 0x20000000a
-ctime = Mon Jul 17 16:08:35 CST 2017
-mZxid = 0x20000000a
-mtime = Mon Jul 17 16:08:35 CST 2017
-pZxid = 0x20000000b
-cversion = 1
+get读取数据内容和属性信息
+可以看到get不像ls2一样更够列出/下的文件名称，只显示当前节点的属性信息
+[zk: localhost:2181(CONNECTED) 12] get /permanent
+permanent
+cZxid = 0x2e
+ctime = Sat Jun 22 21:00:00 CST 2019
+mZxid = 0x2e
+mtime = Sat Jun 22 21:00:00 CST 2019
+pZxid = 0x30
+cversion = 2
 dataVersion = 0
 aclVersion = 0
 ephemeralOwner = 0x0
-dataLength = 10
-numChildren = 1
+dataLength = 9
+numChildren = 2
 
-[zk: localhost:2181(CONNECTED) 8] get /app1/server101
-192.168.1.101
-cZxid = 0x20000000b
-ctime = Mon Jul 17 16:11:04 CST 2017
-mZxid = 0x20000000b
-mtime = Mon Jul 17 16:11:04 CST 2017
-pZxid = 0x20000000b
-cversion = 0
+获取/的数据内容和属性信息
+[zk: localhost:2181(CONNECTED) 13] get /
+cZxid = 0x0
+ctime = Thu Jan 01 08:00:00 CST 1970
+mZxid = 0x0
+mtime = Thu Jan 01 08:00:00 CST 1970
+pZxid = 0x37
+cversion = 10
 dataVersion = 0
 aclVersion = 0
 ephemeralOwner = 0x0
-dataLength = 13
-numChildren = 0
-```  
-7）创建短暂节点  
-``` [zk: localhost:2181(CONNECTED) 9] create -e /app-emphemeral 8888 ```  
-（1）在当前客户端是能查看到的  
+dataLength = 0
+numChildren = 4
 ```
-[zk: localhost:2181(CONNECTED) 10] ls /
-[app1, app-emphemeral, zookeeper]
-```  
-（2）退出当前客户端然后再重启启动客户端  
-```
-[zk: localhost:2181(CONNECTED) 12] quit
-$ bin/zkCli.sh
-```  
-（3）再次查看根目录下短暂节点已经删除  
-```
-[zk: localhost:2181(CONNECTED) 0] ls /
-[app1, zookeeper]
-```  
-8）创建带序号的节点  
-```
-（1）先创建一个普通的根节点app2
-[zk: localhost:2181(CONNECTED) 11] create /app2 "app2"
-（2）创建带序号的节点
-[zk: localhost:2181(CONNECTED) 13] create -s /app2/aa 888
-Created /app2/aa0000000000
-[zk: localhost:2181(CONNECTED) 14] create -s /app2/bb 888
-Created /app2/bb0000000001
-[zk: localhost:2181(CONNECTED) 15] create -s /app2/cc 888
-Created /app2/cc0000000002
-如果原节点下有1个节点，则再排序时从1开始，以此类推。
-[zk: localhost:2181(CONNECTED) 16] create -s /app1/aa 888
-Created /app1/aa0000000001
-```  
-9）修改节点数据值  
-``` [zk: localhost:2181(CONNECTED) 2] set /app1 999 ```  
 
-10）节点的值变化监听  
+stat path [watch]
+```
+stat命令和get命令基本一致
+[zk: localhost:2181(CONNECTED) 14] stat /permanent
+cZxid = 0x2e
+ctime = Sat Jun 22 21:00:00 CST 2019
+mZxid = 0x2e
+mtime = Sat Jun 22 21:00:00 CST 2019
+pZxid = 0x30
+cversion = 2
+dataVersion = 0
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 9
+numChildren = 2
+
+[zk: localhost:2181(CONNECTED) 15] stat /
+cZxid = 0x0
+ctime = Thu Jan 01 08:00:00 CST 1970
+mZxid = 0x0
+mtime = Thu Jan 01 08:00:00 CST 1970
+pZxid = 0x37
+cversion = 10
+dataVersion = 0
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 0
+numChildren = 4
+```
+
+set path data [version]  
+set命令用来更新节点数据内容 先使用ls2获取当前节点的属性信息
+```
+[zk: localhost:2181(CONNECTED) 16] ls /permanent        #当前permanent下有两个数据文件
+[zk_node1, zk_node2]
+[zk: localhost:2181(CONNECTED) 17] ls2 /permanent       #列出permanent的属性信息，等下更新完成之后permanent的属性信息会改变
+[zk_node1, zk_node2]
+cZxid = 0x2e
+ctime = Sat Jun 22 21:00:00 CST 2019
+mZxid = 0x2e
+mtime = Sat Jun 22 21:00:00 CST 2019
+pZxid = 0x30
+cversion = 2                                            
+dataVersion = 0                                     
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 9
+numChildren = 2
+```
+更新数据节点
+```
+[zk: localhost:2181(CONNECTED) 18] create /permanent/zk_node3 "zk_node3"        #在permanent下再创建一个数据节点zk_node3
+Created /permanent/zk_node3
+
+[zk: localhost:2181(CONNECTED) 21] set /permanent "permanent_set"               #更新permanent的关联符号为"permanent_set"
+cZxid = 0x2e
+ctime = Sat Jun 22 21:00:00 CST 2019
+mZxid = 0x3a                                                                    #可以看到事物ID比着创建时的事物ID已经发生改变
+mtime = Sat Jun 22 21:47:29 CST 2019                                            #时间也已经发生改变
+pZxid = 0x39
+cversion = 3                                                                   #permanent的znode子节点版本也已经发生改变
+dataVersion = 1                                                                #permanent的数据版本也已经发生改变
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 13                                                                #permanent关联字符串长也已经发生改变
+numChildren = 3   
+```
+
+delete path [version] 持久节点以及顺序节点只有使用删除命令才能够消失 使用delete命令来删除持久节点permanent 注意：如果数据节点下有子目录的时候必须先删除子目录，然后在删除父目录，否则使用delete是不可取的 例子：
+```
+[zk: localhost:2181(CONNECTED) 23] delete /permanent
+Node not empty: /permanent              #ZK会告诉你节点非空，所以必须要先删除permanent下的子节点才能够删除permanent节点
+
+[zk: localhost:2181(CONNECTED) 24] delete /permanent/zk_node1
+[zk: localhost:2181(CONNECTED) 25] delete /permanent/zk_node2
+[zk: localhost:2181(CONNECTED) 26] delete /permanent/zk_node3
+[zk: localhost:2181(CONNECTED) 27] delete /permanent        #当删除了permanent后，再次删除permanet则正常
+[zk: localhost:2181(CONNECTED) 28] ls /                     #可以看到/下已经没有了permanent数据节点
+[tow_order0000000005, zookeeper, order0000000004]
+```
+
+rmr path rmr也同时删除节点命令，但它和delete的区别在于，它会忽略节点下的子目录，直接递归删除数据节点下的所有目录及数据节点
+```
+[zk: localhost:2181(CONNECTED) 31] ls /
+[tow_order0000000005, zookeeper, order0000000004]
+
+#删除顺序节点order0000000004,可以看到该数据节点下存在order_node10000000000子目录
+[zk: localhost:2181(CONNECTED) 33] ls /order0000000004
+[order_node10000000000]
+
+[zk: localhost:2181(CONNECTED) 34] rmr /order0000000004     #使用rmr命令可以直接递归删除该数据节点
+[zk: localhost:2181(CONNECTED) 35] ls /
+[tow_order0000000005, zookeeper]
+```
+
+
+
+节点的值变化监听  
 ```
 （1）在node003主机上注册监听/app1节点数据变化
 [zk: localhost:2181(CONNECTED) 26] get /app1 watch
@@ -318,7 +461,8 @@ Created /app1/aa0000000001
 WATCHER::
 WatchedEvent state:SyncConnected type:NodeDataChanged path:/app1
 ```  
-11）节点的子节点变化监听（路径变化）  
+
+节点的子节点变化监听（路径变化）  
 ```
 （1）在node003主机上注册监听/app1节点的子节点变化
 [zk: localhost:2181(CONNECTED) 1] ls /app1 watch
@@ -330,24 +474,4 @@ Created /app1/bb
 WATCHER::
 WatchedEvent state:SyncConnected type:NodeChildrenChanged path:/app1
 ```  
-12）删除节点  
-``` [zk: localhost:2181(CONNECTED) 4] delete /app1/bb ```  
 
-13）递归删除节点  
-``` [zk: localhost:2181(CONNECTED) 7] rmr /app2 ```  
-
-14）查看节点状态  
-```
-[zk: localhost:2181(CONNECTED) 12] stat /app1
-cZxid = 0x20000000a
-ctime = Mon Jul 17 16:08:35 CST 2017
-mZxid = 0x200000018
-mtime = Mon Jul 17 16:54:38 CST 2017
-pZxid = 0x20000001c
-cversion = 4
-dataVersion = 2
-aclVersion = 0
-ephemeralOwner = 0x0
-dataLength = 3
-numChildren = 2
-```
