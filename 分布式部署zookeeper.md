@@ -453,24 +453,28 @@ rmr path rmr也同时删除节点命令，但它和delete的区别在于，它�
 
 节点的值变化监听  
 ```
-（1）在node003主机上注册监听/app1节点数据变化
+在一台主机上注册监听/app1节点数据变化
 [zk: localhost:2181(CONNECTED) 26] get /app1 watch
-（2）在node002主机上修改/app1节点的数据
+
+在另一台主机上修改/app1节点的数据
 [zk: localhost:2181(CONNECTED) 5] set /app1  777
-（3）观察node003主机收到数据变化的监听
+
+观察监听主机收到数据变化的监听
 WATCHER::
 WatchedEvent state:SyncConnected type:NodeDataChanged path:/app1
 ```  
 
 节点的子节点变化监听（路径变化）  
 ```
-（1）在node003主机上注册监听/app1节点的子节点变化
+在一台主机上注册监听/app1节点的子节点变化
 [zk: localhost:2181(CONNECTED) 1] ls /app1 watch
 [aa0000000001, server101]
-（2）在node002主机/app1节点上创建子节点
+
+在另一台主机/app1节点上创建子节点
 [zk: localhost:2181(CONNECTED) 6] create /app1/bb 666
 Created /app1/bb
-（3）观察node003主机收到子节点变化的监听
+
+观察监听主机收到子节点变化的监听
 WATCHER::
 WatchedEvent state:SyncConnected type:NodeChildrenChanged path:/app1
 ```  
