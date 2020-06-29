@@ -495,7 +495,7 @@ reqs：列出未处理的请求
 mntr：列出一些监控信息
 ```
 
-rook 测试是否启动了ZooKeeper
+ruok 测试是否启动了ZooKeeper
 ```
 telnet示范
 #使用telnet来连接本地的ZK端口
