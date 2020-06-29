@@ -112,6 +112,46 @@ scp -r zookeeper-3.4.10/ root@node002:/opt/module/
 scp -r zookeeper-3.4.10/ root@node003:/opt/module/
 并分别修改myid文件中内容为2、3
 ```  
+
+ZooKeeper执行程序简介
+```
+/opt/module/zookeeper-3.4.10/bin/ -l
+total 44
+-rwxr-xr-x 1 2002 2002  232 Mar  7 00:50 README.txt
+-rwxr-xr-x 1 2002 2002 1937 Mar  7 00:50 zkCleanup.sh  
+-rwxr-xr-x 1 2002 2002 1056 Mar  7 00:50 zkCli.cmd
+-rwxr-xr-x 1 2002 2002 1534 Mar  7 00:50 zkCli.sh           #ZK客户端连接ZK的脚本程序
+-rwxr-xr-x 1 2002 2002 1759 Mar  7 00:50 zkEnv.cmd
+-rwxr-xr-x 1 2002 2002 2919 Mar  7 00:50 zkEnv.sh           #ZK变量脚本程序
+-rwxr-xr-x 1 2002 2002 1089 Mar  7 00:50 zkServer.cmd
+-rwxr-xr-x 1 2002 2002 6773 Mar  7 00:50 zkServer.sh        #ZK启动脚本程序
+-rwxr-xr-x 1 2002 2002  996 Mar  7 00:50 zkTxnLogToolkit.cmd
+-rwxr-xr-x 1 2002 2002 1385 Mar  7 00:50 zkTxnLogToolkit.sh
+```
+
+zkServer.sh启动文件
+```
+/opt/module/zookeeper-3.4.10/bin/zkServer.sh 
+ZooKeeper JMX enabled by default
+Using config: /opt/module/zookeeper-3.4.10/bin/../conf/zoo.cfg
+Usage: /opt/module/zookeeper-3.4.10/bin/zkServer.sh {start|start-foreground|stop|restart|status|upgrade|print-cmd}
+
+#关闭ZK服务
+/opt/module/zookeeper-3.4.10/bin/zkServer.sh stop
+
+#启动ZK服务
+/opt/module/zookeeper-3.4.10/bin/zkServer.sh start
+
+#启动ZK服务并打印启动信息到标准输出，方便于排错
+/opt/module/zookeeper-3.4.10/bin/zkServer.sh start-foreground
+
+#重启ZK服务
+/opt/module/zookeeper-3.4.10/bin/zkServer.sh restart
+
+#查看ZK服务状态
+/opt/module/zookeeper-3.4.10/bin/zkServer.sh status
+```
+
 4）分别启动zookeeper  
  ``` # bin/zkServer.sh start ```  
 
@@ -133,22 +173,42 @@ Using config: /opt/module/zookeeper-3.4.10/bin/../conf/zoo.cfg
 Mode: follower
 ```  
 
-
-客户端命令行操作  
-命令基本语法	功能描述
+zkCli.sh客户端连接
 ```
-  help	              显示所有操作命令
-  ls path [watch]   	使用 ls 命令来查看当前znode中所包含的内容
-  ls2 path [watch]   	查看当前节点数据并能看到更新次数等数据
-  create            	普通创建
-  -s                  含有序列
-  -e                  临时（重启或者超时消失）
-  get path [watch]   	获得节点的值
-  set	                设置节点的具体值
-  stat	              查看节点状态
-  delete            	删除节点
-  rmr	                递归删除节点
-``` 
+/opt/module/zookeeper-3.4.10/bin/zkCli.sh -server localhost:2181
+#连接ZK服务
+#-server：指定ZK服务
+#localhost：指定要连接的主机
+#2181：指定连接端口，默认不加参数会连接到本机的2181端口
+
+#使用?号或者help可以获取帮助命令
+[zk: localhost:2181(CONNECTED) 0] ?
+ZooKeeper -server host:port cmd args
+        stat path [watch]                       #获取节点数据内容和属性信息
+        set path data [version]                 #更新节点数据内容
+        ls path [watch]                         #列出节点
+        delquota [-n|-b] path
+        ls2 path [watch]                        #列出节点数据内容和属性信息
+        setAcl path acl                         #设置ACL访问控制权限
+        setquota -n|-b val path
+        history                                 #获取历史命令记录
+        redo cmdno
+        printwatches on|off
+        delete path [version]                   #删除节点，version表示数据版本
+        sync path                               #同步节点
+        listquota path
+        rmr path                                #删除节点，忽略节点下的子节点
+        get path [watch]                        #读取数据内容和属性信息
+        create [-s] [-e] path data acl          #创建节点命令
+        addauth scheme auth
+        quit                                    #退出当前ZK连接
+        getAcl path                             #获取节点ACL策略信息
+        close                                   #断开当前ZK连接，但不退出窗口
+        connect host:port                       #断开当前ZK连接后，可使用connect加参数来连接指定ZK节点
+```
+create [-s] [-e] path data acl 选项介绍： -s用来指定节点特性为顺序节点；顺序节点：是创建时唯一且被独占的递增性整数作为其节点号码，此号码会被叠加在路径之后。 -e用来指定特性节点为临时节点,临时节点不允许有子目录；关于持久节点和临时节点请看上篇文章 若不指定，则表示持久节点 acl用来做权限控制
+
+
 1）启动客户端  
 ``` $ bin/zkCli.sh ```  
 
