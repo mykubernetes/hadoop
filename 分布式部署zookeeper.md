@@ -11,36 +11,100 @@ export PATH=$PATH:$JAVA_HOME/bin
 ```  
 1）解压安装  
 （1）解压zookeeper安装包到/opt/module/目录下  
-``` $ tar -zxvf zookeeper-3.4.10.tar.gz -C /opt/module/ ```  
-（2）在/opt/module/zookeeper-3.4.10/这个目录下创建data/zkData  
-``` mkdir -p data/zkData ```  
+```
+tar -zxvf zookeeper-3.4.10.tar.gz -C /opt/module/
+```  
+
+（2）创建data目录和log目录
+```
+mkdir /opt/module/zookeeper-3.4.10/{data,logs}
+
+```  
+
 （3）重命名/opt/module/zookeeper-3.4.10/conf这个目录下的zoo_sample.cfg为zoo.cfg  
-``` mv zoo_sample.cfg zoo.cfg ```  
+```
+mv zoo_sample.cfg zoo.cfg
+```  
 
 2）配置zoo.cfg文件  
 （1）具体配置  
 ```
-dataDir=/opt/module/zookeeper-3.4.10/data/zkData
-增加如下配置
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/opt/module/zookeeper-3.4.10/data
+dataLogDir=/opt/module/zookeeper-3.4.10/logs
+clientPort=2181
+maxClientCnxns=60
+autopurge.snapRetainCount=3
+autopurge.purgeInterval=1
+集群配置
 #######################cluster##########################
 server.1=node001:2888:3888
 server.2=node002:2888:3888
 server.3=node003:2888:3888
 ```
-（2）配置参数解读  
-Server.A=B:C:D。  
-A是一个数字，表示这个是第几号服务器；  
-B是这个服务器的ip地址；  
-C是这个服务器与集群中的Leader服务器交换信息的端口；  
-D是万一集群中的Leader服务器挂了，需要一个端口来重新进行选举，选出一个新的Leader，而这个端口就是用来执行选举时服务器相互通信的端口。  
-集群模式下配置一个文件myid，这个文件在dataDir目录下，这个文件里面有一个数据就是A的值，Zookeeper启动时读取此文件，拿到里面的数据与zoo.cfg里面的配置信息比较从而判断到底是哪个server。  
+
+ZooKeeper配置详解
+```
+tickTime=2000
+#ZooKeeper服务器之间或客户单与服务器之间维持心跳的时间间隔，单位是毫秒，默认为2000。
+
+initLimit=10
+#zookeeper接受客户端（这里所说的客户端不是用户连接zookeeper服务器的客户端,而是zookeeper服务器集群中连接到leader的follower 服务器）初始化连接时最长能忍受多少个心跳时间间隔数。
+#当已经超过10个心跳的时间（也就是tickTime）长度后 zookeeper 服务器还没有收到客户端的返回信息,那么表明这个客户端连接失败。总的时间长度就是 10*2000=20秒。
+
+syncLimit=5
+#标识ZooKeeper的leader和follower之间同步消息，请求和应答时间长度，最长不超过多少个tickTime的时间长度，总的时间长度就是5*2000=10秒。
+
+dataDir=/opt/module/zookeeper-3.4.10/data
+#存储内存数据库快照的位置；ZooKeeper保存Client的数据都是在内存中的，如果ZooKeeper节点故障或者服务停止，那么ZooKeeper就会将数据快照到该目录当中。
+
+clientPort=2181
+#ZooKeeper客户端连接ZooKeeper服务器的端口，监听端口
+
+maxClientCnxns=60
+#ZooKeeper可接受客户端连接的最大数量，默认为60
+
+dataLogDir=/opt/module/zookeeper-3.4.10/logs
+#如果没提供的话使用的则是dataDir。zookeeper的持久化都存储在这两个目录里。dataLogDir里是放到的顺序日志(WAL)。而dataDir里放的是内存数据结构的snapshot，便于快速恢复。为了达到性能最大化，一般建议把dataDir和dataLogDir分到不同的磁盘上，这样就可以充分利用磁盘顺序写的特性
+
+autopurge.snapRetainCount=3
+#ZooKeeper要保留dataDir中快照的数量
+
+autopurge.purgeInterval=1
+#ZooKeeper清楚任务间隔(以小时为单位)，设置为0表示禁用自动清除功能
+
+server.1=localhost:2888:3888
+#指定ZooKeeper集群主机地址及通信端口
+#1 为集群主机的数字标识，一般从1开始，三台ZooKeeper集群一般都为123
+#localhost 为集群主机的IP地址或者可解析主机名
+#2888 端口用来集群成员的信息交换端口，用于ZooKeeper集群节点与leader进行信息同步
+#3888 端口是在leader挂掉时或者刚启动ZK集群时专门用来进行选举leader所用的端口
+```
+
+添加zookeeper环境变量
+```
+cat << EOF >> /etc/profile
+
+export ZOOKEEPER_HOME=/opt/module/zookeeper-3.4.10/
+export PATH=\$PATH:\$ZOOKEEPER_HOME/bin
+EOF
+
+source /etc/profile
+```
+
 
 3）集群操作  
-（1）在/opt/module/zookeeper-3.4.10/data/zkData目录下创建一个myid的文件  
-``` touch myid ```  
+（1）在/opt/module/zookeeper-3.4.10/data/目录下创建一个myid的文件  
+```
+touch myid
+```  
  添加myid文件，注意一定要在linux里面创建，在notepad++里面很可能乱码  
 （2）编辑myid文件  
-``` vi myid ```  
+```
+vi myid
+```  
 在文件中添加与server对应的编号：如1  
 （3）拷贝配置好的zookeeper到其他机器上  
 ```
