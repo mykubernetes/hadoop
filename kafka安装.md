@@ -237,7 +237,7 @@ KafkaServer {
 
 2、配置client配置
 ```
-# vim touch kafka_cilent_jaas.conf
+# vim kafka_cilent_jaas.conf
 KafkaClient {
   org.apache.kafka.common.security.plain.PlainLoginModule required
   username="admin"
