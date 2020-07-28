@@ -222,7 +222,7 @@ $  bin/kafka-topics.sh  --zookeeper hadoop102:2181 --alter --topic first --parti
 
 1、配置server端配置
 ```
-# vim touch kafka_server_jaas.conf
+# vim kafka_server_jaas.conf
 KafkaServer {
   org.apache.kafka.common.security.plain.PlainLoginModule required
   username="admin"
