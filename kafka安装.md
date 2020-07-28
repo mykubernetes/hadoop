@@ -236,6 +236,8 @@ bin/kafka-topics.sh --create \
 ---
 在Kafka0.9版本之前，Kafka集群时没有安全机制的。Kafka Client应用可以通过连接Zookeeper地址，例如zk1:2181:zk2:2181,zk3:2181等。来获取存储在Zookeeper中的Kafka元数据信息。拿到Kafka Broker地址后，连接到Kafka集群，就可以操作集群上的所有主题了。由于没有权限控制，集群核心的业务主题时存在风险的。
 
+Kafka开启使用 SASL_PLAINTEXT认证
+
 1、配置server端配置
 ```
 # vim kafka_server_jaas.conf
@@ -265,10 +267,12 @@ KafkaClient {
 3、配置文件
 ```
 # vim server.properties
-listeners=SASL_PLAINTEXT://IP:9092
-security.inter.broker.protocol=SASL_PLAINTEXT
+listeners=SASL_PLAINTEXT://IP:9092                     # 使用的认证协议 
+security.inter.broker.protocol=SASL_PLAINTEXT          # SASL机制 
 sasl.enabled.mechanisms=PLAIN
-sasl.mechanism.inter.broker.protocol=PLAIN
+sasl.mechanism.inter.broker.protocol=PLAIN             # 完成身份验证的类
+authorizer.class.name=kafka.security.auth.SimpleAclAuthorizer     # 如果没有找到ACL（访问控制列表）配置，则允许任何操作
+super.users=User:admin
 ```
 
 4、修改consumer.properties和producer.properties，分别增加如下配置：
