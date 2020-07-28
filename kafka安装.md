@@ -281,7 +281,7 @@ security.protocol=SASL_PLAINTEXT
 sasl.mechanism=PLAIN
 ```
 
-5、修改启动参数
+5、修改启动文件参数
 ```
 # vim kafka-server-start.sh
 export KAFKA_OPTS=" -Djava.security.auth.login.config=/data/kafka/kafka_2.11-1.1.0/config/kafka_server_jaas.conf"
