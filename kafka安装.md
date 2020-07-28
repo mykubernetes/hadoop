@@ -247,7 +247,7 @@ KafkaServer {
 ```
 - username和password是broker用于初始化连接到其他的broker
 - admin用户为broker间的通讯
-- user_userName定义了所有连接到 broker和 broker验证的所有的客户端连接包括其他 broker的用户密码，user_userName必须配置admin用户，否则报错。
+- user_UserName 定义了所有连接到 broker和 broker验证的所有的客户端连接包括其他 broker的用户密码，user_userName必须配置admin用户，否则报错。
 
 2、配置client配置
 ```
