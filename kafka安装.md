@@ -300,6 +300,16 @@ export KAFKA_OPTS=" -Djava.security.auth.login.config=/data/kafka/kafka_2.11-1.1
 bin/kafka-server-start.sh config/server.properties &
 ```
 
+7、启动生产者：
+```
+bin/kafka-console-producer.sh --broker-list 10.100.17.79:9092 --topic test --producer.config config/producer.properties
+```
+
+8、启动消费者
+```
+bin/kafka-console-consumer.sh --bootstrap-server 10.100.17.79:9092 --topic test --from-beginning --consumer.config config/consumer.properties
+```
+
 七、验证kafka用户密码
 ---
 1. 创建 2 个文件
