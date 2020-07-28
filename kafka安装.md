@@ -231,8 +231,10 @@ bin/kafka-topics.sh --create \
 ```
 - --config retention.ms=86400000 #topic过期时间，86400000 为一天，单位是毫秒
 - --config retention.bytes=1073741824 # 日志数据存储的最大字节数。超过这个时间会根据policy处理数据。
+
 六、Kafka使用密码认证
 ---
+在Kafka0.9版本之前，Kafka集群时没有安全机制的。Kafka Client应用可以通过连接Zookeeper地址，例如zk1:2181:zk2:2181,zk3:2181等。来获取存储在Zookeeper中的Kafka元数据信息。拿到Kafka Broker地址后，连接到Kafka集群，就可以操作集群上的所有主题了。由于没有权限控制，集群核心的业务主题时存在风险的。
 
 1、配置server端配置
 ```
