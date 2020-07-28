@@ -225,11 +225,12 @@ bin/kafka-topics.sh --create \
 --topic $topic \
 --replication-factor 1 \
 --partitons 32 \
---config  retention.ms=86400000 \
+--config retention.ms=86400000 \
 --config retention.bytes=1073741824 \
 --if-not-exists
 ```
-
+- --config retention.ms=86400000 #topic过期时间，86400000 为一天，单位是毫秒
+- --config retention.bytes=1073741824 # 日志数据存储的最大字节数。超过这个时间会根据policy处理数据。
 六、Kafka使用密码认证
 ---
 
