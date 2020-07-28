@@ -217,6 +217,19 @@ $ bin/kafka-topics.sh --topic first --describe --zookeeper node001:2181
 $  bin/kafka-topics.sh  --zookeeper hadoop102:2181 --alter --topic first --partitions 6
 ```
 
+
+常用创建topic参数
+```
+bin/kafka-topics.sh --create \
+--zookeeper $zookeeper_address \
+--topic $topic \
+--replication-factor 1 \
+--partitons 32 \
+--config  retention.ms=86400000 \
+--config retention.bytes=1073741824 \
+--if-not-exists
+```
+
 六、Kafka使用密码认证
 ---
 
