@@ -179,8 +179,12 @@ HBase常用操作
 ``` hbase(main):001:0> help ```  
 3、查看当前数据库中有哪些表  
 ``` hbase(main):002:0> list ```  
-4、创建一张表  
-``` hbase(main):003:0>  create 'student','info' ```  
+4、创建一张表
+```
+# create创建student表，包含info、data两个列族
+hbase(main):003:0>  create 'student','info', 'data'
+```
+
 5、向表中存储一些数据  
 ```
 hbase(main):004:0> put 'student','1001','info:name','Thomas'
@@ -206,8 +210,20 @@ hbase(main):009:0> put 'student','1001','info:name','Nick'
 hbase(main):010:0> put 'student','1001','info:age','100'
 ```  
   
-9、查看指定行的数据  
-``` hbase(main):012:0> get 'student','1001' ```  
+9、查看指定行的数据
+```
+# get 获取student表中row key为1001的所有信息
+hbase(main):012:0> get 'student','1001'
+
+# 获取ustudent表中row key为1001，info列族的所有信息
+hbase(main):012:0> get 'student','1001', 'info'
+
+# 获取student表中row key为1001，info列族的name、age列标示符的信息
+hbase(main):012:0> get 'student','1001', 'info:name', 'info:age'
+
+# 获取student表中row key为1001，info、data列族的信息
+hbase(main):012:0> get 'student','1001', 'info', 'data'
+```
 
  或：查看指定行指定列或列族的数据  
 ``` hbase(main):013:0> get 'student','1001','info:name' ```  
@@ -228,3 +244,4 @@ hbase(main):010:0> put 'student','1001','info:age','100'
 
 13、统计一张表有多少行数据  
 ```hbase(main):020:0> count 'student' ```
+ 
