@@ -187,8 +187,13 @@ hbase(main):003:0>  create 'student','info', 'data'
 
 5、向表中存储一些数据  
 ```
+# 向student表中插入信息，row key为1001，列族info中添加name列标示符，值为Thomas
 hbase(main):004:0> put 'student','1001','info:name','Thomas'
+
+# 向student表中插入信息，row key为1001，列族info中添加sex列标示符，值为male
 hbase(main):005:0> put 'student','1001','info:sex','male'
+
+# 向student表中插入信息，row key为1001，列族info中添加age列标示符，值为18
 hbase(main):006:0> put 'student','1001','info:age','18'
 ```
 
