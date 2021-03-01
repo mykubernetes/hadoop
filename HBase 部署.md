@@ -331,3 +331,6 @@ hbase(main):013:0> status 'replication'
 hbase(main):014:0> status 'replication', 'source'
 hbase(main):015:0> status 'replication','sink'
 ```
+
+
+https://blog.csdn.net/tototuzuoquan/article/details/73649510
