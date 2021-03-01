@@ -147,7 +147,7 @@ $ scp -r conf/ node03:/opt/modules/hbase-0.98.6-cdh5.3.6/
 | whoami | 我是谁 | whoami |
 | version | 返回hbase集群的状态信息 | version |
 | status | 返回hbase集群的状态信息 | status |
-| table_help | 查看如何操作表 | status
+| table_help | 查看如何操作表 | table_help |
 | create | 创建表 | create ‘表名’, ‘列族名1’, ‘列族名2’, ‘列族名N’ |
 | alter | 修改列族 | 添加一个列族：alter ‘表名’, ‘列族名’ / 删除列族：alter ‘表名’, {NAME=> ‘列族名’, METHOD=> ‘delete’} |
 | describe | 显示表相关的详细信息 | describe ‘表名’ |
@@ -320,4 +320,14 @@ base(main):020:0> count 'student'
 方式二
 # hbase org.apache.hadoop.hbase.mapreduce.RowCounter 'namespaceName:tableName'
 ```
- 
+
+14、status返回hbase集群的状态信息  
+显示集群状态status，可以为 ‘summary’, ‘simple’, ‘detailed’, or ‘replication’. 默认为 ‘summary’
+```
+hbase(main):006:0> status
+hbase(main):011:0> status 'simaple'
+hbase(main):012:0> status 'summary'
+hbase(main):013:0> status 'replication'
+hbase(main):014:0> status 'replication', 'source'
+hbase(main):015:0> status 'replication','sink'
+```
