@@ -174,11 +174,20 @@ $ scp -r conf/ node03:/opt/modules/hbase-0.98.6-cdh5.3.6/
 
 HBase常用操作  
 1、进入HBase客户端命令操作界面  
-``` $ bin/hbase shell ```  
+```
+$ bin/hbase shell
+```
+
 2、查看帮助命令  
-``` hbase(main):001:0> help ```  
+```
+hbase(main):001:0> help
+```
+
 3、查看当前数据库中有哪些表  
-``` hbase(main):002:0> list ```  
+```
+hbase(main):002:0> list
+```
+
 4、创建一张表
 ```
 # create创建student表，包含info、data两个列族
@@ -229,8 +238,9 @@ hbase(main):014:0> scan 'student', {TIMERANGE => [1392368783980, 1392380169184]}
 ```
 
 7、查看表结构  
-``` hbase(main):009:0> describe 'student' ```  
-
+```
+hbase(main):009:0> describe 'student'
+```
 
 8、更新指定字段的数据
 ```
