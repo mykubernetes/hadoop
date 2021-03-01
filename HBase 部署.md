@@ -170,7 +170,7 @@ $ scp -r conf/ node03:/opt/modules/hbase-0.98.6-cdh5.3.6/
 | drop | 删除表 | drop的表必须是disable的 / disable ‘表名’ / drop ‘表名’ |
 | shutdown | 关闭hbase集群（与exit不同）	 |
 | tools | 列出hbase所支持的工具	 |  |
-| exi | 退出 |  |
+| exit | 退出 |  |
 
 HBase常用操作  
 1、进入HBase客户端命令操作界面  
@@ -264,6 +264,19 @@ hbase(main):012:0> get 'student','1001', 'info:name', 'info:age'
 
 # 获取student表中row key为1001，info、data列族的信息
 hbase(main):012:0> get 'student','1001', 'info', 'data'
+hbase(main):012:0> get 'student', '1001', {COLUMN => ['info', 'data']}
+
+# 获取student表中row key为1001，列族info列name和列族data列pic的信息
+hbase(main):012:0> get 'student', '1001', {COLUMN => ['info:name', 'data:pic']}
+
+获取student表中row key为1001，列族为info，版本号最新5个的信息
+hbase(main):012:0> get 'student', '1001', {COLUMN => 'info', VERSIONS => 5}
+
+获取student表中row key为1001，列族为info列为name，版本号最新5个的信息
+hbase(main):012:0> get 'student', '1001', {COLUMN => 'info:name', VERSIONS => 5}
+
+获取student表中row key为1001，列族为info，两个时间戳，版本号最新5个的信息
+hbase(main):012:0> get 'student', '1001', {COLUMN => 'info:name', VERSIONS => 5, TIMERANGE => [1488892553804, 1488892688096]}
 ```
 
 10、删除数据  
