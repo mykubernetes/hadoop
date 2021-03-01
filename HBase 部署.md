@@ -197,10 +197,14 @@ hbase(main):006:0> put 'student','1001','info:age','18'
 ``` hbase(main):009:0> describe 'student' ```  
 
 
-8、更新指定字段的数据  
-``` hbase(main):009:0> put 'student','1001','info:name','Nick' ```  
+8、更新指定字段的数据
+```
+向student表中插入信息，row key为1001，列族info中添加name列标示符，值为Nick
+hbase(main):009:0> put 'student','1001','info:name','Nick'
 
-``` hbase(main):010:0> put 'student','1001','info:age','100' ```  
+向student表中插入信息，row key为1001，列族info中添加age列标示符，值为100
+hbase(main):010:0> put 'student','1001','info:age','100'
+```  
   
 9、查看指定行的数据  
 ``` hbase(main):012:0> get 'student','1001' ```  
