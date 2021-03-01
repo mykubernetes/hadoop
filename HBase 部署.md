@@ -151,7 +151,7 @@ $ scp -r conf/ node03:/opt/modules/hbase-0.98.6-cdh5.3.6/
 | create | 创建表 | create ‘表名’, ‘列族名1’, ‘列族名2’, ‘列族名N’ |
 | alter | 修改列族 | 添加一个列族：alter ‘表名’, ‘列族名’ / 删除列族：alter ‘表名’, {NAME=> ‘列族名’, METHOD=> ‘delete’} |
 | describe | 显示表相关的详细信息 | describe ‘表名’ |
-| list | 列出hbase中存在的所有表	list |
+| list | 列出hbase中存在的所有表 | list |
 | exists | 测试表是否存在 | exists ‘表名’ |
 | put | 添加或修改的表的值 | put ‘表名’, ‘行键’, ‘列族名’, ‘列值’ / put ‘表名’, ‘行键’, ‘列族名:列名’, ‘列值’ |
 | scan | 通过对表的扫描来获取对用的值 | scan ‘表名’ / 扫描某个列族： scan ‘表名’, {COLUMN=>‘列族名’} / 扫描某个列族的某个列： scan ‘表名’,  {COLUMN=>‘列族名:列名’} / 查询同一个列族的多个列： scan ‘表名’, {COLUMNS => [ ‘列族名1:列名1’, ‘列族名1:列名2’, …]} |
