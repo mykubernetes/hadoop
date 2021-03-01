@@ -197,11 +197,37 @@ hbase(main):005:0> put 'student','1001','info:sex','male'
 hbase(main):006:0> put 'student','1001','info:age','18'
 ```
 
-6、扫描查看存储的数据  
-``` hbase(main):007:0> scan 'student' ```  
-或：查看某个rowkey范围内的数据  
+6、扫描查看存储的数据
+```
+# scan 查询student表中的所有信息
+hbase(main):007:0> scan 'student'
 
-``` hbase(main):014:0> scan 'student',{STARTROW => '1001',STOPROW => '1007'} ```  
+# 查询student表中列族为info的信息
+hbase(main):014:0> scan 'student', {COLUMNS => 'info'}
+
+# 查询student表中列族为info和data的信息
+hbase(main):014:0> scan 'student', {COLUMNS => ['info', 'data']}
+
+# 查询student表中列族为info列为name和列族为data列为pic的信息
+hbase(main):014:0> scan 'student', {COLUMNS => ['info:name', 'data:pic']}
+
+# 查看某个rowkey范围内的数据  
+hbase(main):014:0> scan 'student',{STARTROW => '1001',STOPROW => '1007'}
+hbase(main):014:0> scan 'student',{STARTROW => '1001',ENDROW => '1007'}
+
+查询student表中列族为info、列标示符为name的信息,并且版本最新的5个
+hbase(main):014:0> scan 'student', {COLUMNS => 'info:name', VERSIONS => 5}
+
+查询students表中列族为info和data且列标示符中含有a字符的信息
+hbase(main):014:0> scan 'student', {COLUMNS => ['info', 'data'], FILTER => "(QualifierFilter(=,'substring:a'))"}
+
+查询students表中row key以rk字符开头的
+hbase(main):014:0> scan 'student',{FILTER=>"PrefixFilter('rk')"}
+
+查询student表中指定范围的数据
+hbase(main):014:0> scan 'student', {TIMERANGE => [1392368783980, 1392380169184]}
+```
+
 7、查看表结构  
 ``` hbase(main):009:0> describe 'student' ```  
 
