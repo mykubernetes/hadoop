@@ -237,10 +237,15 @@ hbase(main):015:0> deleteall 'student','1001'
 
 2）删除掉某个rowKey中某一列的数据  
 hbase(main):016:0> delete 'student','1001','info:sex'
+
+3）删除一行数据,删除student表row key为1001，列标示符为info:name，timestamp为1392383705316的数据
+hbase(main):016:0> delete 'student','1001','info:name',1392383705316
 ```
 
-11、清空表数据  
-``` hbase(main):017:0> truncate 'student'  ```  
+11、清空student表数据  
+```
+hbase(main):017:0> truncate 'student'
+```
 
 12、删除表  
 ```
