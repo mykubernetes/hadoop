@@ -150,7 +150,7 @@ hadoop03:/usr/local/flink-1.9.1/lib/
 3、单独启动
 # jobmanager.sh ((start|start-foreground) cluster)|stop|stop-all
 # taskmanager.sh start|start-foreground|stop|stop-all
-
+# historyserver.sh start
 ```
 
 7、浏览器访问  
