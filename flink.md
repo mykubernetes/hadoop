@@ -128,10 +128,12 @@ node02:8081
 
 修改配置：
 # vi ./conf/flink-conf.yaml
+jobmanager.rpc.address: node2
 rest.address: node02
 
 # vi ./conf/flink-conf.yaml
 rest.address: node03
+jobmanager.rpc.address: node3
 ```
 
 6、启动
