@@ -2,6 +2,11 @@
 
 https://ci.apache.org/projects/flink/flink-docs-release-1.10/zh/
 
+Flink支持多种安装模式
+- Local—本地单机模式，学习测试时使用
+- Standalone—独立集群模式，Flink自带集群，开发测试环境使用
+- StandaloneHA—独立集群高可用模式，Flink自带集群，开发测试环境使用
+- On Yarn—计算资源统一由Hadoop YARN管理，生产环境使用
 
 1、安装
 ```
