@@ -60,20 +60,28 @@ PATH=$PATH:$JAVA_HOME/bin:$ZK_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$KAFKA
 #jobmanager.rpc.address: hadoop01 HA模式不用
 # The RPC port where the JobManager is reachable.
 jobmanager.rpc.port: 6123
+
 # The heap size for the JobManager JVM
 jobmanager.heap.size: 1024m
+
 # The heap size for the TaskManager JVM
 taskmanager.heap.size: 1024m
+
 #==============================================================================
 # Rest & web frontend
 #==============================================================================
 # The port to which the REST client connects to. If rest.bind-port has
 # not been specified, then the server will bind to this port as well.
 #
+
 rest.port: 8081
 # The address to which the REST client will connect to
 #
 rest.address: hadoop01
+
+taskmanager.numberOfTaskSlots: 2       #插槽数
+web.submit.enable: true                #web是否支持提交作业
+
 # HA settings
 high-availability: zookeeper
 high-availability.zookeeper.quorum: hadoop01:2181,hadoop02:2181,hadoop03:2181
