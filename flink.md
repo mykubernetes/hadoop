@@ -176,6 +176,24 @@ web访问地址：http://node02:8081
 ```
 
 
+10、Session模式
+
+1)在yarn上启动一个Flink会话，node1上执行以下命令
+```
+flink/bin/yarn-session.sh -n 2 -tm 800 -s 1 -d
+```
+- -n 表示申请2个容器，这里指的就是多少个taskmanager
+- -tm 表示每个TaskManager的内存大小
+- -s 表示每个TaskManager的slots数量
+- -d 表示以后台程序方式运行
+
+2）查看UI界面http://node01:8088/cluster
 
 
+3)使用flink run提交任务：
+```
+flink/bin/flink run  /export/server/flink/examples/batch/WordCount.jar
+```
+
+4）通过上方的ApplicationMaster可以进入Flink的管理界面
 
