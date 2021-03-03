@@ -197,3 +197,17 @@ flink/bin/flink run  /export/server/flink/examples/batch/WordCount.jar
 
 4）通过上方的ApplicationMaster可以进入Flink的管理界面
 
+5）关闭yarn-session
+```
+yarn application -kill application_1599402747874_0001
+```
+
+11、Per-Job分离模式
+
+直接提交job
+```
+# flink/bin/flink run -m yarn-cluster -yjm 1024 -ytm 1024 flink/examples/batch/WordCount.jar
+```
+- -m  jobmanager的地址
+- -yjm 1024 指定jobmanager的内存信息
+- -ytm 1024 指定taskmanager的内存信息
