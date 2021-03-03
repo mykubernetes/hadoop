@@ -105,3 +105,14 @@ hadoop03:/usr/local/flink-1.9.1/lib/
 web访问地址：http://hadoop01:8081  
 web访问地址：http://hadoop02:8081
 
+8、关闭standalone模式
+```
+# stop-cluster.sh
+```
+
+9、测试提交批次作业
+```
+# flink list        #查看当前运行的作业
+# flink list -a     #查看运行的作业和退出的作业
+# flink run /usr/local/flink-1.9.1/examples/batch/WordCount.jar --input /home/words --output /home/out/fl00
+```
