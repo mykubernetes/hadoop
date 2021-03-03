@@ -102,48 +102,45 @@ state.backend.fs.checkpointdir: hdfs://node01:8020/flink-checkpoints            
 3、配置从节点
 ```
 vim conf/slaves 新版本为conf/workers
-hadoop01
-hadoop02
-hadoop03
+node01
+node02
+node03
 ```
 
 4、配置主节点
 ```
 vim conf/masters
-hadoop01:8081
-hadoop02:8081
+node01:8081
+node02:8081
 ```
 
 5、分发并修改hadoop02和hadoop03节点的ip或者主机名
 ```
 分发：
-# scp -r /etc/profile hadoop02:/etc
-# scp -r /etc/profile hadoop03:/etc
+# scp -r /etc/profile node02:/etc
+# scp -r /etc/profile node03:/etc
 
-# scp -r ../flink-1.9.1/ hadoop02:/usr/local/
-# scp -r ../flink-1.9.1/ hadoop03:/usr/local/
+# scp -r ../flink-1.9.1/ node02:/usr/local/
+# scp -r ../flink-1.9.1/ node03:/usr/local/
 
 #source /etc/profile
 # source /etc/profile
 
 修改配置：
 # vi ./conf/flink-conf.yaml
-rest.address: hadoop02
+rest.address: hnode02
 
 # vi ./conf/flink-conf.yaml
-rest.address: hadoop03
+rest.address: node03
 ```
 
 6、启动
 启动顺序：先启动zk和hdfs、再启动flink。
 ```
 1、拷贝hdfs的依赖包,否正无法启动
-# cp /home/flink-shaded-hadoop-2-uber-2.7.5-10.0.jar
-/usr/local/flink-1.9.1/lib/
-# scp /home/flink-shaded-hadoop-2-uber-2.7.5-10.0.jar
-hadoop02:/usr/local/flink-1.9.1/lib/
-# scp /home/flink-shaded-hadoop-2-uber-2.7.5-10.0.jar
-hadoop03:/usr/local/flink-1.9.1/lib/
+# cp /home/flink-shaded-hadoop-2-uber-2.7.5-10.0.jar /usr/local/flink-1.9.1/lib/
+# scp /home/flink-shaded-hadoop-2-uber-2.7.5-10.0.jar node02:/usr/local/flink-1.9.1/lib/
+# scp /home/flink-shaded-hadoop-2-uber-2.7.5-10.0.jar node03:/usr/local/flink-1.9.1/lib/
 
 2、启动集群
 # start-cluster.sh
