@@ -57,14 +57,14 @@ PATH=$PATH:$JAVA_HOME/bin:$ZK_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$KAFKA
 #==============================================================================
 # Common
 #==============================================================================
-#jobmanager.rpc.address: hadoop01 HA模式不用
+jobmanager.rpc.address: node01
 # The RPC port where the JobManager is reachable.
-jobmanager.rpc.port: 6123
+jobmanager.rpc.port: 6123                   # 端口号
 
 # The heap size for the JobManager JVM
-jobmanager.heap.size: 1024m
+jobmanager.heap.size: 1024m                 # JobManager JVM 大小
 
-# The heap size for the TaskManager JVM
+# The heap size for the TaskManager JVM     # TaskManager JVM 大小
 taskmanager.heap.size: 1024m
 
 #==============================================================================
@@ -77,17 +77,25 @@ taskmanager.heap.size: 1024m
 rest.port: 8081
 # The address to which the REST client will connect to
 #
-rest.address: hadoop01
+rest.address: node01
 
 taskmanager.numberOfTaskSlots: 2       #插槽数
 web.submit.enable: true                #web是否支持提交作业
 
+#历史服务器
+jobmanager.archive.fs.dir: hdfs://node01:8020/flink/completed-jobs/
+historyserver.web.address: node01
+historyserver.web.port: 8082
+historyserver.archive.fs.dir: hdfs://node01:8020/flink/completed-jobs/
+
 # HA settings
-high-availability: zookeeper
-high-availability.zookeeper.quorum: hadoop01:2181,hadoop02:2181,hadoop03:2181
-high-availability.zookeeper.path.root: /flink
+state.backend: filesystem                                                        # 开启HA，使用文件系统作为快照存储
+high-availability: zookeeper                                                     # 使用zookeeper搭建高可用
+high-availability.zookeeper.quorum: node01:2181,node02:2181,node03:2181          # 配置ZK集群地址
+high-availability.zookeeper.path.root: /flink                                    # flink在zk的根路径
 high-availability.cluster-id: /cluster_flink
-high-availability.storageDir: hdfs://hadoop01:9000/flink/recovery
+high-availability.storageDir: hdfs://node01:9000/flink/recovery                  # 存储JobManager的元数据到HDFS
+state.backend.fs.checkpointdir: hdfs://node01:8020/flink-checkpoints             # 启用检查点，可以将快照保存到HDFS
 ```
 
 3、配置从节点
