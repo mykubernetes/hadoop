@@ -82,11 +82,12 @@ rest.address: node01
 taskmanager.numberOfTaskSlots: 2       #插槽数
 web.submit.enable: true                #web是否支持提交作业
 
-#历史服务器
+#历史服务器与yarn有关系
 jobmanager.archive.fs.dir: hdfs://node01:8020/flink/completed-jobs/
 historyserver.web.address: node01
 historyserver.web.port: 8082
 historyserver.archive.fs.dir: hdfs://node01:8020/flink/completed-jobs/
+historyserver.archive.fs.refresh-interval: 10000
 
 # HA settings
 state.backend: filesystem                                                        # 开启HA，使用文件系统作为快照存储
@@ -176,35 +177,6 @@ web访问地址：http://hadoop02:8081
 ```
 
 
-10、job historyserver配置
-```
-# The HistoryServer is started and stopped via bin/historyserver.sh (start|stop)
-# Directory to upload completed jobs to. Add this directory to the list of
-# monitored directories of the HistoryServer as well (see below). #该目录不能创建，则可以手动创建
 
-jobmanager.archive.fs.dir: hdfs://hadoop01:9000/flink_completed_jobs/
 
-# The address under which the web-based HistoryServer listens.
-
-historyserver.web.address: 192.168.216.111
-
-# The port under which the web-based HistoryServer listens.
-
-historyserver.web.port: 8082
-
-# Comma separated list of directories to monitor for completed jobs.
-
-historyserver.archive.fs.dir: hdfs://hadoop01:9000/flink_completed_jobs/
-
-# Interval in milliseconds for refreshing the monitored directories.
-
-historyserver.archive.fs.refresh-interval: 10000
-```
-
-11、启动历史服务(重新启动flink集群)
-```
-# historyserver.sh start
-```
-
-12、访问web：http://hadoop01:8082/
 
