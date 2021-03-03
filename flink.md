@@ -128,7 +128,7 @@ node02:8081
 
 修改配置：
 # vi ./conf/flink-conf.yaml
-rest.address: hnode02
+rest.address: node02
 
 # vi ./conf/flink-conf.yaml
 rest.address: node03
@@ -152,8 +152,8 @@ rest.address: node03
 ```
 
 7、浏览器访问  
-web访问地址：http://hadoop01:8081  
-web访问地址：http://hadoop02:8081
+web访问地址：http://node01:8081  
+web访问地址：http://node02:8081
 
 8、关闭standalone模式
 ```
