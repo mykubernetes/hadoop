@@ -112,7 +112,47 @@ web访问地址：http://hadoop02:8081
 
 9、测试提交批次作业
 ```
-# flink list        #查看当前运行的作业
-# flink list -a     #查看运行的作业和退出的作业
+# flink list            #列出计划和正在运行的job
+# flink list -s         #列出预定job
+# flink list -r         #列出正在运行的job
+# flink list -a         #查看运行的作业和退出的作业
+# flink list -m yarn-cluster -yid <yarnApplicationID> -r   #列出在YARN 中运行的job
+# flink cancel <jobID>  #通过jobID取消job
+# flink stop <jobID>    #通过jobID停止job
+
 # flink run /usr/local/flink-1.9.1/examples/batch/WordCount.jar --input /home/words --output /home/out/fl00
 ```
+
+
+10、job historyserver配置
+```
+# The HistoryServer is started and stopped via bin/historyserver.sh (start|stop)
+# Directory to upload completed jobs to. Add this directory to the list of
+# monitored directories of the HistoryServer as well (see below). #该目录不能创建，则可以手动创建
+
+jobmanager.archive.fs.dir: hdfs://hadoop01:9000/flink_completed_jobs/
+
+# The address under which the web-based HistoryServer listens.
+
+historyserver.web.address: 192.168.216.111
+
+# The port under which the web-based HistoryServer listens.
+
+historyserver.web.port: 8082
+
+# Comma separated list of directories to monitor for completed jobs.
+
+historyserver.archive.fs.dir: hdfs://hadoop01:9000/flink_completed_jobs/
+
+# Interval in milliseconds for refreshing the monitored directories.
+
+historyserver.archive.fs.refresh-interval: 10000
+```
+
+11、启动历史服务(重新启动flink集群)
+```
+# historyserver.sh start
+```
+
+12、访问web：http://hadoop01:8082/
+
