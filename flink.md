@@ -165,50 +165,7 @@ web访问地址：http://node02:8081
 ```
 
 
-10、Yarn Cluster模式 Session模式
-
-1、修改环境变量
-```
-export  HADOOP_CONF_DIR= /opt/module/hadoop-2.7.6/etc/hadoop     #hdfs目录
-```
-
-2、部署启动 ，在yarn上启动一个Flink会话
-```
-flink/bin/yarn-session.sh -n 2 -tm 800 -s 2 -d
-```
-- -n 表示申请2个容器，这里指的就是多少个taskmanager
-- -tm 表示每个TaskManager的内存大小
-- -s 表示每个TaskManager的slots数量
-- -d 表示以后台程序方式运行
-- -jm : JobManager的内存大小
-
-3、查看UI界面http://node01:8088/cluster
-
-
-4、使用flink run提交任务：
-```
-flink/bin/flink run -m yarn-cluster -yn 2 /export/server/flink/examples/batch/WordCount.jar --input /opt/wcinput/wc.txt --output /opt/wcoutput/
-```
-- -yn表示TaskManager个数
-
-5、通过上方的ApplicationMaster可以进入Flink的管理界面
-
-6、关闭yarn-session
-```
-yarn application -kill application_1599402747874_0001
-```
-
-7、不需要运行yarn-session.sh 直接启动，退出后停止
-
-直接提交job
-```
-# flink/bin/flink run -m yarn-cluster -yjm 1024 -ytm 1024 flink/examples/batch/WordCount.jar
-```
-- -m  jobmanager的地址
-- -yjm 1024 指定jobmanager的内存信息
-- -ytm 1024 指定taskmanager的内存信息
-
-Yarn模式的HA
+Yarn模式的HA 配置
 ---
 1、应用最大尝试次数（yarn-site.xml），必须配置为尝试应用的最大数量的设置yarn-site.xml，当前YARN版本的默认值为2（表示允许单个JobManager失败）。
 ```
@@ -231,7 +188,45 @@ high-availability.zookeeper.path.root: /flink
 yarn.application-attempts: 10
 ```
 
-启动HA群集：
+3、修改环境变量
 ```
-$ bin / yarn-session.sh -n 2
+export  HADOOP_CONF_DIR= /opt/module/hadoop-2.7.6/etc/hadoop     #hdfs目录
 ```
+
+4、部署启动 ，在yarn上启动一个Flink会话
+```
+flink/bin/yarn-session.sh -n 2 -tm 800 -s 2 -d
+```
+- -n 表示申请2个容器，这里指的就是多少个taskmanager
+- -tm 表示每个TaskManager的内存大小
+- -s 表示每个TaskManager的slots数量
+- -d 表示以后台程序方式运行
+- -jm : JobManager的内存大小
+
+5、查看UI界面http://node01:8088/cluster
+
+
+6、使用flink run提交任务：
+```
+flink/bin/flink run -m yarn-cluster -yn 2 /export/server/flink/examples/batch/WordCount.jar --input /opt/wcinput/wc.txt --output /opt/wcoutput/
+```
+- -yn表示TaskManager个数
+
+7、通过上方的ApplicationMaster可以进入Flink的管理界面
+
+8、关闭yarn-session
+```
+yarn application -kill application_1599402747874_0001
+```
+
+9、不需要运行yarn-session.sh 直接启动，退出后停止
+
+直接提交job
+```
+# flink/bin/flink run -m yarn-cluster -yjm 1024 -ytm 1024 flink/examples/batch/WordCount.jar
+```
+- -m  jobmanager的地址
+- -yjm 1024 指定jobmanager的内存信息
+- -ytm 1024 指定taskmanager的内存信息
+
+
