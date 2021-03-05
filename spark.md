@@ -13,10 +13,6 @@ Spark安装过程
 ```
 $ tar -zxvf spark-2.3.0-bin-hadoop2.7.tgz -C apps/
 $ cd apps/
-
-$ ls
-hadoop-2.7.5  hbase-1.2.6  spark-2.3.0-bin-hadoop2.7  zookeeper-3.4.10  zookeeper.out
-
 $ ln -s spark-2.3.0-bin-hadoop2.7/ spark
 ```
 
@@ -37,13 +33,11 @@ export HADOOP_CONF_DIR=/home/hadoop/apps/hadoop-2.7.5/etc/hadoop
 
 export SPARK_WORKER_MEMORY=500m                    #启动需要的内存
 export SPARK_WORKER_CORES=1                        #启动需要的cpu盒数
-export SPARK_DAEMON_JAVA_OPTS="-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=hadoop1:2181,hadoop2:2181,hadoop3:2181,hadoop4:2181 -Dspark.deploy.zookeeper.dir=/spark"
+export SPARK_DAEMON_JAVA_OPTS="-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=hadoop1:2181,hadoop2:2181,hadoop3:2181 -Dspark.deploy.zookeeper.dir=/spark"
 ```
 - spark.deploy.recoveryMode 集群状态由zk来维护。通过zk实现spark的HA，Master(Active)挂掉的话，Master(standby)成为Master（Active），Master(Standby)需要读取zk集群状态信息，进行恢复所有Worker和Driver的状态信息，和所有的Application状态信息;
 - spark.deploy.zookeeper.url： zookeeper的server地址
--Dspark.deploy.zookeeper.dir=/spark 保存集群元数据信息的文件，目录。包括Worker，Driver和Application。
-
-
+- Dspark.deploy.zookeeper.dir=/spark 保存集群元数据信息的文件，目录。包括Worker，Driver和Application。
 
 3、配置从节点
 ```
@@ -55,7 +49,6 @@ $ vim slaves
 hadoop1
 hadoop2
 hadoop3
-hadoop4
 ```
 
 4、将安装包分发给其他节点
@@ -63,25 +56,11 @@ hadoop4
 $ cd apps/
 $ scp -r spark-2.3.0-bin-hadoop2.7/ hadoop2:$PWD
 $ scp -r spark-2.3.0-bin-hadoop2.7/ hadoop3:$PWD
-$ scp -r spark-2.3.0-bin-hadoop2.7/ hadoop4:$PWD
 
 到对应节点创建软连接
 $ cd apps/
-$ ls
-hadoop-2.7.5  hbase-1.2.6  spark-2.3.0-bin-hadoop2.7  zookeeper-3.4.10
-
 $ ln -s spark-2.3.0-bin-hadoop2.7/ spark
-
-$ ll
-总用量 16
-drwxr-xr-x 10 hadoop hadoop 4096 3月  23 20:29 hadoop-2.7.5
-drwxrwxr-x  7 hadoop hadoop 4096 3月  29 13:15 hbase-1.2.6
-lrwxrwxrwx  1 hadoop hadoop   26 4月  20 19:26 spark -> spark-2.3.0-bin-hadoop2.7/
-drwxr-xr-x 13 hadoop hadoop 4096 4月  20 19:24 spark-2.3.0-bin-hadoop2.7
-drwxr-xr-x 10 hadoop hadoop 4096 3月  21 19:31 zookeeper-3.4.10
-[hadoop@hadoop2 apps]$ 
 ```
-
 
 4、配置环境变量
 ```
@@ -98,9 +77,8 @@ $ source ~/.bashrc
 四、启动
 
 1、先启动zookeeper集群
-
-所有节点均要执行
 ```
+所有节点均要执行
 $ zkServer.sh start
 ZooKeeper JMX enabled by default
 Using config: /home/hadoop/apps/zookeeper-3.4.10/bin/../conf/zoo.cfg
