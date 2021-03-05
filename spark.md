@@ -118,15 +118,44 @@ $SPARK_HOME/examples/jars/spark-examples_2.11-2.3.0.jar \
 ```
 
 2、启动spark shell
-启动local模式：
 ```
+# 1、启动local模式：
 $ spark-shell
-```
 
-启动集群模式：
-```
+# 2、启动集群模式：
 $SPARK_HOME/bin/spark-shell \ 
 --master spark://hadoop01:7077,hadoop02:7077 \     #指定 Master 的地址
 --executor-memory 512M \                           #指定每个 worker 可用内存为 512M
 --total-executor-cores 2                           #指定整个集群使用的 cup 核数为 2 个
 ```
+
+3、在spark shell中编写WordCount程序
+```
+1）编写一个hello.txt文件并上传到HDFS上的spark目录下
+$ vim hello.txt
+you,jump
+i,jump
+you,jump
+i,jump
+jump
+
+$ hadoop fs -mkdir -p /spark
+$ hadoop fs -put hello.txt /spark
+
+
+2）在spark shell中用scala语言编写spark程序
+scala> sc.textFile("/spark/hello.txt").flatMap(_.split(",")).map((_,1)).reduceByKey(_+_).saveAsTextFile("/spark/out")
+
+3）使用hdfs命令查看结果
+$ hadoop fs -cat /spark/out/p*
+(jump,5)
+(you,2)
+(i,2)
+```
+- sc是SparkContext对象，该对象是提交spark程序的入口
+- textFile("/spark/hello.txt")是hdfs中读取数据
+- flatMap(_.split(" "))先map再压平
+- map((_,1))将单词和1构成元组
+- reduceByKey(_+_)按照key进行reduce，并将value累加
+- saveAsTextFile("/spark/out")将结果写入到hdfs中
+
