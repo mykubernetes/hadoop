@@ -1,5 +1,7 @@
 HDFS相关指令
 
+http://hadoop.apache.org/docs/r1.0.4/cn/hdfs_shell.html
+
 1、查看集群容量使用情况
 ```
 hdfs dfsadmin –report
