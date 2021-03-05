@@ -207,3 +207,31 @@ yarn application -kill application_1599402747874_0001
 - -m  jobmanager的地址
 - -yjm 1024 指定jobmanager的内存信息
 - -ytm 1024 指定taskmanager的内存信息
+
+Yarn模式的HA
+---
+1、应用最大尝试次数（yarn-site.xml），必须配置为尝试应用的最大数量的设置yarn-site.xml，当前YARN版本的默认值为2（表示允许单个JobManager失败）。
+```
+<property>
+  <name>yarn.resourcemanager.am.max-attempts</name>
+  <value>4</value>
+  <description>The maximum number of application master execution attempts</description>
+</property>
+```
+
+2、申请尝试（flink-conf.yaml），必须配置最大尝试次数conf/flink-conf.yaml： yarn.application-attempts：10
+
+高度可用的YARN会话
+```
+# vim conf/flink-conf.yaml
+high-availability: zookeeper
+high-availability.zookeeper.quorum: node21:2181,node22:2181,node23:2181
+high-availability.storageDir: hdfs:///flink/recovery
+high-availability.zookeeper.path.root: /flink
+yarn.application-attempts: 10
+```
+
+启动HA群集：
+```
+$ bin / yarn-session.sh -n 2
+```
