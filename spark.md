@@ -104,26 +104,20 @@ $ cd apps/spark/sbin/
 $ start-all.sh
 ```
 
-
-
-
-
-
-
-spark的shell的基本使用：
-
-(1)利用 Spark 自带的例子程序执行一个求 PI（蒙特卡洛算法）的程序:
+执行Spark程序on standalone
+---
+1、利用 Spark 自带的例子程序执行一个求 PI（蒙特卡洛算法）的程序:
 ```
 $SPARK_HOME/bin/spark-submit \ 
 --class org.apache.spark.examples.SparkPi \ 
---master spark://hadoop02:7077 \ 
+--master spark://hadoop01:7077 \ 
 --executor-memory 512m \ 
 --total-executor-cores 3 \
 $SPARK_HOME/examples/jars/spark-examples_2.11-2.3.0.jar \ 
 100
 ```
 
-(2)启动spark shell
+2、启动spark shell
 启动local模式：
 ```
 $ spark-shell
@@ -132,7 +126,7 @@ $ spark-shell
 启动集群模式：
 ```
 $SPARK_HOME/bin/spark-shell \ 
---master spark://hadoop02:7077,hadoop04:7077 \     #指定 Master 的地址
+--master spark://hadoop01:7077,hadoop02:7077 \     #指定 Master 的地址
 --executor-memory 512M \                           #指定每个 worker 可用内存为 512M
 --total-executor-cores 2                           #指定整个集群使用的 cup 核数为 2 个
 ```
