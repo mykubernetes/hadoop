@@ -225,7 +225,7 @@ Yarn模式的HA
 ```
 # vim conf/flink-conf.yaml
 high-availability: zookeeper
-high-availability.zookeeper.quorum: node21:2181,node22:2181,node23:2181
+high-availability.zookeeper.quorum: node01:2181,node02:2181,node03:2181
 high-availability.storageDir: hdfs:///flink/recovery
 high-availability.zookeeper.path.root: /flink
 yarn.application-attempts: 10
