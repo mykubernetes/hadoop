@@ -2,6 +2,9 @@
 
 https://ci.apache.org/projects/flink/flink-docs-release-1.10/zh/
 
+安装包下载，选择对应Hadoop的Flink版本下载  
+http://flink.apache.org/downloads.html 
+
 Flink支持多种安装模式
 - Local—本地单机模式，学习测试时使用
 - Standalone—独立集群模式，Flink自带集群，开发测试环境使用
@@ -43,8 +46,7 @@ Flink On Yarn模式
 # vi /etc/profile
 #追加如下内容
 export FLINK_HOME=/usr/local/flink-1.9.1/
-export
-PATH=$PATH:$JAVA_HOME/bin:$ZK_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$KAFKA_HOME/bin:$FLINK_HOME/bin
+export PATH=$PATH:$JAVA_HOME/bin:$ZK_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$KAFKA_HOME/bin:$FLINK_HOME/bin
 
 3、刷新环境变量：
 # source /etc/profile
@@ -57,7 +59,7 @@ PATH=$PATH:$JAVA_HOME/bin:$ZK_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$KAFKA
 #==============================================================================
 # Common
 #==============================================================================
-jobmanager.rpc.address: node01
+# jobmanager.rpc.address: node01            # 高可用集群不需要配置
 # The RPC port where the JobManager is reachable.
 jobmanager.rpc.port: 6123                   # 端口号
 
@@ -79,7 +81,7 @@ rest.port: 8081
 #
 rest.address: node01
 
-taskmanager.numberOfTaskSlots: 2       #插槽数
+taskmanager.numberOfTaskSlots: 2       #插槽数，即运行的线程数
 web.submit.enable: true                #web是否支持提交作业
 
 #历史服务器与yarn有关系
@@ -89,17 +91,26 @@ historyserver.web.port: 8082
 historyserver.archive.fs.dir: hdfs://node01:8020/flink/completed-jobs/
 historyserver.archive.fs.refresh-interval: 10000
 
-# HA settings
+# HA settings 高可用需要配置
 state.backend: filesystem                                                        # 开启HA，使用文件系统作为快照存储
-high-availability: zookeeper                                                     # 使用zookeeper搭建高可用
+high-availability: zookeeper                                                     # 指定高可用模式（必须）
 high-availability.zookeeper.quorum: node01:2181,node02:2181,node03:2181          # 配置ZK集群地址
-high-availability.zookeeper.path.root: /flink                                    # flink在zk的根路径
-high-availability.cluster-id: /cluster_flink
+high-availability.zookeeper.path.root: /flink                                    # 根ZooKeeper节点，在该节点下放置所有集群节点（推荐）
+high-availability.cluster-id: /cluster_flink                                     ＃ 自定义集群（推荐）
 high-availability.storageDir: hdfs://node01:9000/flink/recovery                  # 存储JobManager的元数据到HDFS
 state.backend.fs.checkpointdir: hdfs://node01:8020/flink-checkpoints             # 启用检查点，可以将快照保存到HDFS
+state.checkpoints.dir: hdfs:///flink/checkpoints
+state.savepoints.dir: hdfs:///flink/checkpoints
 ```
 
-3、配置从节点
+3、配置主节点
+```
+vim conf/masters
+node01:8081
+node02:8081
+```
+
+4、配置从节点
 ```
 vim conf/slaves 新版本为conf/workers
 node01
@@ -107,24 +118,23 @@ node02
 node03
 ```
 
-4、配置主节点
-```
-vim conf/masters
-node01:8081
-node02:8081
-```
+
 
 5、分发并修改hadoop02和hadoop03节点的ip或者主机名
 ```
-分发：
-# scp -r /etc/profile node02:/etc
-# scp -r /etc/profile node03:/etc
-
+1、拷贝安装包到各节点
 # scp -r ../flink-1.9.1/ node02:/usr/local/
 # scp -r ../flink-1.9.1/ node03:/usr/local/
 
-#source /etc/profile
+2、其他节点配置环境变量
+# vi /etc/profile
+#追加如下内容
+export FLINK_HOME=/usr/local/flink-1.9.1/
+export PATH=$PATH:$JAVA_HOME/bin:$ZK_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$KAFKA_HOME/bin:$FLINK_HOME/bin
+
+3、刷新环境变量
 # source /etc/profile
+
 
 修改配置：
 # vi ./conf/flink-conf.yaml
@@ -148,7 +158,12 @@ jobmanager.rpc.address: node3
 # start-cluster.sh
 
 3、单独启动
-# jobmanager.sh ((start|start-foreground) cluster)|stop|stop-all
+
+添加JobManager
+# jobmanager.sh ((start|start-foreground) [host] [webui-port])|stop|stop-all
+jobmanager.sh start node02
+
+添加TaskManager
 # taskmanager.sh start|start-foreground|stop|stop-all
 # historyserver.sh start
 ```
@@ -172,7 +187,7 @@ web访问地址：http://node02:8081
 # flink cancel <jobID>  #通过jobID取消job
 # flink stop <jobID>    #通过jobID停止job
 
-# flink run /usr/local/flink-1.9.1/examples/batch/WordCount.jar --input /home/words --output /home/out/fl00
+# flink run -m node01:8081 /usr/local/flink-1.9.1/examples/batch/WordCount.jar --input /home/words --output /home/out/fl00
 ```
 
 
