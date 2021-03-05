@@ -206,3 +206,5 @@ $ spark-submit --class org.apache.spark.examples.SparkPi \
 > /home/hadoop/apps/spark/examples/jars/spark-examples_2.11-2.3.0.jar \
 > 10
 ```
+
+https://www.cnblogs.com/aibabel/p/10828081.html
