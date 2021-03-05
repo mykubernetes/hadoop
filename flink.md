@@ -11,32 +11,6 @@ Flink支持多种安装模式
 - StandaloneHA—独立集群高可用模式，Flink自带集群，开发测试环境使用
 - On Yarn—计算资源统一由Hadoop YARN管理，生产环境使用
 
-Local本地模式原理
-- 1.Flink程序由JobClient进行提交
-- 2.JobClient将作业提交给JobManager
-- 3.JobManager负责协调资源分配和作业执行。资源分配完成后，任务将提交给相应的TaskManager
-- 4.TaskManager启动一个线程以开始执行。TaskManager会向JobManager报告状态更改,如开始执行，正在进行或已完成。 
-- 5.作业执行完成后，结果将发送回客户端(JobClient)
-
-Standalone独立集群模式原理
-- 1.client客户端提交任务给JobManager
-- 2.JobManager负责申请任务运行所需要的资源并管理任务和资源，
-- 3.JobManager分发任务给TaskManager执行
-- 4.TaskManager定期向JobManager汇报状态
-
-Standalone-HA高可用集群模式
-- 从之前的架构中我们可以很明显的发现 JobManager 有明显的单点问题(SPOF，single point of failure)。JobManager 肩负着任务调度以及资源分配，一旦 JobManager 出现意外，其后果可想而知。
-- 在 Zookeeper 的帮助下，一个 Standalone的Flink集群会同时有多个活着的 JobManager，其中只有一个处于工作状态，其他处于 Standby 状态。当工作中的 JobManager 失去连接后(如宕机或 Crash)，Zookeeper 会从 Standby 中选一个新的 JobManager 来接管 Flink 集群。
-
-Flink On Yarn模式
-- 1.Yarn的资源可以按需使用，提高集群的资源利用率
-- 2.Yarn的任务有优先级，根据优先级运行作业
-- 3.基于Yarn调度系统，能够自动化地处理各个角色的 Failover(容错)
-  - JobManager 进程和 TaskManager 进程都由 Yarn NodeManager 监控
-  - 如果 JobManager 进程异常退出，则 Yarn ResourceManager 会重新调度 JobManager 到其他机器
-  - 如果 TaskManager 进程异常退出，JobManager 会收到消息并重新向 Yarn ResourceManager 申请资源，重新启动 TaskManager
-
-
 1、安装
 ```
 1、解压
