@@ -11,7 +11,7 @@ Flink支持多种安装模式
 - StandaloneHA—独立集群高可用模式，Flink自带集群，开发测试环境使用
 - On Yarn—计算资源统一由Hadoop YARN管理，生产环境使用
 
-1、安装
+1、StandaloneHA安装
 ```
 1、解压
 # tar -zxvf /home/flink-1.9.1-bin-scala_2.11.tgz -C /usr/local/
@@ -58,7 +58,7 @@ rest.address: node01
 taskmanager.numberOfTaskSlots: 2       #插槽数，即运行的线程数
 web.submit.enable: true                #web是否支持提交作业
 
-#历史服务器与yarn有关系
+#历史服务器
 jobmanager.archive.fs.dir: hdfs://node01:8020/flink/completed-jobs/
 historyserver.web.address: node01
 historyserver.web.port: 8082
@@ -165,33 +165,40 @@ web访问地址：http://node02:8081
 ```
 
 
-10、Session模式
+10、Yarn Cluster模式 Session模式
 
-1)在yarn上启动一个Flink会话，node1上执行以下命令
+1、修改环境变量
 ```
-flink/bin/yarn-session.sh -n 2 -tm 800 -s 1 -d
+export  HADOOP_CONF_DIR= /opt/module/hadoop-2.7.6/etc/hadoop     #hdfs目录
+```
+
+2、部署启动 ，在yarn上启动一个Flink会话
+```
+flink/bin/yarn-session.sh -n 2 -tm 800 -s 2 -d
 ```
 - -n 表示申请2个容器，这里指的就是多少个taskmanager
 - -tm 表示每个TaskManager的内存大小
 - -s 表示每个TaskManager的slots数量
 - -d 表示以后台程序方式运行
+- -jm : JobManager的内存大小
 
-2）查看UI界面http://node01:8088/cluster
+3、查看UI界面http://node01:8088/cluster
 
 
-3)使用flink run提交任务：
+4、使用flink run提交任务：
 ```
-flink/bin/flink run  /export/server/flink/examples/batch/WordCount.jar
+flink/bin/flink run -m yarn-cluster -yn 2 /export/server/flink/examples/batch/WordCount.jar --input /opt/wcinput/wc.txt --output /opt/wcoutput/
 ```
+- -yn表示TaskManager个数
 
-4）通过上方的ApplicationMaster可以进入Flink的管理界面
+5、通过上方的ApplicationMaster可以进入Flink的管理界面
 
-5）关闭yarn-session
+6、关闭yarn-session
 ```
 yarn application -kill application_1599402747874_0001
 ```
 
-11、Per-Job分离模式
+7、不需要运行yarn-session.sh 直接启动，退出后停止
 
 直接提交job
 ```
