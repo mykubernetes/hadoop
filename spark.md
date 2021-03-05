@@ -7,8 +7,19 @@ http://mirrors.hust.edu.cn/apache/
 3、从清华的镜像站下载  
 https://mirrors.tuna.tsinghua.edu.cn/apache/
 
-Spark安装过程
+安装基础
+---
+1、Java8安装成功
 
+2、zookeeper安装成功
+
+3、hadoop2.7.5 HA安装成功
+
+4、Scala安装成功（不安装进程也可以启动）
+
+
+Spark安装过程
+---
  1、安装
 ```
 $ tar -zxvf spark-2.3.0-bin-hadoop2.7.tgz -C apps/
@@ -104,7 +115,7 @@ $ cd apps/spark/sbin/
 $ start-all.sh
 ```
 
-执行Spark程序on standalone
+Spark程序on standalone
 ---
 1、利用 Spark 自带的例子程序执行一个求 PI（蒙特卡洛算法）的程序:
 ```
@@ -159,3 +170,39 @@ $ hadoop fs -cat /spark/out/p*
 - reduceByKey(_+_)按照key进行reduce，并将value累加
 - saveAsTextFile("/spark/out")将结果写入到hdfs中
 
+Spark程序on YARN
+---
+1、前提
+
+成功启动zookeeper集群、HDFS集群、YARN集群
+
+2、先停止YARN服务，然后修改yarn-site.xml，增加如下内容
+```
+        <property>
+                <name>yarn.nodemanager.vmem-check-enabled</name>
+                <value>false</value>
+                <description>Whether virtual memory limits will be enforced for containers</description>
+        </property>
+        <property>
+                <name>yarn.nodemanager.vmem-pmem-ratio</name>
+                <value>4</value>
+                <description>Ratio between virtual memory to physical memory when setting memory limits for containers</description>
+        </property>  
+```
+
+3、启动Spark on YARN
+```
+$ spark-shell --master yarn --deploy-mode client
+```
+
+4、Spark自带的示例程序PI
+```
+$ spark-submit --class org.apache.spark.examples.SparkPi \
+> --master yarn \
+> --deploy-mode cluster \
+> --driver-memory 500m \
+> --executor-memory 500m \
+> --executor-cores 1 \
+> /home/hadoop/apps/spark/examples/jars/spark-examples_2.11-2.3.0.jar \
+> 10
+```
