@@ -7,6 +7,8 @@ http://mirrors.hust.edu.cn/apache/
 3、从清华的镜像站下载  
 https://mirrors.tuna.tsinghua.edu.cn/apache/
 
+官网spark on kubernetes: https://spark.apache.org/docs/latest/running-on-kubernetes.html
+
 安装基础
 ---
 1、Java8安装成功
