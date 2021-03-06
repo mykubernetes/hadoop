@@ -7,16 +7,8 @@ http://mirrors.hust.edu.cn/apache/
 3、从清华的镜像站下载  
 https://mirrors.tuna.tsinghua.edu.cn/apache/
 
-Spark on K8S 的几种模式
----
-- Standalone：在 K8S 启动一个长期运行的集群，所有 Job 都通过 spark-submit 向这个集群提交
-- Kubernetes Native：通过 spark-submit 直接向 K8S 的 API Server 提交，申请到资源后启动 Pod 做为 Driver 和 Executor 执行 Job，参考 http://spark.apache.org/docs/2.4.6/running-on-kubernetes.html
-- Spark Operator：安装 Spark Operator，然后定义 spark-app.yaml，再执行 kubectl apply -f spark-app.yaml，这种申明式 API 和调用方式是 K8S 的典型应用方式，参考 https://github.com/GoogleCloudPlatform/spark-on-k8s-operator
-
-官网spark on kubernetes: https://spark.apache.org/docs/latest/running-on-kubernetes.html
-
 安装基础
----
+===
 1、Java8安装成功
 
 2、zookeeper安装成功
@@ -216,3 +208,63 @@ $ spark-submit --class org.apache.spark.examples.SparkPi \
 ```
 
 https://www.cnblogs.com/aibabel/p/10828081.html
+
+
+Spark on K8S 的几种模式
+---
+- Standalone：在 K8S 启动一个长期运行的集群，所有 Job 都通过 spark-submit 向这个集群提交
+- Kubernetes Native：通过 spark-submit 直接向 K8S 的 API Server 提交，申请到资源后启动 Pod 做为 Driver 和 Executor 执行 Job，参考 http://spark.apache.org/docs/2.4.6/running-on-kubernetes.html
+- Spark Operator：安装 Spark Operator，然后定义 spark-app.yaml，再执行 kubectl apply -f spark-app.yaml，这种申明式 API 和调用方式是 K8S 的典型应用方式，参考 https://github.com/GoogleCloudPlatform/spark-on-k8s-operator
+
+官网spark on kubernetes: https://spark.apache.org/docs/latest/running-on-kubernetes.html
+
+
+1|在宿主机提交 Job
+```
+bin/spark-submit \
+    --master k8s://https://<k8s-apiserver-host>:<k8s-apiserver-port> \
+    --deploy-mode cluster \
+    --name spark-pi \
+    --class org.apache.spark.examples.SparkPi \
+    --conf spark.executor.instances=5 \
+    --conf spark.kubernetes.container.image=<spark-image> \
+    local:///path/to/examples.jar
+```
+- local:///path/to/examples.jar 指的是 容器的文件系统
+
+2、在k8s上运行，需要证书
+```
+# --master 指定 k8s api server
+# --conf spark.kubernetes.container.image 指定通过 docker-image-tool.sh 创建的镜像
+# 第一个 wordcount.py 是要执行的命令
+# 第二个 wordcount.py 是参数，即统计 wordcount.py 文件的单词量
+bin/spark-submit \
+    --master k8s://https://192.168.0.107:8443 \
+    --deploy-mode cluster \
+    --name spark-test \
+    --conf spark.executor.instances=3 \
+    --conf spark.kubernetes.container.image=spark-py:my_spark_2.4_hadoop_2.7 \
+    /opt/spark/examples/src/main/python/wordcount.py \
+    /opt/spark/examples/src/main/python/wordcount.py
+```
+
+3、通过kubectl proxy 运行不需要证书
+```
+kubectl proxy
+```
+然后 spark-submit 命令变成
+```
+# Api Server 的地址变成 http://127.0.0.1:8001
+# 添加了 --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark
+bin/spark-submit \
+    --master k8s://http://127.0.0.1:8001 \
+    --deploy-mode cluster \
+    --name spark-test \
+    --conf spark.executor.instances=3 \
+    --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
+    --conf spark.kubernetes.container.image=spark-py:my_spark_2.4_hadoop_2.7 \
+    /opt/spark/examples/src/main/python/wordcount.py \
+    /opt/spark/examples/src/main/python/wordcount.py
+```
+
+https://www.cnblogs.com/moonlight-lin/p/13296909.html
