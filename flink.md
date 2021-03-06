@@ -5,6 +5,8 @@ https://ci.apache.org/projects/flink/flink-docs-release-1.10/zh/
 安装包下载，选择对应Hadoop的Flink版本下载  
 http://flink.apache.org/downloads.html 
 
+https://blog.csdn.net/tamako0v0/article/details/107534975
+
 Flink支持多种安装模式
 - Local—本地单机模式，学习测试时使用
 - Standalone—独立集群模式，Flink自带集群，开发测试环境使用
