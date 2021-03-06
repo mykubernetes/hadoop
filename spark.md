@@ -7,6 +7,8 @@ http://mirrors.hust.edu.cn/apache/
 3、从清华的镜像站下载  
 https://mirrors.tuna.tsinghua.edu.cn/apache/
 
+https://www.cnblogs.com/lanrish/p/12267623.html#spark20on20k8se78eafe5a283e983a8e7bdb2e7bb86e88a82_1
+
 安装基础
 ===
 1、Java8安装成功
