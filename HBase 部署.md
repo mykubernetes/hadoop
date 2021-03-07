@@ -178,17 +178,17 @@ HBase常用操作
 $ bin/hbase shell
 ```
 
-2、查看帮助命令  
+2、help 查看帮助命令  
 ```
 hbase(main):001:0> help
 ```
 
-3、查看当前数据库中有哪些表  
+3、list 查看当前数据库中有哪些表  
 ```
 hbase(main):002:0> list
 ```
 
-4、创建一张表
+4、create 创建一张表
 ```
 # create创建student表，包含info、data两个列族
 hbase(main):003:0>  create 'student','info', 'data'
@@ -196,7 +196,7 @@ hbase(main):003:0>  create 'student','info', 'data'
 hbase(main):010:0> create 'student', {NAME => 'info', VERSIONS => '3'}，{NAME => 'data'}
 ```
 
-5、向表中存储一些数据  
+5、put 向表中存储一些数据  
 ```
 # 向student表中插入信息，row key为1001，列族info中添加name列标示符，值为Thomas
 hbase(main):004:0> put 'student','1001','info:name','Thomas'
@@ -208,7 +208,7 @@ hbase(main):005:0> put 'student','1001','info:sex','male'
 hbase(main):006:0> put 'student','1001','info:age','18'
 ```
 
-6、扫描查看存储的数据
+6、scan 扫描查看存储的数据
 ```
 # scan 查询student表中的所有信息
 hbase(main):007:0> scan 'student'
@@ -239,12 +239,12 @@ hbase(main):014:0> scan 'student',{FILTER=>"PrefixFilter('rk')"}
 hbase(main):014:0> scan 'student', {TIMERANGE => [1392368783980, 1392380169184]}
 ```
 
-7、查看表结构  
+7、describe 查看表结构  
 ```
 hbase(main):009:0> describe 'student'
 ```
 
-8、更新指定字段的数据
+8、put 更新指定字段的数据
 ```
 向student表中插入信息，row key为1001，列族info中添加name列标示符，值为Nick
 hbase(main):009:0> put 'student','1001','info:name','Nick'
@@ -253,7 +253,7 @@ hbase(main):009:0> put 'student','1001','info:name','Nick'
 hbase(main):010:0> put 'student','1001','info:age','100'
 ```  
   
-9、查看指定行的数据
+9、get 查看指定行的数据
 ```
 # get 获取student表中row key为1001的所有信息
 hbase(main):012:0> get 'student','1001'
@@ -280,14 +280,14 @@ hbase(main):012:0> get 'student', '1001', {COLUMN => 'info:name', VERSIONS => 5}
 # 获取student表中row key为1001，列族为info，指定时间范围，版本号最新5个的信息
 hbase(main):012:0> get 'student', '1001', {COLUMN => 'info:name', VERSIONS => 5, TIMERANGE => [1488892553804, 1488892688096]}
 
-# 获取student表中row key为rk0001，cell的值为zhangsan的信息
+# 指定rowkey与列值过滤器查询,获取student表中row key为rk0001，cell的值为zhangsan的信息
 get 'people', '1001', {FILTER => "ValueFilter(=, 'binary:zhangsan')"}
 
-# 获取user表中row key为rk0001，列标示符中含有a的信息
+# 指定rowkey与列名模糊查询,获取user表中row key为rk0001，列标示符中含有a的信息
 get 'student', '1001', {FILTER => "(QualifierFilter(=,'substring:a'))"}
 ```
 
-10、删除数据  
+10、delete or deleteall 删除数据  
 ```
 1）删除某一个rowKey全部的数据  
 hbase(main):015:0> deleteall 'student','1001'
@@ -299,12 +299,12 @@ hbase(main):016:0> delete 'student','1001','info:sex'
 hbase(main):016:0> delete 'student','1001','info:name',1392383705316
 ```
 
-11、清空student表数据  
+11、truncate 清空student表数据  
 ```
 hbase(main):017:0> truncate 'student'
 ```
 
-12、删除表  
+12、disable 删除表  
 ```
 1、首先需要先让该表为disable状态
 hbase(main):018:0> disable 'student'
@@ -314,7 +314,7 @@ hbase(main):019:0> drop 'student'
 ```  
 提示：如果直接drop表，会报错：Drop the named table. Table must first be disabled  
 
-13、统计一张表有多少行数据  
+13、count 统计一张表有多少行数据  
 ```
 方式一
 base(main):020:0> count 'student'
