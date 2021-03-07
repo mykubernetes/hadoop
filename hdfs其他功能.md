@@ -1,7 +1,7 @@
 HDFS其他功能
 ---
 一、 集群间数据拷贝
-
+---
 采用discp命令实现两个hadoop集群之间的递归数据复制
 ```
 bin/hadoop distcp hdfs://node002:9000/user/hadoop/hello.txt hdfs://node003:9000/user/hadoop/hello.txt
@@ -32,6 +32,7 @@ hadoop fs -cp har:/// user/dst/myhar.har /* /user/src
 ```
 
 三、快照管理
+---
 ```
 1、开启/禁用指定目录的快照功能
 hdfs dfsadmin -allowSnapshot /user/hadoop/data		
