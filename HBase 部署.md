@@ -226,16 +226,16 @@ hbase(main):014:0> scan 'student', {COLUMNS => ['info:name', 'data:pic']}
 hbase(main):014:0> scan 'student',{STARTROW => '1001',STOPROW => '1007'}
 hbase(main):014:0> scan 'student',{STARTROW => '1001',ENDROW => '1007'}
 
-查询student表中列族为info、列标示符为name的信息,并且版本最新的5个
+# 查询student表中列族为info、列标示符为name的信息,并且版本最新的5个
 hbase(main):014:0> scan 'student', {COLUMNS => 'info:name', VERSIONS => 5}
 
-查询students表中列族为info和data且列标示符中含有a字符的信息
+# 指定多个列族与按照数据值模糊查询，查询students表中列族为info和data且列标示符中含有a字符的信息
 hbase(main):014:0> scan 'student', {COLUMNS => ['info', 'data'], FILTER => "(QualifierFilter(=,'substring:a'))"}
 
-查询students表中row key以rk字符开头的
+# 查询students表中row key以rk字符开头的
 hbase(main):014:0> scan 'student',{FILTER=>"PrefixFilter('rk')"}
 
-查询student表中指定范围的数据
+# 查询student表中指定范围的数据
 hbase(main):014:0> scan 'student', {TIMERANGE => [1392368783980, 1392380169184]}
 ```
 
@@ -289,7 +289,7 @@ get 'student', '1001', {FILTER => "(QualifierFilter(=,'substring:a'))"}
 
 10、delete or deleteall 删除数据  
 ```
-1）删除某一个rowKey全部的数据  
+1）删除某一个rowKey全部的数据
 hbase(main):015:0> deleteall 'student','1001'
 
 2）删除掉某个rowKey中某一列的数据  
@@ -299,12 +299,28 @@ hbase(main):016:0> delete 'student','1001','info:sex'
 hbase(main):016:0> delete 'student','1001','info:name',1392383705316
 ```
 
-11、truncate 清空student表数据  
+11、alter 添加或删除一个列族
+```
+为user表增加列族
+alter 'user', NAME => 'se', VERSIONS => 2
+
+alter 'user', NAME => 'se', METHOD => 'delete' 
+或者
+alter 'user', 'delete' => 'se'
+```
+
+12、alter 更新数据操作
+```
+# 更新版本号,将student表的f1列族版本数改为5
+hbase(main):050:0> alter 'student', NAME => 'info', VERSIONS => 5
+```
+
+13、truncate 清空student表数据  
 ```
 hbase(main):017:0> truncate 'student'
 ```
 
-12、disable 删除表  
+14、disable 删除表  
 ```
 1、首先需要先让该表为disable状态
 hbase(main):018:0> disable 'student'
@@ -314,7 +330,7 @@ hbase(main):019:0> drop 'student'
 ```  
 提示：如果直接drop表，会报错：Drop the named table. Table must first be disabled  
 
-13、count 统计一张表有多少行数据  
+15、count 统计一张表有多少行数据  
 ```
 方式一
 base(main):020:0> count 'student'
@@ -323,15 +339,38 @@ base(main):020:0> count 'student'
 # hbase org.apache.hadoop.hbase.mapreduce.RowCounter 'namespaceName:tableName'
 ```
 
-14、status返回hbase集群的状态信息  
+16、status返回hbase集群的状态信息  
 显示集群状态status，可以为 ‘summary’, ‘simple’, ‘detailed’, or ‘replication’. 默认为 ‘summary’
 ```
+hbase(main):006:0> status 'node01'
 hbase(main):006:0> status
 hbase(main):011:0> status 'simaple'
 hbase(main):012:0> status 'summary'
 hbase(main):013:0> status 'replication'
 hbase(main):014:0> status 'replication', 'source'
 hbase(main):015:0> status 'replication','sink'
+```
+
+17、whoami 显示HBase当前用户
+```
+hbase> whoami
+```
+
+18、exists 检查表是否存在，适用于表量特别多的情况
+```
+hbase> exists 'user'
+```
+
+19、disable/enable 禁用一张表/启用一张表
+```
+hbase> disable 'user'
+hbase> enable 'user'
+```
+
+20、is_enabled、is_disabled 检查表是否启用或禁用
+```
+hbase> is_enabled 'user'
+hbase> is_disabled 'user'
 ```
 
 
