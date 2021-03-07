@@ -192,6 +192,8 @@ hbase(main):002:0> list
 ```
 # create创建student表，包含info、data两个列族
 hbase(main):003:0>  create 'student','info', 'data'
+或者
+hbase(main):010:0> create 'student', {NAME => 'info', VERSIONS => '3'}，{NAME => 'data'}
 ```
 
 5、向表中存储一些数据  
