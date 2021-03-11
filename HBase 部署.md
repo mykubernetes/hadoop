@@ -429,7 +429,22 @@ hbase(main):008:0> enable 'tableName'
 # hbase(main):008:0> delete_snapshot 'snapshotName'
 ```
 
-7、迁移 snapshot
+7、复制到别的集群当中
+
+该操作要用hbase的账户执行，并且在hdfs当中要有hbase的账户建立的临时目录（hbase.tmp.dir参数控制）
+
+采用16个mappers来把一个名为MySnapshot的快照复制到一个名为srv2的集群当中
+```
+$ bin/hbase class org.apache.hadoop.hbase.snapshot.ExportSnapshot -snapshot MySnapshot -copy-to hdfs://srv2:8020/hbase -mappers 16
+```
+
+限制带宽消耗  
+导出的快照，通过指定-bandwidth参数，它需要代表每秒兆字节的整数时，可以限制带宽消耗。下面的例子在上述实施例限制为200 MB /秒。
+```
+$ bin/hbase org.apache.hadoop.hbase.snapshot.ExportSnapshot -snapshot MySnapshot -copy-to hdfs://srv2:8082/hbase -mappers 16 -bandwidth 200
+```
+
+8、迁移 snapshot
 ```
 # hbase org.apache.hadoop.hbase.snapshot.ExportSnapshot \
 -snapshot test \
@@ -440,7 +455,7 @@ hbase(main):008:0> enable 'tableName'
 ```
 - 注意：这种方式用于将快照表迁移到另外一个集群的时候使用，使用MR进行数据的拷贝，速度很快，使用的时候记得设置好bandwidth参数，以免由于网络打满导致的线上业务故障。
 
-8、将snapshot使用bulkload的方式导入
+9、将snapshot使用bulkload的方式导入
 ```
 创建一个新表 
 hbase(main):008:0> create 'newTest','f1','f2'
