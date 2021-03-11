@@ -402,6 +402,10 @@ https://blog.csdn.net/tototuzuoquan/article/details/73649510
 hbase(main):008:0> snapshot 'tableName', 'snapshotName'
 ```
 
+```
+hbase snapshot create -n test_snapshot -t test
+```
+
 3、列出已经存在的快照
 ```
 hbase(main):008:0> list_snapshots
@@ -410,7 +414,7 @@ hbase(main):008:0> list_snapshots
 list_snapshots 'test.*'
 ```
 
-4、使用快照克隆一个表，进行还原
+4、基于快照生成一个新表
 ```
 clone_snapshot 'snapshotName','tableName'
 ```
