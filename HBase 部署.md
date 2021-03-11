@@ -389,7 +389,7 @@ https://blog.csdn.net/tototuzuoquan/article/details/73649510
 | restore_snapshot | 基于快照恢复表 | disable 'harve_role'; restore_snapshot '20180108-harve_role' |
 
 
-1.配置文件配置可以使用快照功能
+1.开启快照支持功能，在0.95+之后的版本都是默认开启的，在0.94.6+是默认关闭
 ```
 <property>
 	<name>hbase.snapshot.enabled</name>
@@ -397,12 +397,12 @@ https://blog.csdn.net/tototuzuoquan/article/details/73649510
 </property>
 ```
 
-2、创建表的snapshot
+2、给表建立快照，不管表是启用或者禁用状态，这个操作不会进行数据拷贝
 ```
 hbase(main):008:0> snapshot 'tableName', 'snapshotName'
 ```
 
-3、查看snapshot
+3、列出已经存在的快照
 ```
 hbase(main):008:0> list_snapshots
 
@@ -416,15 +416,14 @@ clone_snapshot 'snapshotName','tableName'
 ```
 
 
-5、恢复snapshot
-- ps:这里需要对表进行disable操作，先把表置为不可用状态，然后在进行进行restore_snapshot的操作
+5、用快照恢复数据,需要对表进行disable操作，先把表置为不可用状态，然后在进行进行restore_snapshot的操作
 ```
 hbase(main):008:0> disable 'tableName'
 hbase(main):008:0> restore_snapshot 'snapshotName'
 hbase(main):008:0> enable 'tableName'
 ```
 
-6、删除snapshot
+6、删除快照
 ```
 # hbase(main):008:0> delete_snapshot 'snapshotName'
 ```
