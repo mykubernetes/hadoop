@@ -389,12 +389,20 @@ https://blog.csdn.net/tototuzuoquan/article/details/73649510
 | restore_snapshot | 基于快照恢复表 | disable 'harve_role'; restore_snapshot '20180108-harve_role' |
 
 
-1、创建表的snapshot
+1.配置文件配置可以使用快照功能
+```
+<property>
+	<name>hbase.snapshot.enabled</name>
+	<value>true</value>
+</property>
+```
+
+2、创建表的snapshot
 ```
 hbase(main):008:0> snapshot 'tableName', 'snapshotName'
 ```
 
-2、查看snapshot
+3、查看snapshot
 ```
 hbase(main):008:0> list_snapshots
 
@@ -402,7 +410,13 @@ hbase(main):008:0> list_snapshots
 list_snapshots 'test.*'
 ```
 
-3、恢复snapshot
+4、使用快照克隆一个表
+```
+clone_snapshot 'snapshotName','tableName'
+```
+
+
+5、恢复snapshot
 - ps:这里需要对表进行disable操作，先把表置为不可用状态，然后在进行进行restore_snapshot的操作
 ```
 hbase(main):008:0> disable 'tableName'
@@ -410,12 +424,12 @@ hbase(main):008:0> restore_snapshot 'snapshotName'
 hbase(main):008:0> enable 'tableName'
 ```
 
-4、删除snapshot
+6、删除snapshot
 ```
 # hbase(main):008:0> delete_snapshot 'snapshotName'
 ```
 
-5、迁移 snapshot
+7、迁移 snapshot
 ```
 # hbase org.apache.hadoop.hbase.snapshot.ExportSnapshot \
 -snapshot test \
@@ -426,7 +440,7 @@ hbase(main):008:0> enable 'tableName'
 ```
 - 注意：这种方式用于将快照表迁移到另外一个集群的时候使用，使用MR进行数据的拷贝，速度很快，使用的时候记得设置好bandwidth参数，以免由于网络打满导致的线上业务故障。
 
-6、将snapshot使用bulkload的方式导入
+8、将snapshot使用bulkload的方式导入
 ```
 创建一个新表 
 hbase(main):008:0> create 'newTest','f1','f2'
