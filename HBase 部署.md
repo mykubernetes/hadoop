@@ -395,27 +395,19 @@ list_snapshots 'test.*'
 3、恢复snapshot
 - ps:这里需要对表进行disable操作，先把表置为不可用状态，然后在进行进行restore_snapshot的操作
 ```
-disable 'tableName'
-restore_snapshot 'snapshotName'
-enable 'tableName'
+hbase(main):008:0> disable 'tableName'
+hbase(main):008:0> restore_snapshot 'snapshotName'
+hbase(main):008:0> enable 'tableName'
 ```
 
 4、删除snapshot
 ```
-delete_snapshot 'snapshotName'
+# hbase(main):008:0> delete_snapshot 'snapshotName'
 ```
 
 5、迁移 snapshot
 ```
-hbase org.apache.hadoop.hbase.snapshot.ExportSnapshot \
--snapshot snapshotName \
--copy-from hdfs://src-hbase-root-dir/hbase \
--copy-to hdfs://dst-hbase-root-dir/hbase \
--mappers 1 \
--bandwidth 1024
-
-例如： 
-hbase org.apache.hadoop.hbase.snapshot.ExportSnapshot \
+# hbase org.apache.hadoop.hbase.snapshot.ExportSnapshot \
 -snapshot test \
 -copy-from hdfs://node01:8020/hbase \
 -copy-to hdfs://node01:8020/hbase1 \
@@ -426,14 +418,10 @@ hbase org.apache.hadoop.hbase.snapshot.ExportSnapshot \
 
 6、将snapshot使用bulkload的方式导入
 ```
-hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles \
-hdfs://dst-hbase-root-dir/hbase/archive/datapath/tablename/filename \
-tablename
-
-例如： 
 创建一个新表 
-create 'newTest','f1','f2'
-hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles \
+hbase(main):008:0> create 'newTest','f1','f2'
+
+# hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles \
 hdfs://node1:9000/hbase1/archive/data/default/test/6325fabb429bf45c5dcbbe672225f1fb \
 newTest
 ```
