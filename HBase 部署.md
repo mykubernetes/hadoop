@@ -410,7 +410,7 @@ hbase(main):008:0> list_snapshots
 list_snapshots 'test.*'
 ```
 
-4、使用快照克隆一个表
+4、使用快照克隆一个表，进行还原
 ```
 clone_snapshot 'snapshotName','tableName'
 ```
@@ -443,7 +443,7 @@ $ bin/hbase class org.apache.hadoop.hbase.snapshot.ExportSnapshot -snapshot MySn
 $ bin/hbase org.apache.hadoop.hbase.snapshot.ExportSnapshot -snapshot MySnapshot -copy-to hdfs://srv2:8082/hbase -mappers 16 -bandwidth 200
 ```
 
-8、迁移 snapshot
+8、迁移快照
 ```
 # hbase org.apache.hadoop.hbase.snapshot.ExportSnapshot \
 -snapshot test \
@@ -454,7 +454,7 @@ $ bin/hbase org.apache.hadoop.hbase.snapshot.ExportSnapshot -snapshot MySnapshot
 ```
 - 注意：这种方式用于将快照表迁移到另外一个集群的时候使用，使用MR进行数据的拷贝，速度很快，使用的时候记得设置好bandwidth参数，以免由于网络打满导致的线上业务故障。
 
-9、将snapshot使用bulkload的方式导入
+9、将快照使用bulkload的方式导入
 ```
 创建一个新表 
 hbase(main):008:0> create 'newTest','f1','f2'
