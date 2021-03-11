@@ -382,11 +382,11 @@ https://blog.csdn.net/tototuzuoquan/article/details/73649510
 
 | 命令 | 说明 | 例子 |
 |----|-------|-------
-| snapshot | 为某表创建快照 | snapshot ‘harve_role’,'20180108-harve_role' |
+| snapshot | 为某表创建快照 | snapshot 'harve_role','20180108-harve_role' |
 | list_snapshots | 查看快照列表 |  |
 | delete_snapshot | 删除快照 | delete_snapshot '20180108-harve_role' |
-| clone_snapshot | 基于快照，clone一个新表 | clone_snapshot 20180108-harve_role', ‘harve_role2’ |
-| restore_snapshot | 基于快照恢复表 | disable ‘harve_role’ | restore_snapshot '20180108-harve_role' |
+| clone_snapshot | 基于快照，clone一个新表 | clone_snapshot 20180108-harve_role', 'harve_role2' |
+| restore_snapshot | 基于快照恢复表 | disable 'harve_role'; restore_snapshot '20180108-harve_role' |
 
 
 1、创建表的snapshot
