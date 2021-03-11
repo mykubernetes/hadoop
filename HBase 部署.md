@@ -375,3 +375,65 @@ hbase> is_disabled 'user'
 
 
 https://blog.csdn.net/tototuzuoquan/article/details/73649510
+
+
+快照
+===
+1、创建表的snapshot
+```
+hbase(main):008:0> snapshot 'tableName', 'snapshotName'
+```
+
+2、查看snapshot
+```
+hbase(main):008:0> list_snapshots
+
+# 查找以test开头的snapshot
+list_snapshots 'test.*'
+```
+
+3、恢复snapshot
+- ps:这里需要对表进行disable操作，先把表置为不可用状态，然后在进行进行restore_snapshot的操作
+```
+disable 'tableName'
+restore_snapshot 'snapshotName'
+enable 'tableName'
+```
+
+4、删除snapshot
+```
+delete_snapshot 'snapshotName'
+```
+
+5、迁移 snapshot
+```
+hbase org.apache.hadoop.hbase.snapshot.ExportSnapshot \
+-snapshot snapshotName \
+-copy-from hdfs://src-hbase-root-dir/hbase \
+-copy-to hdfs://dst-hbase-root-dir/hbase \
+-mappers 1 \
+-bandwidth 1024
+
+例如： 
+hbase org.apache.hadoop.hbase.snapshot.ExportSnapshot \
+-snapshot test \
+-copy-from hdfs://node01:8020/hbase \
+-copy-to hdfs://node01:8020/hbase1 \
+-mappers 1 \
+-bandwidth 1024
+```
+- 注意：这种方式用于将快照表迁移到另外一个集群的时候使用，使用MR进行数据的拷贝，速度很快，使用的时候记得设置好bandwidth参数，以免由于网络打满导致的线上业务故障。
+
+6、将snapshot使用bulkload的方式导入
+```
+hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles \
+hdfs://dst-hbase-root-dir/hbase/archive/datapath/tablename/filename \
+tablename
+
+例如： 
+创建一个新表 
+create 'newTest','f1','f2'
+hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles \
+hdfs://node1:9000/hbase1/archive/data/default/test/6325fabb429bf45c5dcbbe672225f1fb \
+newTest
+```
