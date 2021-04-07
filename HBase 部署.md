@@ -501,3 +501,58 @@ hbase org.apache.hadoop.hbase.mapreduce.Export test /hbase_data/test_bak_increme
 ```
 hbase org.apache.hadoop.hbase.mapreduce.CopyTable --new.name=new_table_name old_table_name
 ```
+
+
+HBase二级索引
+---
+- HBase表后期按照rowkey查询性能是最高的。rowkey就相当于hbase表的一级索引
+- 但是在实际的工作中，我们做的查询基本上都是按照一定的条件进行查找，无法事先知道满足这些条件的rowkey是什么，正常是可以通过hbase过滤器去实现。但是效率非常低，这是由于查询的过程中需要在底层进行大量的文件扫描。
+- HBase的二级索引
+- 为了HBase的数据查询更高效、适应更多的场景，诸如使用非rowkey字段检索也能做到秒级响应，或者支持各个字段进行模糊查询和多字段组合查询等， 因此需要在HBase上面构建二级索引， 以满足现实中更复杂多样的业务需求。
+  - hbase的二级索引其本质就是建立HBase表中列与行键之间的映射关系。
+
+构建hbase二级索引方案
+- MapReduce方案 
+- Hbase Coprocessor(协处理器)方案 
+- Solr+hbase方案
+- ES+hbase方案
+- Phoenix+hbase方案
+
+安装phoenix
+
+1、下载phoeni,下载与hbase匹配的版本   
+http://archive.apache.org/dist/phoenix/
+
+2、解压缩
+```
+tar -zxf apache-phoenix-4.8.0-HBase-0.98-bin.tar.gz -C ../modules/
+```
+
+3、将解压处理的jar包拷贝到hbase的lib目录
+```
+cd ../modules
+cp phoenix-4.8.0-HBase-0.98-client.jar ../hbase/lib/
+cp phoenix-core-4.8.0-HBase-0.98.jar ../hbase/lib/
+```
+
+4、启动phoenix
+
+首先：zookeeper 进程需要打开
+```
+$ bin/zkServer.shstart
+```
+
+其次：hadoop的进程需要开启
+```
+$ bin/start-dfs.sh
+```
+
+再次：hbase 的需要重启
+```
+$bin/start-hbase.sh
+```
+
+最后：在Phoenix文件夹下执行，指定zk的地址作为hbase的访问入口：
+```
+bin/sqlline.py
+```
