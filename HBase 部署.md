@@ -467,3 +467,31 @@ hbase(main):008:0> create 'newTest','f1','f2'
 hdfs://node1:9000/hbase1/archive/data/default/test/6325fabb429bf45c5dcbbe672225f1fb \
 newTest
 ```
+
+基于HBase提供的类对表进行备份
+---
+使用HBase提供的类把HBase中某张表的数据导出到HDFS，之后再导出到测试hbase表中。
+
+1、从hbase表导出到HDFS
+```
+[hadoop@node01 shells]$ hbase org.apache.hadoop.hbase.mapreduce.Export myuser /hbase_data/myuser_bak
+```
+
+2、文件导入hbase表
+
+1）hbase shell中创建备份目标表
+```
+create 'myuser_bak','f1','f2'
+```
+
+2）将HDFS上的数据导入到备份目标表中
+```
+hbase org.apache.hadoop.hbase.mapreduce.Driver import myuser_bak /hbase_data/myuser_bak/*
+```
+
+补充说明  
+以上都是对数据进行了全量备份，后期也可以实现表的增量数据备份，增量备份跟全量备份操作差不多，只不过要在后面加上时间戳。  
+例如：HBase数据导出到HDFS
+```
+hbase org.apache.hadoop.hbase.mapreduce.Export test /hbase_data/test_bak_increment 开始时间戳  结束时间戳
+```
