@@ -528,7 +528,7 @@ http://archive.apache.org/dist/phoenix/
 tar -zxf apache-phoenix-4.8.0-HBase-0.98-bin.tar.gz -C ../modules/
 ```
 
-3、将解压处理的jar包拷贝到hbase的lib目录
+3、将解压处理的jar包拷贝到hbase的lib目录,拷贝到每台regionserver服务器上
 ```
 cd ../modules
 cp phoenix-4.8.0-HBase-0.98-client.jar ../hbase/lib/
@@ -561,6 +561,7 @@ bin/sqlline.py [hostname]:2181
 ```
 
 5、测试
+
 1、在show databases以及show tables是不支持的
 
 2、-》!tables查看有什么表，hbase里面也会有phoenix的系统表
