@@ -474,7 +474,7 @@ newTest
 
 1、从hbase表导出到HDFS
 ```
-[hadoop@node01 shells]$ hbase org.apache.hadoop.hbase.mapreduce.Export myuser /hbase_data/myuser_bak
+hbase org.apache.hadoop.hbase.mapreduce.Export myuser /hbase_data/myuser_bak
 ```
 
 2、文件导入hbase表
