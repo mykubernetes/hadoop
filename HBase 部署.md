@@ -495,3 +495,9 @@ hbase org.apache.hadoop.hbase.mapreduce.Driver import myuser_bak /hbase_data/myu
 ```
 hbase org.apache.hadoop.hbase.mapreduce.Export test /hbase_data/test_bak_increment 开始时间戳  结束时间戳
 ```
+
+
+3、将老表拷贝一个新表
+```
+hbase org.apache.hadoop.hbase.mapreduce.CopyTable --new.name=new_table_name old_table_name
+```
