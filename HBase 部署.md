@@ -555,4 +555,60 @@ $bin/start-hbase.sh
 最后：在Phoenix文件夹下执行，指定zk的地址作为hbase的访问入口：
 ```
 bin/sqlline.py
+
+或者
+bin/sqlline.py [hostname]:2181
+```
+
+5、测试
+1、在show databases以及show tables是不支持的
+
+2、-》!tables查看有什么表，hbase里面也会有phoenix的系统表
+
+3、在phoenix中创建表
+```
+create table user(
+id varchar primary key,
+name varchar,
+password varchar
+);
+```
+1）、在hbase中是区分大小写的，在phoenix中不区分大小写，但是默认都是大写，加上双引号就是小写
+
+2）、在hbase中desc "USER" 发现映射过来的表列簇默认是0，NAME => '0'
+
+3）、重新创建，指定列簇与列
+```
+drop table user;
+create table user(
+id varchar primary key,
+info.name varchar,
+info.password varchar
+);
+```
+4、添加数据：updata+insert结合--》upsert
+```
+upsert into user(id,name,password)values('001','admin','admin');
+upsert into user(id,name,password)values('002','admin','admin');
+```
+5、查询数据：
+```
+select * from user;   
+```
+6、删除数据：
+```
+delete from user where id='002';
+```
+在phoenix中的client界面中进行的crud操作，与RDBMS的操作没有太大的区别
+
+ 7、hbase与phoenix表与表之间进行关联，将hbase中的表映射到phoenix
+```
+create table "stu_info"(
+rowkey varchar primary key,
+info"."name" varchar,
+"info"."age" varchar,
+"info"."sex" varchar,
+"degree"."xueli" varchar,
+"work"."job" varchar
+); 
 ```
