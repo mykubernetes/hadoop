@@ -24,11 +24,18 @@ $ su - root
 提示：如果使用离线绿色版本（免安装版本）需要手动初始化Mysql数据库
 ```  
 5、配置Mysql  
-	** 开启Mysql服务  
-``` # systemctl start mysqld.service ```  
-	** 设置root用户密码  
-``` # mysqladmin -uroot password '123456' ```  
-	** 为用户以及其他机器节点授权  
+
+开启Mysql服务
+```
+# systemctl start mysqld.service
+```
+
+设置root用户密码
+```
+# mysqladmin -uroot password '123456'
+```  
+
+为用户以及其他机器节点授权
 ```
 mysql> grant all on *.* to root@'node01' identified by '123456';
 flush privileges;
