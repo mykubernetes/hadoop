@@ -296,7 +296,138 @@ hbase(main):209:0> delete_snapshot 'snapshot_t1'
 注意：0.94.x版本之前是不支持snapshot快照命令的。
 
 ## 9.数据查询：
- 
+
+### 1.创建并插入数据：
+```
+hbase(main):179:0> create 'scores','grade','course'
+hbase(main):180:0> put 'scores','zhangsan01','course:art','90'
+hbase(main):181:0> scan 'scores'
+ROW                                                          COLUMN+CELL                                                                                               
+ zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90                                                     
+1 row(s) in 0.0150 seconds
+
+hbase(main):182:0> put 'scores','zhangsan01','course:math','99',1498003561726
+# 这里手动设置时间戳的时候一定不能大于你当前的系统时间，否则的话无法删除该数据，我这里手动设置数据是为了下面的DependentColumnFilter过滤器试验。你可以查看一下插入第一条数据的时间戳，再插入第二条数据的时间戳为第一条数据的时间戳
+
+hbase(main):183:0> put 'scores','zhangsan01','grade:','101'
+# 问题：当我将这条插入的数据删除之后再执行put 'scores','zhangsan01','grade:','101',1498003561726后能成功却scan 'scores'后没有该条数据，而再执行put 'scores','zhangsan01','grade:','101'后scan 'scores'却能查到该条数据。如果想插入该条数据的时候手动设置时间戳的话，必须在第一次插入该条数据或者truncate后再插入。
+
+hbase(main):184:0> put 'scores','zhangsan02','course:art','90'
+
+hbase(main):185:0> get 'scores','zhangsan02','course:art'
+COLUMN                                                       CELL
+ course:art                                                  timestamp=1498003601365, value=90     
+1 row(s) in 0.0080 seconds
+
+hbase(main):186:0> put 'scores','zhangsan02','grade:','102',1498003601365
+hbase(main):187:0> put 'scores','zhangsan02','course:math','66',1498003561726
+hbase(main):188:0> put 'scores','lisi01','course:math','89',1498003561726
+hbase(main):189:0> put 'scores','lisi01','course:art','89'
+hbase(main):190:0> put 'scores','lisi01','grade:','201',1498003561726
+```
+
+### 2.根据rowkey查询：
+```
+hbase(main):187:0> get 'scores','zhangsan01'
+COLUMN                                                       CELL
+ course:art                                                  timestamp=1498003561726, value=90
+ course:math                                                 timestamp=1498003561726, value=99
+ grade:                                                      timestamp=1498003593575, value=101
+3 row(s) in 0.0160 seconds
+```
+
+### 3.根据列名查询：
+```
+hbase(main):188:0> scan 'scores',{COLUMNS=>'course:art'}
+ROW                                                          COLUMN+CELL
+ lisi01                                                      column=course:art, timestamp=1498003655021, value=89
+ zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
+ zhangsan02                                                  column=course:art, timestamp=1498003601365, value=90
+3 row(s) in 0.0120 seconds
+```
+
+### 4.查询两个rowkey之间的数据：
+```
+hbase(main):205:0> scan 'scores',{STARTROW=>'zhangsan01',STOPROW=>'zhangsan02'}
+ROW                                                          COLUMN+CELL
+ zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
+ zhangsan01                                                  column=course:math, timestamp=1498003561726, value=99
+ zhangsan01                                                  column=grade:, timestamp=1498003593575, value=101
+1 row(s) in 0.0140 seconds
+```
+
+### 5.查询两个rowkey且根据列名来查询：
+```
+hbase(main):206:0> scan 'scores',{COLUMNS=>'course:art',STARTROW=>'zhangsan01',STOPROW=>'zhangsan02'}
+ROW                                                          COLUMN+CELL
+ zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
+1 row(s) in 0.0110 seconds
+```
+
+### 6.查询指定rowkey到末尾根据列名的查询：
+```
+hbase(main):207:0> scan 'scores',{COLUMNS=>'course:art',STARTROW=>'zhangsan01',STOPROW=>'zhangsan09'}
+ROW                                                          COLUMN+CELL
+ zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
+ zhangsan02                                                  column=course:art, timestamp=1498003601365, value=90
+2 row(s) in 0.0310 seconds
+```
+
+### 7.限制查找条数：
+```
+hbase(main):208:0> scan 'scores',{LIMIT=>1}
+ROW                                                          COLUMN+CELL
+ zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
+ zhangsan01                                                  column=course:math, timestamp=1498003561726, value=99
+ zhangsan01                                                  column=grade:, timestamp=1498003593575, value=101
+1 row(s) in 0.0140 seconds
+```
+
+### 8.限制时间范围：
+```
+hbase(main):209:0> scan 'scores',{TIMERANGE=>[1498003561720,1498003594575]}
+ROW                                                          COLUMN+CELL
+ zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
+ zhangsan01                                                  column=course:math, timestamp=1498003561726, value=99
+ zhangsan01                                                  column=grade:, timestamp=1498003593575, value=101
+1 row(s) in 0.0140 seconds
+```
+
+### 9.利用scan查看同一个cell之前已经put的数据：
+
+scan时可以设置是否开启RAW模式，开启RAW模式会返回已添加删除标记但是未实际进行删除的数据：
+
+说明：虽然已经put覆盖了之前同一个cell的数据，但是实际上数据并没有进行删除，只是标记删除了，利用RAW模式可以看到：
+```
+hbase(main):044:0> scan 'test_schema1:t2'
+ROW                                               COLUMN+CELL
+ 101                                              column=F:a, timestamp=1627351985825, value=101
+ 101                                              column=F:b, timestamp=1627352011077, value=huiqtest2
+ 102                                              column=F:a, timestamp=1627351998674, value=102
+ 102                                              column=F:b, timestamp=1627352044369, value=huiqtest22
+2 row(s)
+Took 0.0059 seconds                                                                                                                                                                                
+hbase(main):045:0> deleteall 'test_schema1:t2','102'
+Took 0.0601 seconds                                                                                                                                                                                
+hbase(main):046:0> delete 'test_schema1:t2','101','F:b'
+Took 0.0079 seconds                                                                                                                                                                                
+hbase(main):047:0> scan 'test_schema1:t2'
+ROW                                               COLUMN+CELL
+ 101                                              column=F:a, timestamp=1627351985825, value=101
+ 101                                              column=F:b, timestamp=1627351960913, value=huiqtest
+1 row(s)
+Took 0.0083 seconds                                                                                                                                                                                
+hbase(main):048:0> scan 'test_schema1:t2', {RAW=>true, VERSIONS=>1}
+ROW                                               COLUMN+CELL
+ 101                                              column=F:a, timestamp=1627351985825, value=101
+ 101                                              column=F:b, timestamp=1627352011077, type=Delete
+ 101                                              column=F:b, timestamp=1627352011077, value=huiqtest2
+ 102                                              column=F:, timestamp=1627352086801, type=DeleteFamily
+ 102                                              column=F:a, timestamp=1627351998674, value=102
+ 102                                              column=F:b, timestamp=1627352044369, value=huiqtest22
+2 row(s)
+Took 0.0061 seconds    
+```
 
 ## 10.delete 删除数据：
 
@@ -458,7 +589,7 @@ HBase提供的安全管控级别包括：
 - ColumnFamily：列簇级权限。
 - Cell：单元级。
 
-和关系数据库一样，权限的授予和回收都使用grant和revoke，但格式有所不同。grant语法格式：grant user permissions table column_family column_qualifier
+和关系数据库一样，权限的授予和回收都使用grant和revoke，但格式有所不同。grant语法格式：`grant user permissions table column_family column_qualifier`
 
 ### （2）查看权限：
 ```
