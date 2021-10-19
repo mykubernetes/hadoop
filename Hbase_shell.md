@@ -297,7 +297,7 @@ hbase(main):209:0> delete_snapshot 'snapshot_t1'
 
 ## 9.数据查询：
 
-### 1.创建并插入数据：
+### 1)创建并插入数据：
 ```
 hbase(main):179:0> create 'scores','grade','course'
 hbase(main):180:0> put 'scores','zhangsan01','course:art','90'
@@ -326,7 +326,7 @@ hbase(main):189:0> put 'scores','lisi01','course:art','89'
 hbase(main):190:0> put 'scores','lisi01','grade:','201',1498003561726
 ```
 
-### 2.根据rowkey查询：
+### 2)根据rowkey查询：
 ```
 hbase(main):187:0> get 'scores','zhangsan01'
 COLUMN                                                       CELL
@@ -336,7 +336,7 @@ COLUMN                                                       CELL
 3 row(s) in 0.0160 seconds
 ```
 
-### 3.根据列名查询：
+### 3)根据列名查询：
 ```
 hbase(main):188:0> scan 'scores',{COLUMNS=>'course:art'}
 ROW                                                          COLUMN+CELL
@@ -346,7 +346,7 @@ ROW                                                          COLUMN+CELL
 3 row(s) in 0.0120 seconds
 ```
 
-### 4.查询两个rowkey之间的数据：
+### 4)查询两个rowkey之间的数据：
 ```
 hbase(main):205:0> scan 'scores',{STARTROW=>'zhangsan01',STOPROW=>'zhangsan02'}
 ROW                                                          COLUMN+CELL
@@ -356,7 +356,7 @@ ROW                                                          COLUMN+CELL
 1 row(s) in 0.0140 seconds
 ```
 
-### 5.查询两个rowkey且根据列名来查询：
+### 5)查询两个rowkey且根据列名来查询：
 ```
 hbase(main):206:0> scan 'scores',{COLUMNS=>'course:art',STARTROW=>'zhangsan01',STOPROW=>'zhangsan02'}
 ROW                                                          COLUMN+CELL
@@ -364,7 +364,7 @@ ROW                                                          COLUMN+CELL
 1 row(s) in 0.0110 seconds
 ```
 
-### 6.查询指定rowkey到末尾根据列名的查询：
+### 6)查询指定rowkey到末尾根据列名的查询：
 ```
 hbase(main):207:0> scan 'scores',{COLUMNS=>'course:art',STARTROW=>'zhangsan01',STOPROW=>'zhangsan09'}
 ROW                                                          COLUMN+CELL
@@ -373,7 +373,7 @@ ROW                                                          COLUMN+CELL
 2 row(s) in 0.0310 seconds
 ```
 
-### 7.限制查找条数：
+### 7)限制查找条数：
 ```
 hbase(main):208:0> scan 'scores',{LIMIT=>1}
 ROW                                                          COLUMN+CELL
@@ -383,7 +383,7 @@ ROW                                                          COLUMN+CELL
 1 row(s) in 0.0140 seconds
 ```
 
-### 8.限制时间范围：
+### 8)限制时间范围：
 ```
 hbase(main):209:0> scan 'scores',{TIMERANGE=>[1498003561720,1498003594575]}
 ROW                                                          COLUMN+CELL
@@ -393,7 +393,7 @@ ROW                                                          COLUMN+CELL
 1 row(s) in 0.0140 seconds
 ```
 
-### 9.利用scan查看同一个cell之前已经put的数据：
+### 9)利用scan查看同一个cell之前已经put的数据：
 
 scan时可以设置是否开启RAW模式，开启RAW模式会返回已添加删除标记但是未实际进行删除的数据：
 
