@@ -417,7 +417,7 @@ ROW                                               COLUMN+CELL
  101                                              column=F:b, timestamp=1627351960913, value=huiqtest
 1 row(s)
 Took 0.0083 seconds                                                                                                                                                                                
-hbase(main):048:0> scan 'test_schema1:t2', {RAW=>true, VERSIONS=>1}
+hbase(main):048:0> scan 'test_schema1:t2', {RAW=>true, VERSIONS=>1}                #RAW=true
 ROW                                               COLUMN+CELL
  101                                              column=F:a, timestamp=1627351985825, value=101
  101                                              column=F:b, timestamp=1627352011077, type=Delete
@@ -428,6 +428,8 @@ ROW                                               COLUMN+CELL
 2 row(s)
 Took 0.0061 seconds    
 ```
+get获取某个cell保留的（未添加删除标记）的所有version数据（在describe 表名，查看列族VERSIONS是多少，get就会多少数据(cell的数据大于等于VERSIONS的数量)）
+
 
 ## 10.delete 删除数据：
 
