@@ -329,67 +329,67 @@ hbase(main):190:0> put 'scores','lisi01','grade:','201',1498003561726
 ### 2)根据rowkey查询：
 ```
 hbase(main):187:0> get 'scores','zhangsan01'
-COLUMN                                                       CELL
- course:art                                                  timestamp=1498003561726, value=90
- course:math                                                 timestamp=1498003561726, value=99
- grade:                                                      timestamp=1498003593575, value=101
+COLUMN                                                      CELL
+course:art                                                  timestamp=1498003561726, value=90
+course:math                                                 timestamp=1498003561726, value=99
+grade:                                                      timestamp=1498003593575, value=101
 3 row(s) in 0.0160 seconds
 ```
 
 ### 3)根据列名查询：
 ```
 hbase(main):188:0> scan 'scores',{COLUMNS=>'course:art'}
-ROW                                                          COLUMN+CELL
- lisi01                                                      column=course:art, timestamp=1498003655021, value=89
- zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
- zhangsan02                                                  column=course:art, timestamp=1498003601365, value=90
+ROW                                                         COLUMN+CELL
+lisi01                                                      column=course:art, timestamp=1498003655021, value=89
+zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
+zhangsan02                                                  column=course:art, timestamp=1498003601365, value=90
 3 row(s) in 0.0120 seconds
 ```
 
 ### 4)查询两个rowkey之间的数据：
 ```
 hbase(main):205:0> scan 'scores',{STARTROW=>'zhangsan01',STOPROW=>'zhangsan02'}
-ROW                                                          COLUMN+CELL
- zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
- zhangsan01                                                  column=course:math, timestamp=1498003561726, value=99
- zhangsan01                                                  column=grade:, timestamp=1498003593575, value=101
+ROW                                                         COLUMN+CELL
+zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
+zhangsan01                                                  column=course:math, timestamp=1498003561726, value=99
+zhangsan01                                                  column=grade:, timestamp=1498003593575, value=101
 1 row(s) in 0.0140 seconds
 ```
 
 ### 5)查询两个rowkey且根据列名来查询：
 ```
 hbase(main):206:0> scan 'scores',{COLUMNS=>'course:art',STARTROW=>'zhangsan01',STOPROW=>'zhangsan02'}
-ROW                                                          COLUMN+CELL
- zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
+ROW                                                         COLUMN+CELL
+zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
 1 row(s) in 0.0110 seconds
 ```
 
 ### 6)查询指定rowkey到末尾根据列名的查询：
 ```
 hbase(main):207:0> scan 'scores',{COLUMNS=>'course:art',STARTROW=>'zhangsan01',STOPROW=>'zhangsan09'}
-ROW                                                          COLUMN+CELL
- zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
- zhangsan02                                                  column=course:art, timestamp=1498003601365, value=90
+ROW                                                         COLUMN+CELL
+zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
+zhangsan02                                                  column=course:art, timestamp=1498003601365, value=90
 2 row(s) in 0.0310 seconds
 ```
 
 ### 7)限制查找条数：
 ```
 hbase(main):208:0> scan 'scores',{LIMIT=>1}
-ROW                                                          COLUMN+CELL
- zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
- zhangsan01                                                  column=course:math, timestamp=1498003561726, value=99
- zhangsan01                                                  column=grade:, timestamp=1498003593575, value=101
+ROW                                                         COLUMN+CELL
+zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
+zhangsan01                                                  column=course:math, timestamp=1498003561726, value=99
+zhangsan01                                                  column=grade:, timestamp=1498003593575, value=101
 1 row(s) in 0.0140 seconds
 ```
 
 ### 8)限制时间范围：
 ```
 hbase(main):209:0> scan 'scores',{TIMERANGE=>[1498003561720,1498003594575]}
-ROW                                                          COLUMN+CELL
- zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
- zhangsan01                                                  column=course:math, timestamp=1498003561726, value=99
- zhangsan01                                                  column=grade:, timestamp=1498003593575, value=101
+ROW                                                         COLUMN+CELL
+zhangsan01                                                  column=course:art, timestamp=1498003561726, value=90
+zhangsan01                                                  column=course:math, timestamp=1498003561726, value=99
+zhangsan01                                                  column=grade:, timestamp=1498003593575, value=101
 1 row(s) in 0.0140 seconds
 ```
 
@@ -400,11 +400,11 @@ scan时可以设置是否开启RAW模式，开启RAW模式会返回已添加删�
 说明：虽然已经put覆盖了之前同一个cell的数据，但是实际上数据并没有进行删除，只是标记删除了，利用RAW模式可以看到：
 ```
 hbase(main):044:0> scan 'test_schema1:t2'
-ROW                                               COLUMN+CELL
- 101                                              column=F:a, timestamp=1627351985825, value=101
- 101                                              column=F:b, timestamp=1627352011077, value=huiqtest2
- 102                                              column=F:a, timestamp=1627351998674, value=102
- 102                                              column=F:b, timestamp=1627352044369, value=huiqtest22
+ROW                                              COLUMN+CELL
+101                                              column=F:a, timestamp=1627351985825, value=101
+101                                              column=F:b, timestamp=1627352011077, value=huiqtest2
+102                                              column=F:a, timestamp=1627351998674, value=102
+102                                              column=F:b, timestamp=1627352044369, value=huiqtest22
 2 row(s)
 Took 0.0059 seconds                                                                                                                                                                                
 hbase(main):045:0> deleteall 'test_schema1:t2','102'
@@ -412,19 +412,19 @@ Took 0.0601 seconds
 hbase(main):046:0> delete 'test_schema1:t2','101','F:b'
 Took 0.0079 seconds                                                                                                                                                                                
 hbase(main):047:0> scan 'test_schema1:t2'
-ROW                                               COLUMN+CELL
- 101                                              column=F:a, timestamp=1627351985825, value=101
- 101                                              column=F:b, timestamp=1627351960913, value=huiqtest
+ROW                                              COLUMN+CELL
+101                                              column=F:a, timestamp=1627351985825, value=101
+101                                              column=F:b, timestamp=1627351960913, value=huiqtest
 1 row(s)
 Took 0.0083 seconds                                                                                                                                                                                
 hbase(main):048:0> scan 'test_schema1:t2', {RAW=>true, VERSIONS=>1}                #RAW=true
-ROW                                               COLUMN+CELL
- 101                                              column=F:a, timestamp=1627351985825, value=101
- 101                                              column=F:b, timestamp=1627352011077, type=Delete
- 101                                              column=F:b, timestamp=1627352011077, value=huiqtest2
- 102                                              column=F:, timestamp=1627352086801, type=DeleteFamily
- 102                                              column=F:a, timestamp=1627351998674, value=102
- 102                                              column=F:b, timestamp=1627352044369, value=huiqtest22
+ROW                                              COLUMN+CELL
+101                                              column=F:a, timestamp=1627351985825, value=101
+101                                              column=F:b, timestamp=1627352011077, type=Delete
+101                                              column=F:b, timestamp=1627352011077, value=huiqtest2
+102                                              column=F:, timestamp=1627352086801, type=DeleteFamily
+102                                              column=F:a, timestamp=1627351998674, value=102
+102                                              column=F:b, timestamp=1627352044369, value=huiqtest22
 2 row(s)
 Took 0.0061 seconds    
 ```
