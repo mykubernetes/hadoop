@@ -445,8 +445,22 @@ $ jps
 13516 NameNode
 13668 JournalNode
 ```
+- 1）NameNode 它是 hadoop 中的主服务器，管理文件系统名称空间和对集群中存储的文件的 访问，保存有 metadate。
+- 2）SecondaryNameNode 提供周期检查点和清理任务。帮助 NN 合并 editslog，减少 NN 启动 时间。
+- 3）DataNode 它负责管理连接到节点的存储（一个集群中可以有多个节点）。每个存储数据 的节点运行一个 datanode 守护进程。
+- 4）ResourceManager（JobTracker）JobTracker 负责调度 DataNode 上的工作。每个 DataNode 有一个 TaskTracker，它们执行实际工作。
+- 5）NodeManager（TaskTracker）执行任务
+- 6）DFSZKFailoverController 高可用时它负责监控 NN 的状态，并及时的把状态信息写入 ZK。 它通过一个独立线程周期性的调用 NN 上的一个特定接口来获取 NN 的健康状态。FC 也有选 择谁作为 Active NN 的权利，因为最多只有两个节点，目前选择策略还比较简单（先到先得， 轮换）。
+- 7）JournalNode 高可用情况下存放 namenode 的 editlog 文件.
+
+
+
 访问web地址  
-``` http://node:8088 ```  
+```
+http://node:8088
+```
 
 测试  
-```$ bin/yarn jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.5.0.jar wordcount /input/ /output/ ```
+```
+$ bin/yarn jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.5.0.jar wordcount /input/ /output/
+```
