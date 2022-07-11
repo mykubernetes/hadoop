@@ -144,12 +144,21 @@ RS-6-3-1024k
 
 示例：
 ```
+# 在hdfs文件系统中创建目录
 # hadoop fs -mkdir /tmp/ecdata/data1
+
+# 给指定目录设置RS策略
+# hdfs ec -setPolicy -path /tmp/ecdata/data1 -policy RS-6-3-1024k
+Set RS-6-3-1024k erasure coding policy on /tmp/ecdata/data1
+
+# 获取指定目录的RS策略
 # hdfs ec -getPolicy -path /tmp/ecdata/data1
 RS-6-3-1024k
 
+# 删除指定目录的策略
 # hdfs ec -unsetPolicy -path /tmp/ecdata/data1
 Unset erasure coding policy from /tmp/ecdata/data1
+
 
 # hdfs ec -getPolicy -path /tmp/ecdata/data1
 RS-6-3-1024k
