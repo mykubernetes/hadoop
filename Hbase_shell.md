@@ -25,6 +25,73 @@ ip映射成主机名：
 
 # 二、hbase shell 基本操作
 
+# 数据相关
+```
+取5行数据
+scan 'order_info_tbl' ,{LIMIT=>5}
+
+查看hbase所有的filters
+show_filters
+
+列出所有表
+list
+列出sence开头的表
+list 'list 'sence.*' 
+
+通过rowKey精确查询 
+get 'order_info_tbl','1018112285488692_1542878164726_10'
+
+
+删除main列族下的tx_id列（delete '表名','rowKey','列族名:列' ）
+delete 'order_info_tbl','1543071151193','main:tx_id'
+
+删除rowKey下的所有列
+deleteall 'order_info_tbl', ’rowkey'
+
+修改操作，将main列族下的tx_id列置空（put '表名','rowKey','列族名:列' ）
+put 'order_info_tbl','1543071151193','main:tx_id',''
+
+
+设置指定rowKey下列的值
+put 'test_tianyan','row2','main:name','hyq'
+
+获取rowKey下具体一列的值
+get 'test_tianyan','row2',{COLUMN=>'main:name'}
+```
+
+# scan高级用法
+```
+配合show_filters命令，指定相应的filter使用。
+
+指定开始位置和结束位置
+scan 'order_info_tbl',{STARTROW=>'1018112552468133',ENDROW=>'1018112658271187',LIMIT=>11}
+
+模糊匹配rowKey
+scan 'test_tianyan',{ROWPREFIXFILTER=>'r',LIMIT=>2}
+
+扫描多个列,限制行数
+scan 'test_tianyan',{COLUMNS=>['main:id','main:name'],LIMIT=>1}
+
+模糊匹配rowKey
+scan 'order_info_tbl',{ROWPREFIXFILTER =>'11',LIMIT=>2,FILTER=>"(QualifierFilter (>, 'binary:1018021991552673')) "}
+
+过滤出10条包含指定值的列
+scan 'order_info_tbl', {FILTER=>"ValueFilter(=,'substring:41012_11')",LIMIT=>10}
+
+rowKey前缀模糊匹配
+scan 'test_tianyan', {FILTER => "PrefixFilter('r')"}
+
+rowKey前缀模糊匹配，只查询指定列
+scan 'test_tianyan',{COLUMNS=>'main:name',FILTER=>"PrefixFilter('r')"}
+scan 'test_tianyan',{COLUMNS=>['main:name','main:id'],FILTER=>"PrefixFilter('r')"}
+
+列过滤
+scan 'test_tianyan',{FILTER=>"QualifierFilter(>=,'binary:name')"}
+
+时间过滤器
+scan 'test_tianyan',{FILTER=>"TimestampsFilter(1543813062349,1543813090552)"}
+```
+
 ## 1.进入hbase shell console：
 
 注：如果有kerberos认证，需要事先使用相应的keytab进行一下认证（使用kinit命令），认证成功之后再使用hbase shell进入可以使用whoami命令可查看当前用户。
@@ -429,7 +496,6 @@ ROW                                              COLUMN+CELL
 Took 0.0061 seconds    
 ```
 get获取某个cell保留的（未添加删除标记）的所有version数据（在describe 表名，查看列族VERSIONS是多少，get就会多少数据(cell的数据大于等于VERSIONS的数量)）
-
 
 ## 10.delete 删除数据：
 
