@@ -194,16 +194,27 @@ Spark程序on YARN
 
 2、先停止YARN服务，然后修改yarn-site.xml，增加如下内容
 ```
+<!--是否启动一个线程检查每个任务正使用的物理内存量，如果任务超出分配值，则直接将其杀掉，默认值是true-->
+        <property>
+                <name>yarn.nodemanager.pmem-check-enabled</name>
+                <value>false</value>
+        </property>
+<!--是否启动一个线程检查每个任务正使用的虚拟内存量，如果任务超出分配值，则直接将其杀掉，默认值是true-->
         <property>
                 <name>yarn.nodemanager.vmem-check-enabled</name>
                 <value>false</value>
-                <description>Whether virtual memory limits will be enforced for containers</description>
         </property>
         <property>
                 <name>yarn.nodemanager.vmem-pmem-ratio</name>
                 <value>4</value>
                 <description>Ratio between virtual memory to physical memory when setting memory limits for containers</description>
         </property>  
+```
+
+```
+# cat spark-env.sh
+export JAVA_HOME=/usr/local/jdk1.8.0_73
+YARN_CONF_DIR=/opt/module/hadoop/ect/hadoop
 ```
 
 3、启动Spark on YARN
