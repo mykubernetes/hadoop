@@ -38,7 +38,7 @@ $ cp spark-env.sh.template spark-env.sh
 $ vim spark-env.sh
 
 export JAVA_HOME=/usr/local/jdk1.8.0_73
-#export SCALA_HOME=/usr/share/scala
+#export SCALA_HOME=/usr/share/scala                #高可用不需要配置需要注释掉
 #export SPARK_MASTER_IP=hadoop1                    #高可用不需要配置需要注释掉
 
 export HADOOP_HOME=/home/hadoop/apps/hadoop-2.7.5
@@ -46,6 +46,9 @@ export HADOOP_CONF_DIR=/home/hadoop/apps/hadoop-2.7.5/etc/hadoop
 
 export SPARK_WORKER_MEMORY=500m                    #启动需要的内存
 export SPARK_WORKER_CORES=1                        #启动需要的cpu盒数
+
+# MASTER监控页面默认访问端口8080，但是可能会和Zookeeper冲突，所以改成8089也可以自定义，访问UI监控页面时请注意
+SPARK_MASTER_WEBUI_PORT=89889                      #spark web端口号
 export SPARK_DAEMON_JAVA_OPTS="-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=hadoop1:2181,hadoop2:2181,hadoop3:2181 -Dspark.deploy.zookeeper.dir=/spark"
 ```
 - spark.deploy.recoveryMode 集群状态由zk来维护。通过zk实现spark的HA，Master(Active)挂掉的话，Master(standby)成为Master（Active），Master(Standby)需要读取zk集群状态信息，进行恢复所有Worker和Driver的状态信息，和所有的Application状态信息;
