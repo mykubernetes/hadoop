@@ -127,8 +127,8 @@ Spark程序on standalone
 | --executor-memory 1G | 指定每个excutor可用内存为1G | 符合集群内存配置即可，具体情况具体分析 |
 | --total-executor-cores 2 | 指定所有executor使用的cpu核数为2个 | 符合集群内存配置即可，具体情况具体分析 |
 | --executor-cores | 指定每个executor使用的cpu核数 | 符合集群内存配置即可，具体情况具体分析 |
-| application-jar | 打包好的应用jar，包含依赖。这个RUL在机器中全局可见。比如hdfs:// 共享存储系统 | |
-
+| application-jar | 打包好的应用jar，包含依赖。这个RUL在机器中全局可见。比如hdfs:// 共享存储系统 如果是file://path,那么所有的节点path都包含同样的jar| |
+| application-arguments | 传给main()方法的参数 | |
 
 1、利用 Spark 自带的例子程序执行一个求 PI（蒙特卡洛算法）的程序:
 ```
