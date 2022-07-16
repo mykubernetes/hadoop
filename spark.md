@@ -119,6 +119,17 @@ $ start-all.sh
 
 Spark程序on standalone
 ---
+
+| 参数 | 解释 | 可选值举例 |
+|------|------|------------|
+| --class | Spark程序中包含主函数的累 | |
+| --master | Spark程序运行的模式（环境） | 模式：local[*]、spark://ip:7077、yarn 
+| --executor-memory 1G | 指定每个excutor可用内存为1G | 符合集群内存配置即可，具体情况具体分析 |
+| --total-executor-cores 2 | 指定所有executor使用的cpu核数为2个 | 符合集群内存配置即可，具体情况具体分析 |
+| --executor-cores | 指定每个executor使用的cpu核数 | 符合集群内存配置即可，具体情况具体分析 |
+| application-jar | 打包好的应用jar，包含依赖。这个RUL在机器中全局可见。比如hdfs:// 共享存储系统 | |
+
+
 1、利用 Spark 自带的例子程序执行一个求 PI（蒙特卡洛算法）的程序:
 ```
 $SPARK_HOME/bin/spark-submit \ 
