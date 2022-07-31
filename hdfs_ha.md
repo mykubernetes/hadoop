@@ -737,13 +737,17 @@ start-all.sh
 stop-all.sh
 ```
 
-
-访问web地址  
+集群验证  
 ```
-http://node:8088
+http://node01:8088
 ```
 
-YARN运维常用命令
+测试  
+```
+$ bin/yarn jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.5.0.jar wordcount /input/ /output/
+```
+
+## YARN运维常用命令
 
 1. yarn node 查看各个node上的任务数
 ```
@@ -765,7 +769,4 @@ yarn application ‐kill 具体id
 yarn logs ‐applicationid 具体id
 ```
 
-测试  
-```
-$ bin/yarn jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.5.0.jar wordcount /input/ /output/
-```
+
