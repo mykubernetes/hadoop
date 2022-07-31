@@ -420,12 +420,17 @@ $ jps
 14264 DFSZKFailoverController      namedode故障自动转移
 ```
 
-## 集群验证
+### 集群验证
 
 使用浏览器访问http://node01:50070和http:// node02:50070，如果其中一个状态为Active另一个为Standby，则安装成功
 
 
-五、ResourceManager HA  
+## 五、ResourceManager HA  
+
+### 配置日志的聚集
+- 1、日志聚集概念：应用运行完成以后，将程序运行日志信息上传到HDFS系统上。
+- 2、日志聚集功能好处：可以方便的查看到程序运行详情，方便开发调试。
+- 3、注意：开启日志聚集功能，需要重新启动NodeManager 、ResourceManager和HistoryServer。
 
 1、配置yarn的java环境变量
 ```
@@ -444,22 +449,6 @@ export YARN_PID_DIR=${HADOOP_HOME}/pids
     <property>
         <name>yarn.nodemanager.aux-services</name>
         <value>mapreduce_shuffle</value>
-    </property>
-
-    <property>
-        <name>yarn.log-aggregation-enable</name>
-        <value>true</value>
-    </property>
-
-    <!--任务历史服务-->
-    <property> 
-        <name>yarn.log.server.url</name> 
-        <value>http://node01:19888/jobhistory/logs/</value> 
-    </property> 
-
-    <property>
-        <name>yarn.log-aggregation.retain-seconds</name>
-        <value>86400</value>
     </property>
 
     <!--启用resourcemanager ha-->
@@ -584,10 +573,10 @@ export YARN_PID_DIR=${HADOOP_HOME}/pids
     <!-- 聚合日志保存检查间隔时间 -->
     <property>
         <name>yarn.log-aggregation.retain-check-interval-seconds</name>
-        <value>21600</value>
+        <value>604800</value>
     </property>
     
-    <!-- 设置yarn历史服务器地址 -->
+    <!-- 设置日志聚集服务器地址 -->
     <property>
         <name>yarn.log.server.url</name>
 	<value>http://node01:19888/jobhistory/logs</value>               #程序自动创建
