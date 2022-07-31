@@ -22,6 +22,12 @@
 - 第三类1个：workers
 - 所有的配置文件目录：hadoop-3.3.1/etc/hadoop/
 
+| 端口名称 | Hadoop2.x | Hadoop3.x |
+|----------|-----------|-----------|
+| NameNode内部通信端口 | 8020/9000 | 8020/9000/9820 |
+| NameNode HTTP UI | 50070 | 9870 |
+| MapReduce查看执行任务端口 | 8088 | 8088 |
+| 历史服务器通信端口 | 19888 | 19888 |
 
 ## 一、Linux 其他准备操作  
 
@@ -283,7 +289,33 @@ export HADOOP_PID_DIR=${HADOOP_HOME}/pids
                 <value>file:///data/dfs/datanode</value>    
         </property>
 	
+	<!-- CheckPoint时间设置,当操作次数达到1百万时，SecondaryNameNode执行一次 -->
+	<property>
+                <name>dfs.namenode.checkpoint.txns</name>  
+                <value>1000000</value> 
+                <description>操作动作次数</description> 
+        </property> 
+	
+	<!-- CheckPoint时间设置,SecondaryNameNode每隔一小时执行一次 -->
+        <property>  
+                <name>dfs.namenode.checkpoint.period</name>  
+                <value>3600s</value>
+		<description> 1分钟检查一次操作次数</description>
+        </property> 
+
+	<property>
+                <name>dfs.namenode.heartbeat.recheck-interval</name>
+                <!--单位为毫秒-->
+                <value>300000</value>
+        </property>
+
         <property>
+                <name>dfs.heartbeat.interval</name>
+                <!--单位为秒-->
+                <value>3</value>
+        </property> 
+
+	<property>
                 <name>dfs.webhdfs.enabled</name>
                 <value>true</value>
         </property>
