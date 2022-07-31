@@ -1,7 +1,7 @@
-hdfs ha  
-=======
-一、Linux 其他准备操作  
-配置NTP时间服务器  
+# hdfs ha  
+
+## 一、Linux 其他准备操作  
+
 1、 检查时区  
 ```
 # date -R
@@ -14,18 +14,23 @@ Thu, 21 Mar 2019 18:07:27 -0400
 ```  
 
 2、同步时间  
-``` # ntpdate pool.ntp.org ```  
-
-3、 修改NTP配置文件  
 ```
-# vi /etc/ntp.conf
-去掉下面这行前面的# ,并把网段修改成自己的网段：
+# ntpdate pool.ntp.org
+```
+
+3、修改NTP配置文件  
+```
+# vim /etc/ntp.conf
+
+# 去掉下面这行前面的# ,并把网段修改成自己的网段：
 restrict 192.168.122.0 mask 255.255.255.0 nomodify notrap
-注释掉以下几行：
+
+# 注释掉以下几行：
 #server 0.centos.pool.ntp.org
 #server 1.centos.pool.ntp.org
 #server 2.centos.pool.ntp.org
-把下面两行前面的#号去掉,如果没有这两行内容,需要手动添加
+
+# 把下面两行前面的#号去掉,如果没有这两行内容,需要手动添加
 server  127.127.1.0    # local clock
 fudge  127.127.1.0 stratum 10
 ```  
@@ -37,15 +42,16 @@ fudge  127.127.1.0 stratum 10
 ```  
 
 5、集群其他节点去同步这台时间服务器时间  
-首先需要关闭这两台计算机的ntp服务  
 ```
+# 首先需要关闭这两台计算机的ntp服务  
 # systemctl stop ntpd.service
 # systemctl disable ntpd.service
-# systemctl status ntpd，查看ntp服务状态
+# systemctl status ntpd
 # pgrep ntpd，查看ntp服务进程id
-同步第一台服务器z01的时间：
+
+# 同步第一台服务器z01的时间：
 # ntpdate node01
-```  
+```
 
 6、 制定计划任务,周期性同步时间  
 ```
@@ -62,16 +68,21 @@ fudge  127.127.1.0 stratum 10
 ```
 配置hadoop集群，首先需要配置集群中的各个主机的ssh无密钥访问  
 $ ssh-keygen -t rsa
-把生成之后的公钥拷贝给node01,node02,node03这三台机器，包含当前机器。  
+
+# 把生成之后的公钥拷贝给node01,node02,node03这三台机器，包含当前机器。  
 $ ssh-copy-id node01  
 $ ssh-copy-id node02  
 $ ssh-copy-id node03  
 ```  
 
 
-二、安装  
-首先安装jdk  
-``` $ tar -zxf /opt/softwares/jdk-8u121-linux-x64.gz -C /opt/modules/ ```  
+## 二、安装  
+
+1、首先安装jdk  
+```
+$ tar -zxf /opt/softwares/jdk-8u121-linux-x64.gz -C /opt/modules/
+```
+
 2 JDK环境变量配置  
 ```
 # vi /etc/profile
@@ -79,8 +90,10 @@ $ ssh-copy-id node03
 export JAVA_HOME=/opt/modules/jdk1.8.0_121
 export PATH=$PATH:$JAVA_HOME/bin
 ```
-zookeeper  
-1、修改zoo.cfg配置文件  
+
+3、zookeeper  
+
+> 1）修改zoo.cfg配置文件  
 修改conf目录下的zoo.cfg文件，如果没有该文件，请自行重命名sample.cfg文件，修改内容为：  
 ```
 dataDir=/opt/modules/zookeeper/zkData
@@ -89,29 +102,34 @@ server.1=node01:2888:3888
 server.2=node02:2888:3888
 server.3=node03:2888:3888
 ```
-同时创建dataDir属性值所指定的目录  
-2、在zkData目录下创建myid文件，修改值为1，如：  
+- 同时创建dataDir属性值所指定的目录  
+
+> 2）在zkData目录下创建myid文件，修改值为1，如：  
 ```
 $ cd /opt/modules/zookeeper/zkData
 $ touch myid
 $ echo 1 > myid
 ```
-3、将zookeeper安装目录scp到其他机器节点  
+
+> 3）将zookeeper安装目录scp到其他机器节点  
 ```
 $ scp -r /opt/modules/zookeeper/ node02:/opt/modules/
 $ scp -r /opt/modules/zookeeper/ node03:/opt/modules/
 ```
-4、修改其他机器节点的myid文件为2和3  
+
+> 4）修改其他机器节点的myid文件为2和3  
 ```
 $ echo 2 > myid
 $ echo 3 > myid
 ```
-5、在每个节点上启动zookeeper以及查看状态  
+
+> 5、在每个节点上启动zookeeper以及查看状态  
 ```
 $ bin/zkServer.sh start
 $ bin/zkServer.sh status
 ```
-三、hadoop  
+
+## 三、hadoop  
 
 1、JDK环境变量配置  
 ```
@@ -298,41 +316,77 @@ export HADOOP_PID_DIR=${HADOOP_HOME}/pids
 </configuration>
 ```
 
-创建配置文件里的数据目录和journalnode目录
+5、创建配置文件里的数据目录和journalnode目录
 ```
 mkdir /opt/modules/cdh/hadoop/data
 mkdir /opt/modules/cdh/hadoop/data/jn
 ```
-完成后远程拷贝给其他服务器  
+- 完成后远程拷贝给其他服务器  
 
-修改slaves文件,配置数据节点  
+6、修改slaves文件,配置数据节点  
 ```
 # vim slaves
 node01
 node02
 node03
 ```
-命令操作：  
-启动服务  
 
-初始化ha在zookeeper中的状态  
-```$ bin/hdfs zkfc -formatZK ```  
 
-在[nn1]上，对其进行格式化，并启动  
+## 四、Hadoop集群启动 
+
+1、格式化zk，namenode的active节点执行
 ```
-$ bin/hdfs namenode -format
-$ sbin/hadoop-daemon.sh start namenode
+# bin/hdfs zkfc -formatZK
 ```
-在[nn2]上，同步nn1的元数据信息，并启动  
+
+2、启动journalnode集群，只在journalnode角色的节点启动
 ```
-$ bin/hdfs namenode -bootstrapStandby
-$ sbin/hadoop-daemon.sh start namenode
-```  
+# sbin/hadoop-daemon.sh start journalnode
+```
 
-启动各个进程  
-``` sbin/start-dfs.sh ```  
+该命令把slaves里的主机都启动（不推荐执行，用上面的单一启动即可）
+```
+# sbin/hadoop-daemons.sh start journalnode
+```
 
-查看各进程状态  
+3、在[nn1]上，格式化namenode并启动，在namenode节点执行 
+```
+# bin/hdfs namenode -format
+# sbin/hadoop-daemon.sh start namenode
+```
+
+4、在[nn2]上，把nn2服务器的namenode节点变为standby namenode节点,同步nn1的元数据信息，并启动。  
+```
+# bin/hdfs namenode -bootstrapStandby
+# sbin/hadoop-daemon.sh start namenode
+```
+
+手动把nn1设置为active  
+```
+# bin/hdfs haadmin -transitionToActive nn1
+```
+
+查看服务状态  
+```
+# bin/hdfs haadmin -getServiceState nn1
+```
+
+5、启动DataNode，每台datanode服务器上分别启动datanode节点。
+```
+# sbin/hadoop-daemon.sh start datanode                # #每台节点都要启动
+```
+
+6、启动zkfc，FalioverControllerActive是失败恢复线程。这个线程需要在NameNode节点所在的服务器上启动。
+```
+# sbin/hadoop-daemon.sh start zkfc 
+```
+
+7、启动各个进程  
+```
+# sbin/start-dfs.sh
+```
+
+8、查看各进程状态  
 ```
 $ jps
 13810 NameNode     
@@ -343,55 +397,27 @@ $ jps
 14264 DFSZKFailoverController      namedode故障自动转移
 ```
 
-以下为手动启动方法按顺序启动  
-——————————————————————————————————————————————————————  
-初始化ha在zookeeper中的状态  
-```$ bin/hdfs zkfc -formatZK ```  
+## 集群验证
 
-在各个JournalNode节点上，输入以下命令启动journalnode服务：  
-``` $ sbin/hadoop-daemon.sh start journalnode ```
+使用浏览器访问http://node01:50070和http:// node02:50070，如果其中一个状态为Active另一个为Standby，则安装成功
 
-在[nn1]上，对其进行格式化，并启动  
-```
-$ bin/hdfs namenode -format
-$ sbin/hadoop-daemon.sh start namenode
-```
-在[nn2]上，同步nn1的元数据信息，并启动  
-```
-$ bin/hdfs namenode -bootstrapStandby
-$ sbin/hadoop-daemon.sh start namenode
-```
-手动把nn1设置为active  
-``` $ bin/hdfs haadmin -transitionToActive nn1 ```
 
-查看服务状态  
-``` $ bin/hdfs haadmin -getServiceState nn1 ```  
+五、ResourceManager HA  
 
-在各个节点启动数据节点  
-``` $ sbin/hadoop-daemon.sh start datanode ```  
-启动元数据故障转移  
-``` $ sbin/hadoop-daemon.sh start zkfc ```
-
-——————————————————————————————————————————————————————
-
-重启各个服务  
-访问web地址  
-``` http://node01:50070 ```
-
-四、2.2ResourceManager HA  
-
-配置yarn的java环境变量
+1、配置yarn的java环境变量
 ```
 # vim yarn-env.sh  
 export JAVA_HOME=/opt/modules/jdk1.8.0_121
 export YARN_PID_DIR=${HADOOP_HOME}/pids
 ```
 
-* yarn-site.xml  
-```
+2、编辑yarn-site.xml文件, 高可用的yarn,两个rm的 yarn.resourcemanager.ha.id分别配置rm1和rm2
+```xml
+# vim yarn-site.xml  
+
 <configuration>
 
-<!-- Site specific YARN configuration properties -->
+    <!-- NodeManager获取数据的方式 -->
     <property>
         <name>yarn.nodemanager.aux-services</name>
         <value>mapreduce_shuffle</value>
@@ -424,43 +450,181 @@ export YARN_PID_DIR=${HADOOP_HOME}/pids
         <name>yarn.resourcemanager.cluster-id</name>
         <value>cluster-yarn1</value>
     </property>
-
+    
+    <!-- 指定两个resourcemanager的名称 --> 
     <property>
         <name>yarn.resourcemanager.ha.rm-ids</name>
         <value>rm1,rm2</value>
     </property>
+    
+    <property>
+        <name>yarn.resourcemanager.ha.id</name>      
+        <value>rm1</value>                                ####在第二台上要该成rm2                         
+    </property>
 
+    <!-- 配置rm1的主机 -->
     <property>
         <name>yarn.resourcemanager.hostname.rm1</name>
         <value>node01</value>
     </property>
-
+    
+    <!-- 配置rm2的主机 -->
     <property>
         <name>yarn.resourcemanager.hostname.rm2</name>
         <value>node02</value>
     </property>
- 
+    
+    <!--指定yarn的老大 resoucemanager的地址-->
+        <name>yarn.resourcemanager.hostname</name>
+        <value>node01</value>               
+    </property>
+
     <!--指定zookeeper集群的地址--> 
     <property>
         <name>yarn.resourcemanager.zk-address</name>
         <value>node01:2181,node02:2181,node03:2181</value>
+	<description>For multiple zk services, separate them with comma</description>
     </property>
 
-    <!--启用自动恢复--> 
+    <!--开启yarn恢复机制--> 
     <property>
         <name>yarn.resourcemanager.recovery.enabled</name>
         <value>true</value>
     </property>
  
-    <!--指定resourcemanager的状态信息存储在zookeeper集群--> 
+    <!-- 执行rm恢复机制实现类，指定resourcemanager的状态信息存储在zookeeper集群--> 
     <property>
         <name>yarn.resourcemanager.store.class</name>    
         <value>org.apache.hadoop.yarn.server.resourcemanager.recovery.ZKRMStateStore</value>
     </property>
+    
+    <!-- 一台NodeManager的总可用内存资源，根据实际物理资源配置，假如机器内存是128G，配置100G-110G，预留部分 -->
+    <property>
+        <name>yarn.nodemanager.resource.memory-mb</name>
+        <value>49152</value>           #49152为48G   #一般给系统预留12-16G
+    </property>
+    
+    <!-- 单个任务可申请的最少物理内存量，默认是1024（MB） -->
+    <property>
+        <name>yarn.scheduler.minimum-allocation-mb</name>
+        <value>128</value>
+    </property>
+    
+    <!-- 单个任务可申请的最大物理内存量，默认是8192（MB） -->        
+    <property>
+        <name>yarn.scheduler.maximum-allocation-mb</name>
+        <value>8192</value>
+    </property>
+    
+    <!-- 一台NodeManager的总可用（逻辑）cpu核数，根据实际物理资源配置 -->
+    <property>
+        <name>yarn.nodemanager.resource.cpu-vcores</name>
+        <value>8</value>                        #本机只有8C, 所以最大分8
+    </property>
+    
+    <!-- 2.8.4 默认一个am最多申请4cores -->
+    <property>
+        <name>yarn.scheduler.maximum-allocation-vcores</name>
+        <value>4</value>
+    </property>
+    
+    <!-- 是否检查容器的虚拟内存使用超标情况 -->
+    <property>
+        <name>yarn.nodemanager.vmem-check-enabled</name>
+        <value>false</value>
+    </property>
+    
+    <!--  容器的虚拟内存使用上限：与物理内存的比率 -->
+    <property>
+        <name>yarn.nodemanager.vmem-pmem-ratio</name>
+        <value>2.1</value>
+    </property>
+
+    <!--  是否启动一个线程检查每个任务正使用的物理内存量，如果任务超出分配值，则直接将其杀掉 -->
+    <property>
+        <name>yarn.nodemanager.pmem-check-enabled</name>
+        <value>false</value>
+    </property>
+    
+    <!-- 开启日志聚集功能 -->
+    <property>
+        <name>yarn.log-aggregation-enable</name>     
+        <value>true</value>
+    </property>
+    
+    <!-- 聚合后的日志在hdfs上保留的时间，单位为秒 -->
+    <property>
+        <name>yarn.log-aggregation.retain-seconds</name>                  
+        <value>600000</value>
+    </property>
+    
+    <!-- 聚合日志保存检查间隔时间 -->
+    <property>
+        <name>yarn.log-aggregation.retain-check-interval-seconds</name>
+        <value>21600</value>
+    </property>
+    
+    <!-- 设置yarn历史服务器地址 -->
+    <property>
+        <name>yarn.log.server.url</name>
+	<value>http://node01:19888/jobhistory/logs</value>               #程序自动创建
+    </property>
+    
+    <!-- 日志聚合的地址，默认为/tmp/logs -->
+    <property>
+        <name>yarn.nodemanager.remote-app-log-dir</name>
+        <value>hdfs://mycluster/jobhistory/yarn-logs/</value>     
+    </property>
+
+    <!-- NodeManager开启重启作业保留机制 -->
+    <property>
+        <description>Enable the node manager to recover after starting</description>
+        <name>yarn.nodemanager.recovery.enabled</name>
+        <value>true</value>
+    </property>
+    
+    <!-- NM保存container状态的本地目录,默认为$hadoop.tmp.dir/yarn-nm-recovery -->
+    <property>
+        <description>The local filesystem directory in which the node manager willstore state when recovery is enabled.</description>
+        <name>yarn.nodemanager.recovery.dir</name>
+        <value>${hadoop.tmp.dir}/yarn-nm-recovery</value>
+    </property>
+    
+    <!-- 用来接收从ApplicationMaster过来的请求，默认0.0.0.0-->
+    <property>
+        <name>yarn.nodemanager.address</name>
+        <value>0.0.0.0:8041</value>
+    </property>
+    
+    <property>
+        <name>yarn.nodemanager.recovery.supervised</name>
+        <value>true</value>
+    </property>
+
+    <!-- am超时设置 -->
+    <property>
+        <name>yarn.am.liveness-monitor.expiry-interval-ms</name>
+        <value>600000</value>
+    </property>
+    
+     <!-- rm超时设置 -->
+    <property>
+        <name>yarn.resourcemanager.container.liveness-monitor.interval-ms</name>
+        <value>600000</value>
+    </property>
+    
+     <!-- nm超时设置 -->
+    <property>
+        <name>yarn.nm.liveness-monitor.expiry-interval-ms</name>
+        <value>600000</value>
+    </property>
+
 </configuration>
 ```
+- 配置完成后，将整个hadoop目录拷贝到其它主机节点相同的目录下
 
-修改资源百分比，默认为0.1，设置0.5以上,表示集群上AM最多可使用的资源比例，目的为限制过多的app数量。
+
+3、修改资源百分比，默认为0.1，设置0.5以上,表示集群上AM最多可使用的资源比例，目的为限制过多的app数量。
 ```
 # vim capacity-scheduler.xml
 <property>
@@ -472,17 +636,18 @@ export YARN_PID_DIR=${HADOOP_HOME}/pids
 </property>
 ```
 
-
-* mapred-env.sh  
+4、设置mapred里的JAVA_HOME
 ```
+# vim mapred-env.sh  
 export JAVA_HOME=/opt/modules/jdk1.8.0_121
 export HADOOP_MAPRED_PID_DIR=${HADOOP_HOME}/pids
 ```
-	
-* mapred-site.xml  
+
+5、将mapred-site.xml.template改名为mapred-site.xml，编辑修改mapred-site.xml在`<configuration>`标签中添加修改如下内容
 ```
+# vim mapred-site.xml  
 <configuration>
-    <-- 指定mr运行在yarn上 -->
+    <-- 指定mapreduce运行在yarn上 -->
     <property>
         <name>mapreduce.framework.name</name>    
         <value>yarn</value>
@@ -490,20 +655,41 @@ export HADOOP_MAPRED_PID_DIR=${HADOOP_HOME}/pids
 </configuration>
 ```
 
-完成后远程拷贝给其他服务器  
-``` $ scp etc/hadoop/yarn-site.xml node02:/opt/modules/hadoop-2.5.0/etc/hadoop/ ```  
-通过jps查看每个服务器的zookeeper服务QuorumPeerMain已经运行，没有运行则开启，方式前文已经说过，不再赘述。  
-在resourcemanager节点中启动（node02）中执行：  
-``` $ sbin/start-yarn.sh ```  
-在resourcemanager备份节点启动（node03）中执行：  
-``` $ sbin/yarn-daemon.sh start resourcemanager ```  
-查看服务状态  
-``` $ bin/yarn rmadmin -getServiceState rm1 ```  
+6、完成后远程拷贝给其他服务器  
+```
+# scp etc/hadoop/yarn-site.xml node02:/opt/modules/hadoop-2.5.0/etc/hadoop/
+```  
 
-启动jobhistoryserver进程  
-``` $ sbin/mr-jobhistory-daemon.sh start historyserver ```
+## 启动yarn集群
 
-两台机器分别查看jobhistoryserver  resourcemanager nodemanager进程  
+启动主Resourcemanager节点，启动成功后其他节点的nodemanager 也会跟随启动
+
+1、在resourcemanager节点中启动执行
+```
+# sbin/start-yarn.sh          #全部拉起，不建议出问题不好排错，用下面的命令单独拉起
+```  
+
+```
+# sbin/yarn-daemon.sh start resourcemanager      #单个起，推荐操作
+```
+
+2、启动nodemanager
+```
+# sbin/yarn-daemon.sh start nodemanager 
+```
+
+3、查看服务状态  
+```
+# bin/yarn rmadmin -getServiceState rm1
+# bin/yarn rmadmin -getServiceState rm2
+```  
+
+4、启动jobhistoryserver进程,在namenode主节点启动
+```
+# sbin/mr-jobhistory-daemon.sh start historyserver
+```
+
+5、两台机器分别查看jobhistoryserver  resourcemanager nodemanager进程  
 ```
 $ jps
 15111 Jps
@@ -525,19 +711,58 @@ $ jps
 13516 NameNode
 13668 JournalNode
 ```
-- 1）NameNode 它是 hadoop 中的主服务器，管理文件系统名称空间和对集群中存储的文件的 访问，保存有 metadate。
-- 2）SecondaryNameNode 提供周期检查点和清理任务。帮助 NN 合并 editslog，减少 NN 启动 时间。
-- 3）DataNode 它负责管理连接到节点的存储（一个集群中可以有多个节点）。每个存储数据 的节点运行一个 datanode 守护进程。
-- 4）ResourceManager（JobTracker）JobTracker 负责调度 DataNode 上的工作。每个 DataNode 有一个 TaskTracker，它们执行实际工作。
-- 5）NodeManager（TaskTracker）执行任务
-- 6）DFSZKFailoverController 高可用时它负责监控 NN 的状态，并及时的把状态信息写入 ZK。 它通过一个独立线程周期性的调用 NN 上的一个特定接口来获取 NN 的健康状态。FC 也有选 择谁作为 Active NN 的权利，因为最多只有两个节点，目前选择策略还比较简单（先到先得， 轮换）。
-- 7）JournalNode 高可用情况下存放 namenode 的 editlog 文件.
+- NameNode 它是 hadoop 中的主服务器，管理文件系统名称空间和对集群中存储的文件的 访问，保存有 metadate。
+- SecondaryNameNode 提供周期检查点和清理任务。帮助 NN 合并 editslog，减少 NN 启动 时间。
+- DataNode 它负责管理连接到节点的存储（一个集群中可以有多个节点）。每个存储数据 的节点运行一个 datanode 守护进程。
+- ResourceManager（JobTracker）JobTracker 负责调度 DataNode 上的工作。每个 DataNode 有一个 TaskTracker，它们执行实际工作。
+- NodeManager（TaskTracker）执行任务
+- DFSZKFailoverController 高可用时它负责监控 NN 的状态，并及时的把状态信息写入 ZK。 它通过一个独立线程周期性的调用 NN 上的一个特定接口来获取 NN 的健康状态。FC 也有选 择谁作为 Active NN 的权利，因为最多只有两个节点，目前选择策略还比较简单（先到先得， 轮换）。
+- JournalNode 高可用情况下存放 namenode 的 editlog 文件.
 
+HDFS集群
+```
+start-dfs.sh 
+stop-dfs.sh 
+```
+
+YARN集群
+```
+start-yarn.sh
+stop-yarn.sh
+```
+
+Hadoop整体集群
+```
+start-all.sh
+stop-all.sh
+```
 
 
 访问web地址  
 ```
 http://node:8088
+```
+
+YARN运维常用命令
+
+1. yarn node 查看各个node上的任务数
+```
+yarn node ‐‐list
+```
+
+2.-list 列出所有 application 信息
+```
+yarn application ‐list
+```
+
+3.`-kill <Application ID>`杀死一个application，需要指定一个Application ID
+```
+yarn application ‐kill 具体id
+```
+	
+4. yarn logs
+```
+yarn logs ‐applicationid 具体id
 ```
 
 测试  
