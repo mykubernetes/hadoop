@@ -149,7 +149,7 @@ export HADOOP_PID_DIR=${HADOOP_HOME}/pids
 ```
 
 3、编辑hdfs-site.xml文件, 修改主机名，defaultFS名，dir存储路径等信息
-```
+``` xml
 # vim hdfs-site.xml  
 <configuration>
 	<!-- 指定数据冗余份数 -->
@@ -270,7 +270,7 @@ export HADOOP_PID_DIR=${HADOOP_HOME}/pids
 - 访问namenode的hdfs使用50070端口，访问datanode的webhdfs使用50075端口。访问文件、文件夹信息使用namenode的IP和50070端口，访问文件内容或者进行打开、上传、修改、下载等操作使用datanode的IP和50075端口。要想不区分端口，直接使用namenode的IP和端口进行所有的webhdfs操作，就需要在所有的datanode上都设置hefs-site.xml中的dfs.webhdfs.enabled为true
 
 4、编辑core-site.xml文件, 修改主机名，defaultFS名，dir存储路径等信息  
-```
+``` xml
 # vim  core-site.xml  
 <configuration>
 	<!--指定HDFS中NameNode的地址或集群名,该值来自于hdfs-site.xml中的配置-->
@@ -412,7 +412,7 @@ export YARN_PID_DIR=${HADOOP_HOME}/pids
 ```
 
 2、编辑yarn-site.xml文件, 高可用的yarn,两个rm的 yarn.resourcemanager.ha.id分别配置rm1和rm2
-```xml
+``` xml
 # vim yarn-site.xml  
 
 <configuration>
@@ -625,7 +625,7 @@ export YARN_PID_DIR=${HADOOP_HOME}/pids
 
 
 3、修改资源百分比，默认为0.1，设置0.5以上,表示集群上AM最多可使用的资源比例，目的为限制过多的app数量。
-```
+``` xml
 # vim capacity-scheduler.xml
 <property>
     <name>yarn.scheduler.capacity.maximum-am-resource-percent</name>     
@@ -644,7 +644,7 @@ export HADOOP_MAPRED_PID_DIR=${HADOOP_HOME}/pids
 ```
 
 5、将mapred-site.xml.template改名为mapred-site.xml，编辑修改mapred-site.xml在`<configuration>`标签中添加修改如下内容
-```
+``` xml
 # vim mapred-site.xml  
 <configuration>
     <-- 指定mapreduce运行在yarn上 -->
