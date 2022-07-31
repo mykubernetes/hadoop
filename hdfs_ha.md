@@ -1,5 +1,28 @@
 # hdfs ha  
 
+## Hadoop安装包目录结构
+
+| 目录 | 说明 |
+|------|------|
+| bin | Hadoop最基本的管理脚本和使用脚本的目录，这些脚本是sbin目录下管理脚本的基础实现，用户可以直接使用这些脚本管理和使用hadoop |
+| etc | Hadoop配置文件所在的目录 |
+| include | 对外提供的编程库头文件（具体同态库和静态库在lib目录中），这些头文件均是用C++定义的，通常用于C++程序访问HDFS或者编写MapReduce程序 |
+| lib |  该目录包含了Hadoop对外提供的编程动态库和静态库，与include目录中的头文件结合使用 |
+| libexec | 各个服务对用的shell配置文件所在的目录，可用于配置日志输出、启动参数（比如JVM参数）等基本信息 |
+| sbin | Hadoop管理脚本所在的目录，主要包含HDFS和YARN中各类服务的启动/关闭脚本 |
+| share | Hadoop各个模块编译后的jar包所在的目录，官方自带示例 |
+
+配置文件概述：
+- 第一类1个：hadoop-env.sh
+- 第二类4个：xxxx-site.xml ,site表示的是用户定义的配置，会覆盖default中的默认配置。
+  - core-site.xml 核心模块配置
+  - hdfs-site.xml hdfs文件系统模块配置
+  - mapred-site.xml MapReduce模块配置
+  - yarn-site.xml yarn模块配置
+- 第三类1个：workers
+- 所有的配置文件目录：hadoop-3.3.1/etc/hadoop/
+
+
 ## 一、Linux 其他准备操作  
 
 1、 检查时区  
