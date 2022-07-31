@@ -1,5 +1,6 @@
 DataNode工作机制  
  ![image](https://github.com/mykubernetes/hadoop/blob/master/image/datanode.png)
+
 一、DataNode工作机制  
 1）一个数据块在datanode上以文件形式存储在磁盘上，包括两个文件，一个是数据本身，一个是元数据包括数据块的长度，块数据的校验和，以及时间戳。  
 2）DataNode启动后向namenode注册，通过后，周期性（1小时）的向namenode上报所有的块信息。  
