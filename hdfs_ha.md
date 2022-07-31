@@ -948,7 +948,7 @@ yarn rmadmin [-refreshQueues]
 14、scmadmin
 使用语法：`yarn scmadmin [options]` #运行共享缓存管理客户端
 ```
--help            #查看帮助
+-help              #查看帮助
 -runCleanerTask    #运行清理任务
 ```
 
@@ -960,7 +960,10 @@ yarn rmadmin [-refreshQueues]
 16、timelineserver
 
 - 使用语法：`yarn timelineserver` #启动timelineserver
-	
+
+参考：
+- https://hadoop.apache.org/docs/r2.7.7/hadoop-yarn/hadoop-yarn-site/YarnCommands.html
+
 # Hadoop Yarn常用命令
 1、查看任务
 
