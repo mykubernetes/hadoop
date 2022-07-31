@@ -112,23 +112,27 @@ $ bin/zkServer.sh start
 $ bin/zkServer.sh status
 ```
 三、hadoop  
-JDK环境变量配置  
+
+1、JDK环境变量配置  
 ```
-# vi /etc/profile
+# vim /etc/profile
 #JAVA_HOME
 export HADOOP_HOME=/opt/modules/hadoop-2.7.2
-export PATH=$PATH:$HADOOP_HOME/bin
-export PATH=$PATH:$HADOOP_HOME/sbin
-source /etc/profile
+export PATH=$PATH:$HADOOP_HOME/bin:$PATH:$HADOOP_HOME/sbin:$PATH
+
+# source /etc/profile
 ```
 
-1、NameNode HA  
-设置hadoop里的JAVA_HOME  
-* hadoop-env.sh  
-``` export JAVA_HOME=/opt/modules/jdk1.8.0_121 ```
-
-* hdfs-site.xml  
+2、设置hadoop里的JAVA_HOME  
 ```
+# vim hadoop-env.sh
+export JAVA_HOME=/opt/modules/jdk1.8.0_121
+export HADOOP_PID_DIR=${HADOOP_HOME}/pids
+```
+
+3、编辑hdfs-site.xml文件, 修改主机名，defaultFS名，dir存储路径等信息
+```
+# vim hdfs-site.xml  
 <configuration>
 	<!-- 指定数据冗余份数 -->
 	<property>
@@ -136,13 +140,13 @@ source /etc/profile
 		<value>3</value>
 	</property>
 
-	<!-- 完全分布式集群名称 -->
+	<!-- 完全分布式集群名称,执行hdfs的nameservice为ns,和core-site.xml保持一致 -->
 	<property>
 		<name>dfs.nameservices</name>
 		<value>mycluster</value>
 	</property>
 
-	<!-- 集群中NameNode节点都有哪些 -->
+	<!-- 集群中NameNode节点都有哪些ns下有两个namenode,分别是nn1,nn2 -->
 	<property>
 		<name>dfs.ha.namenodes.mycluster</name>
 		<value>nn1,nn2</value>
@@ -171,11 +175,41 @@ source /etc/profile
 		<name>dfs.namenode.http-address.mycluster.nn2</name>
 		<value>node02:50070</value>
 	</property>
+	
+	<!-- nn1的servicerpc地址 -->
+        <property>
+                <name>dfs.namenode.servicerpc-address.mycluster.nn1</name>  
+                <value> node01:53310</value>
+        </property>
 
-	<!-- 指定NameNode元数据在JournalNode上的存放位置 -->
+        <!-- nn2的servicerpc地址 -->
+        <property>
+                <name>dfs.namenode.servicerpc-address.mycluster.nn2</name>  
+                <value> node02:53310</value>
+        </property>
+
+	<!-- 指定NameNode元数据在JournalNode上的存放位置，namenode2可以从JournalNode集群里获取最新的namenode的信息，达到热备的效果 -->
 	<property>
 		<name>dfs.namenode.shared.edits.dir</name>
 		<value>qjournal://node01:8485;node02:8485;node03:8485/mycluster</value>
+	</property>
+
+	<!-- 声明journalnode存放数据的位置-->
+	<property>
+		<name>dfs.journalnode.edits.dir</name>
+		<value>/opt/modules/cdh/hadoop/data/jn</value>
+	</property>
+	
+        <!--namenode故障转移自动切换-->
+	<property>
+		<name>dfs.ha.automatic-failover.enabled</name>
+		<value>true</value>
+	</property>
+	
+        <!-- 访问代理类：client，mycluster，active配置失败自动切换实现方式-->
+	<property>
+  		<name>dfs.client.failover.proxy.provider.mycluster</name>
+  		<value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
 	</property>
 
 	<!-- 配置隔离机制，即同一时刻只能有一台服务器对外响应 -->
@@ -184,61 +218,86 @@ source /etc/profile
 		<value>sshfence</value>
 	</property>
 
-	<!-- 使用隔离机制时需要ssh无秘钥登录-->
+	<!-- 使用隔离机制时需要ssh登录秘钥所在的位置 -->
 	<property>
 		<name>dfs.ha.fencing.ssh.private-key-files</name>
 		<value>/home/hadoop/.ssh/id_rsa</value>
 	</property>
 
-	<!-- 声明journalnode服务器存储目录-->
-	<property>
-		<name>dfs.journalnode.edits.dir</name>
-		<value>/opt/modules/cdh/hadoop/data/jn</value>
-	</property>
-
-	<!-- 关闭权限检查-->
+	<!-- 设置hdfs的操作权限，false表示任何用户都可以在hdfs上操作文件，生产环境不配置此项，默认为true -->
 	<property>
 		<name>dfs.permissions.enable</name>
 		<value>false</value>
 	</property>
 
-	<!-- 访问代理类：client，mycluster，active配置失败自动切换实现方式-->
-	<property>
-  		<name>dfs.client.failover.proxy.provider.mycluster</name>
-  		<value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
-	</property>
+        <!-- NN保存FsImage镜像的目录,作用是存放hadoop的名称节点namenode里的metadata,多路径以逗哈为分隔符file:///data/dfs/namenode1，file:///data/dfs/namenode2 -->
+        <property>
+                <name>dfs.namenode.name.dir</name>
+                <value>file:///data/dfs/namenode</value>  
+        </property>
 	
-	<!--namenode故障转移自动切换-->
-	<property>
-		<name>dfs.ha.automatic-failover.enabled</name>
-		<value>true</value>
-	</property>
+	<!-- 存放HDFS文件系统数据文件的目录,作用是存放hadoop的数据节点datanode里的多个数据块 -->
+        <property>
+                <name>dfs.datanode.data.dir</name>
+                <value>file:///data/dfs/datanode</value>    
+        </property>
 	
+        <property>
+                <name>dfs.webhdfs.enabled</name>
+                <value>true</value>
+        </property>
+
 </configuration>
 ```
+- 访问namenode的hdfs使用50070端口，访问datanode的webhdfs使用50075端口。访问文件、文件夹信息使用namenode的IP和50070端口，访问文件内容或者进行打开、上传、修改、下载等操作使用datanode的IP和50075端口。要想不区分端口，直接使用namenode的IP和端口进行所有的webhdfs操作，就需要在所有的datanode上都设置hefs-site.xml中的dfs.webhdfs.enabled为true
 
-* core-site.xml  
+4、编辑core-site.xml文件, 修改主机名，defaultFS名，dir存储路径等信息  
 ```
+# vim  core-site.xml  
 <configuration>
-	<!--指定HDFS中NameNode的地址或集群名-->
+	<!--指定HDFS中NameNode的地址或集群名,该值来自于hdfs-site.xml中的配置-->
 	<property>
 		<name>fs.defaultFS</name>
 		<value>hdfs://mycluster</value>
 	</property>
 
-	<!--指定hadoop运行时产生文件的存储目录-->
+	<!--指定hadoop运行时产生文件的存储目录,,默认/tmp/hadoop-${user.name}-->
 	<property>
 		<name>hadoop.tmp.dir</name>
 		<value>/opt/modules/cdh/hadoop/data</value>
 	</property>
 	
-	<!--namenode故障转移自动切换和hdfs.xml里的文件同时用-->
+	<!--整合hive 用户代理设置 -->
+        <property>
+                <name>hadoop.proxyuser.root.hosts</name>
+                <value>*</value>
+        </property>
+        <property>
+                <name>hadoop.proxyuser.root.groups</name>
+                <value>*</value>
+        </property>
+	
+	<!--ZooKeeper集群的地址和端口,namenode故障转移自动切换和hdfs.xml里的文件同时用-->
 	<property>
 		<name>ha.zookeeper.quorum</name>
 		<value>node01:2181,node02:2181,node03:2181</value>
 	</property>
+	
+	<!-- 文件的缓冲区大小 -->
+	<property>
+                <name>io.file.buffer.size</name>
+                <value>131702</value>      
+                <description>用于顺序文件的缓冲区大小,默认4096byte，建议设定为 64KB 到 128KB，可减少I/O次数</description>         
+        </property>
+	
+	<!--设置回收站的保存时间，这个时间以分钟为单位，例如4320=72h=3天-->
+        <property>
+	        <name>fs.trash.interval</name>
+		<value>4320</value>
+        </property>
 </configuration>
 ```
+
 创建配置文件里的数据目录和journalnode目录
 ```
 mkdir /opt/modules/cdh/hadoop/data
@@ -246,9 +305,9 @@ mkdir /opt/modules/cdh/hadoop/data/jn
 ```
 完成后远程拷贝给其他服务器  
 
-配置数据节点  
-* slaves
+修改slaves文件,配置数据节点  
 ```
+# vim slaves
 node01
 node02
 node03
@@ -320,8 +379,13 @@ $ sbin/hadoop-daemon.sh start namenode
 ``` http://node01:50070 ```
 
 四、2.2ResourceManager HA  
-* yarn-env.sh  
-``` export JAVA_HOME=/opt/modules/jdk1.8.0_121 ```
+
+配置yarn的java环境变量
+```
+# vim yarn-env.sh  
+export JAVA_HOME=/opt/modules/jdk1.8.0_121
+export YARN_PID_DIR=${HADOOP_HOME}/pids
+```
 
 * yarn-site.xml  
 ```
@@ -396,8 +460,24 @@ $ sbin/hadoop-daemon.sh start namenode
 </configuration>
 ```
 
+修改资源百分比，默认为0.1，设置0.5以上,表示集群上AM最多可使用的资源比例，目的为限制过多的app数量。
+```
+# vim capacity-scheduler.xml
+<property>
+    <name>yarn.scheduler.capacity.maximum-am-resource-percent</name>     
+    <value>0.5</value>
+    <description> 
+    集群中用于运行应用程序ApplicationMaster的资源比例上限，该参数通常用于限制处于活动状态的应用程序数目。该参数类型为浮点型，默认是0.1，表示10%。所有队列的ApplicationMaster资源比例上限可通过参数 #### yarn.scheduler.capacity.maximum-am-resource-percent设置，而单个队列可通过参数yarn.scheduler.capacity.<queue-path>.maximum-am-resource-percent设置适合自己的值。
+    </description>
+</property>
+```
+
+
 * mapred-env.sh  
-``` export JAVA_HOME=/opt/modules/jdk1.8.0_121 ```
+```
+export JAVA_HOME=/opt/modules/jdk1.8.0_121
+export HADOOP_MAPRED_PID_DIR=${HADOOP_HOME}/pids
+```
 	
 * mapred-site.xml  
 ```
