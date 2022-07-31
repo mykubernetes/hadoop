@@ -819,7 +819,7 @@ COMMAND COMMAND_OPTIONS #以下各节介绍了各种命令及其选项
 
 1、application
 
-- 使用语法：yarn application [options] #打印报告，申请和杀死任务
+- 使用语法：`yarn application [options]` #打印报告，申请和杀死任务
 ```
 -appStates <States>         #与-list一起使用，可根据输入的逗号分隔的应用程序状态列表来过滤应用程序。有效的应用程序状态可以是以下之一：ALL，NEW，NEW_SAVING，SUBMITTED，ACCEPTED，RUNNING，FINISHED，FAILED，KILLED
 -appTypes <Types>           #与-list一起使用，可以根据输入的逗号分隔的应用程序类型列表来过滤应用程序。
@@ -830,7 +830,7 @@ COMMAND COMMAND_OPTIONS #以下各节介绍了各种命令及其选项
 
 2、applicationattempt
 
-- 使用语法：yarn applicationattempt [options] #打印应用程序尝试的报告
+- 使用语法：`yarn applicationattempt [options]` #打印应用程序尝试的报告
 ```
 -help                    #帮助
 -list <ApplicationId>    #获取到应用程序尝试的列表，其返回值ApplicationAttempt-Id 等于 <Application Attempt Id>
@@ -839,11 +839,11 @@ COMMAND COMMAND_OPTIONS #以下各节介绍了各种命令及其选项
 
 3、classpath
 
-- 使用语法：yarn classpath #打印需要得到Hadoop的jar和所需要的lib包路径
+- 使用语法：`yarn classpath` #打印需要得到Hadoop的jar和所需要的lib包路径
 
 4、container
 
-- 使用语法：yarn container [options] #打印container(s)的报告
+- 使用语法：`yarn container [options]` #打印container(s)的报告
 ```
 -help                            #帮助
 -list <Application Attempt Id>   #应用程序尝试的Containers列表
@@ -946,7 +946,7 @@ yarn rmadmin [-refreshQueues]
 ```
 
 14、scmadmin
-使用语法：yarn scmadmin [options] #运行共享缓存管理客户端
+使用语法：`yarn scmadmin [options]` #运行共享缓存管理客户端
 ```
 -help            #查看帮助
 -runCleanerTask    #运行清理任务
@@ -954,12 +954,12 @@ yarn rmadmin [-refreshQueues]
 
 15、 sharedcachemanager
 
-- 使用语法：yarn sharedcachemanager #启动共享缓存管理器
+- 使用语法：`yarn sharedcachemanager` #启动共享缓存管理器
 
 
 16、timelineserver
 
-- 使用语法：yarn timelineserver #启动timelineserver
+- 使用语法：`yarn timelineserver` #启动timelineserver
 	
 # Hadoop Yarn常用命令
 1、查看任务
