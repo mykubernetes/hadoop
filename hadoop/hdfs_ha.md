@@ -29,6 +29,10 @@
 | MapReduce查看执行任务端口 | 8088 | 8088 |
 | 历史服务器通信端口 | 19888 | 19888 |
 
+配置文件
+- 3.x：core-site.xml、hdfs-site.xml、yarn-site.xml、mapred-site.xml、workers
+- 2.x：core-site.xml、hdfs-site.xml、yarn-site.xml、mapred-site.xml、slaves
+
 ## 一、Linux 其他准备操作  
 
 1、 检查时区  
