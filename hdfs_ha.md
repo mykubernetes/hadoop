@@ -770,76 +770,116 @@ http://node01:8088
 $ bin/yarn jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.5.0.jar wordcount /input/ /output/
 ```
 
-## YARN运维常用命令
+## Hadoop Yarn常用命令
 
-### yarn application 查看任务
+1、查看任务
 
-1、列出所有Application
+1.1、yarn application -list
 ```
 # yarn application -list
+2021-10-20 09:55:16,497 INFO client.RMProxy: Connecting to ResourceManager at hadoop102/192.168.10.102:8032
+Total number of applications (application-types: [], states: [SUBMITTED, ACCEPTED, RUNNING] and tags: []):0
+                Application-Id      Application-Name        Application-Type          User           Queue                   State             Final-State             Progress                        Tracking-URL
 ```
 
-2、根据 Application 状态过滤：yarn application -list -appStates （所有状态：ALL、NEW、NEW_SAVING、SUBMITTED、ACCEPTED、RUNNING、FINISHED、FAILED、KILLED）
+1.2、yarn application -list -appStates
+- 根据 Application 状态过滤：yarn application -list -appStates （所有状态：ALL、NEW、NEW_SAVING、SUBMITTED、ACCEPTED、RUNNING、FINISHED、FAILED、KILLED）
 ```
-# yarn application -list -appStates RUNNING
+# yarn application -list -appStates FINISHED
+2021-10-20 09:57:30,688 INFO client.RMProxy: Connecting to ResourceManager at hadoop102/192.168.10.102:8032
+Total number of applications (application-types: [], states: [FINISHED] and tags: []):0
+                Application-Id      Application-Name        Application-Type          User           Queue                   State             Final-State             Progress                        Tracking-URL
 ```
 
-3.杀死一个application
+1.3、kill 调Application
 ```
-# yarn application ‐kill <ApplicationId>
+# yarn application -kill <applicationId>
+# yarn application -kill application_1612577921195_0001
 ```
 
-### yarn logs 查看日志
+2、yarn logs 查看
 
-1、查看Application 日志
+2.1、查看application日志
 ```
 # yarn logs -applicationId <ApplicationId>
+# yarn logs -applicationId application_1612577921195_0001
 ```
 
-2、查询Container 日志
+2.2、查询 Container 日志
 ```
 # yarn logs -applicationId <ApplicationId> -containerId <ContainerId>
+# yarn logs -applicationId application_1612577921195_0001 -containerId container_1612577921195_0001_01_000001
 ```
 
-### yarn applicationattempt 查看尝试运行的任务
+3、查看尝试运行的任务
 
-1、列出所有 Application 尝试的列表
+3.1 列出所有 Application 尝试的列表
 ```
 # yarn applicationattempt -list <ApplicationId>
+# yarn applicationattempt -list application_1612577921195_0001
 ```
 
-2、打印 ApplicationAttemp 状态
+3.2、打印 ApplicationAttemp 状态
 ```
 # yarn applicationattempt -status <ApplicationAttemptId>
+# yarn applicationattempt -status appattempt_1612577921195_0001_000001
+2021-10-20 10:26:54,195 INFO client.RMProxy: Connecting to ResourceManager at hadoop103/192.168.10.103:8032
+Total number of application attempts :1
+ ApplicationAttempt-Id State AM- Container-Id Tracking-URL
+appattempt_1612577921195_0001_000001 FINISHED container_1612577921195_0001_01_000001 http://hadoop103:8088/proxy/application_1612577921195_0001/
 ```
 
-### yarn container查看容器
-1、列出所有 Container
+4、yarn container 查看容器
+- 注意：只有在任务跑的途中才能看到 container 的状态
+
+4.1、列出所有 Container
 ```
 # yarn container -list <ApplicationAttemptId>
+yarn container -list appattempt_1612577921195_0001_000001
 ```
 
-2、打印 Container 状态
+4.2、打印 Container 状态
 ```
 # yarn container -status <ContainerId>
+yarn container -status container_1612577921195_0001_01_000001
 ```
 
-### yarn node 查看节点状态
+5、其他指令
 
-列出所有节点
+5.1、yarn node 查看节点状态
 ```
 # yarn node -list -all
+# yarn node -list -all
+2021-10-20 10:15:02,236 INFO client.RMProxy: Connecting to ResourceManager at hadoop102/192.168.10.102:8032
+Total Nodes:3
+         Node-Id             Node-State Node-Http-Address       Number-of-Running-Containers
+ hadoop102:46859                RUNNING    hadoop102:8042                                  0
+ hadoop101:35827                RUNNING    hadoop101:8042                                  0
+ hadoop103:39244                RUNNING    hadoop103:8042                                  0
 ```
-### yarn rmadmin 跟新配置
 
-加载队列配置
+5.2、yarn rmadmin 更新配置
+- 加载队列配置：yarn rmadmin -refreshQueues
 ```
 # yarn rmadmin -refreshQueues
+[develop@hadoop102 ~]$  yarn rmadmin -refreshQueues
+2021-10-20 10:16:00,157 INFO client.RMProxy: Connecting to ResourceManager at hadoop102/192.168.10.102:8033
 ```
 
-### yarn queue 查看队列
-
-打印队列信息
+5.3、yarn queue 查看队列
+- 打印队列信息：yarn queue -status
 ```
 # yarn queue -status <QueueName>
+# yarn queue -status default
+2021-10-20 10:17:10,487 INFO client.RMProxy: Connecting to ResourceManager at hadoop102/192.168.10.102:8032
+Queue Information : 
+Queue Name : default
+        State : RUNNING
+        Capacity : 100.0%
+        Current Capacity : .0%
+        Maximum Capacity : 100.0%
+        Default Node Label expression : <DEFAULT_PARTITION>
+        Accessible Node Labels : *
+        Preemption : disabled
+        Intra-queue Preemption : disabled
 ```
