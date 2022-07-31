@@ -772,24 +772,74 @@ $ bin/yarn jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.5.0.jar wordco
 
 ## YARN运维常用命令
 
-1. yarn node 查看各个node上的任务数
+### yarn application 查看任务
+
+1、列出所有Application
 ```
-yarn node ‐‐list
+# yarn application -list
 ```
 
-2.-list 列出所有 application 信息
+2、根据 Application 状态过滤：yarn application -list -appStates （所有状态：ALL、NEW、NEW_SAVING、SUBMITTED、ACCEPTED、RUNNING、FINISHED、FAILED、KILLED）
 ```
-yarn application ‐list
-```
-
-3.`-kill <Application ID>`杀死一个application，需要指定一个Application ID
-```
-yarn application ‐kill 具体id
-```
-	
-4. yarn logs
-```
-yarn logs ‐applicationid 具体id
+# yarn application -list -appStates RUNNING
 ```
 
+3.杀死一个application
+```
+# yarn application ‐kill <ApplicationId>
+```
 
+### yarn logs 查看日志
+
+1、查看Application 日志
+```
+# yarn logs -applicationId <ApplicationId>
+```
+
+2、查询Container 日志
+```
+# yarn logs -applicationId <ApplicationId> -containerId <ContainerId>
+```
+
+### yarn applicationattempt 查看尝试运行的任务
+
+1、列出所有 Application 尝试的列表
+```
+# yarn applicationattempt -list <ApplicationId>
+```
+
+2、打印 ApplicationAttemp 状态
+```
+# yarn applicationattempt -status <ApplicationAttemptId>
+```
+
+### yarn container查看容器
+1、列出所有 Container
+```
+# yarn container -list <ApplicationAttemptId>
+```
+
+2、打印 Container 状态
+```
+# yarn container -status <ContainerId>
+```
+
+### yarn node 查看节点状态
+
+列出所有节点
+```
+# yarn node -list -all
+```
+### yarn rmadmin 跟新配置
+
+加载队列配置
+```
+# yarn rmadmin -refreshQueues
+```
+
+### yarn queue 查看队列
+
+打印队列信息
+```
+# yarn queue -status <QueueName>
+```
