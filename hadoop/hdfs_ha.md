@@ -28,6 +28,7 @@
 | NameNode HTTP UI | 50070 | 9870 |
 | MapReduce查看执行任务端口 | 8088 | 8088 |
 | 历史服务器通信端口 | 19888 | 19888 |
+| Journalnode内部通信端口 | 8485 | 8485 |
 
 配置文件
 - 3.x：core-site.xml、hdfs-site.xml、yarn-site.xml、mapred-site.xml、workers
@@ -40,6 +41,7 @@
 # date -R
 Thu, 21 Mar 2019 18:07:27 -0400
 ```
+
 如果显示的时区不是+0800，可以删除localtime文件夹后，再关联一个正确时区的链接过去，命令如下：  
 ```
 # rm -rf /etc/localtime
@@ -460,6 +462,23 @@ $ jps
 
 使用浏览器访问http://node01:50070和http:// node02:50070，如果其中一个状态为Active另一个为Standby，则安装成功
 
+### HDFS常用shell命令
+
+| 命令名称                                                     | 命令解释                                                |
+| ------------------------------------------------------------ | ------------------------------------------------------ |
+| ls,cat,tail,mkdir,touchz,rm,cp,mv,count,du,df,chmod,chgrp,chown | HDFS中这些命令与Linux中使用方式一致                  |
+| hadoop fs -put                                              | 将Linux本地文件上传到HDFS中                             |
+| hdfs dfs -get                                               | 将HDFS文件下载到Linux本地                               |
+| hadoop fs -test -[ezd]                                      | e检查文件是否存在,z检查文件是否为空,d检查路径是否为目录   |
+| hadoop fs -text                                              | 查看文件内容                                           |
+| hdfs dfsadmin -report                                        | 显示HDFS的容量，数据块，数据节点的信息                  |
+| hdfs dfsadmin -safemode                                      | 安全模式，leave，enter，forceExit，get                 |
+| hdfs haadmin -getServiceState nn1                            | 查看HA集群中namenode的转态                             |
+| hdfs haadmin -transitionToActive nn1                         | 手动切换namenode的active节点                           |
+| hdfs dfs -setrep -R -w 2 /user                               | 手动修改副本数为2，对已存在的文件无效，不需要重启集群    |
+| hdfs fsck -blocks                                            | 检查hadoop数据块状态，是否有损坏的数据块                |
+| hdfs fsck -list-corruptfileblocks                            | 检查集群丢失块信息                                      |
+
 
 ## 五、ResourceManager HA  
 
@@ -722,12 +741,12 @@ export HADOOP_MAPRED_PID_DIR=${HADOOP_HOME}/pids
 ```
 
 2、启动nodemanager
-```
+``` shell
 # sbin/yarn-daemon.sh start nodemanager 
 ```
 
 3、查看服务状态  
-```
+``` shell
 # bin/yarn rmadmin -getServiceState rm1
 # bin/yarn rmadmin -getServiceState rm2
 ```  
@@ -767,23 +786,6 @@ $ jps
 - DFSZKFailoverController 高可用时它负责监控 NN 的状态，并及时的把状态信息写入 ZK。 它通过一个独立线程周期性的调用 NN 上的一个特定接口来获取 NN 的健康状态。FC 也有选 择谁作为 Active NN 的权利，因为最多只有两个节点，目前选择策略还比较简单（先到先得， 轮换）。
 - JournalNode 高可用情况下存放 namenode 的 editlog 文件.
 
-HDFS集群
-```
-start-dfs.sh 
-stop-dfs.sh 
-```
-
-YARN集群
-```
-start-yarn.sh
-stop-yarn.sh
-```
-
-Hadoop整体集群
-```
-start-all.sh
-stop-all.sh
-```
 
 集群验证  
 ```
@@ -795,10 +797,32 @@ http://node01:8088
 $ bin/yarn jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.5.0.jar wordcount /input/ /output/
 ```
 
+``` shell
+#服务启动顺序：jn--zkfc--nn--dn--rm--nm--jhs  停止顺序倒序
+[hadoop@hadoop001 bin]$ ls -l
+-rwxr-xr-x 1 hadoop hadoop  11026 9月  12 2019 hdfs                    #可通过 hdfs --daemon 的方式启动，停止nn,dn,zkfc,jn,jhs
+-rwxr-xr-x 1 hadoop hadoop  11888 9月  12 2019 yarn                    #可通过 yarn --daemon 的方式启动，停止rm，nm
+-rwxr-xr-x 1 hadoop hadoop   6237 9月  12 2019 mapred                  #可通过 mapred --daemon 的方式启动，停止jobhistory
+
+#推荐使用上述方式启动服务，不推荐使用sbin目录下的脚本启动服务（群起脚本除外）
+[hadoop@hadoop001 sbin]$ ls -l
+-rwxr-xr-x 1 hadoop hadoop 2221 9月  12 2019 start-all.sh              #一键启动所有的hadoop服务，若服务未停止，不会重启
+-rwxr-xr-x 1 hadoop hadoop 5170 9月  12 2019 start-dfs.sh              #一键启动nn,dn
+-rwxr-xr-x 1 hadoop hadoop 3342 9月  12 2019 start-yarn.sh             #一键启动rm,nm
+-rwxr-xr-x 1 hadoop hadoop 2166 9月  12 2019 stop-all.sh    
+-rwxr-xr-x 1 hadoop hadoop 3898 9月  12 2019 stop-dfs.sh
+-rwxr-xr-x 1 hadoop hadoop 3083 9月  12 2019 stop-yarn.sh
+-rwxr-xr-x 1 hadoop hadoop 1841 9月  12 2019 mr-jobhistory-daemon.sh   #可通过此脚本启动，停止jobhistory服务
+-rwxr-xr-x 1 hadoop hadoop 1982 9月  12 2019 workers.sh                #此脚本动态监控workers文件实现datanode动态上线
+-rwxr-xr-x 1 hadoop hadoop 1880 9月  12 2019 start-balancer.sh         #hadoop实现负载均衡功能的脚本
+-rwxr-xr-x 1 hadoop hadoop 1783 9月  12 2019 stop-balancer.sh
+-rwxr-xr-x. 1 hadoop hadoop 1983 10月 11 00:41 hadoop-daemon.sh        #替换bin目录下的 * --daemon 的启动模式
+-rwxr-xr-x 1 hadoop hadoop 1841 9月  12 2019 mr-jobhistory-daemon.sh   #./mr-jobhistory-daemon.sh start historyserver
+```
 
 
 # yarn命令概述
-```
+``` shell
 # yarn -help 
 Usage: yarn [--config confdir] COMMAND
 where COMMAND is one of:
@@ -1101,3 +1125,19 @@ Queue Name : default
         Preemption : disabled
         Intra-queue Preemption : disabled
 ```
+
+### Yarn常用shell命令
+
+| 命令                              | 命令解释                                                     |
+| --------------------------------- | ------------------------------------------------------------ |
+| yarn node --list                  | 查看各个node上的任务数                                       |
+| yarn application                  | 列出所有的application信息                                    |
+| yarn application -kill id         | 杀死一个application，需要指定一个application ID              |
+| yarn node -status  NodeId        | 查看nodemanager节点的具体信息                                |
+| yarn logs <application id>        | 查看任务日志信息                                             |
+| yarn application -list -appStates | 状态过滤（all，new，new_saving，submitted，accepted，running，finished，failed，killed） |
+| yarn container -list              | 查看容器                                                     |
+| yarn rmadmin                      | 更新配置，加载队列配置（yarn rmadmin -refreshQueues）        |
+| yarn queue -status                | 查看队列，打印队列信息                                       |
+
+
