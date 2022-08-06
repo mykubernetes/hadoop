@@ -1183,6 +1183,16 @@ Queue Name : default
 | yarn queue -status                | 查看队列，打印队列信息                                       |
 
 
+### 数据归档
+
+```
+# hadoop archive -archiveName name -p <parent> [-r <replication factor>] <src>* <dest>
+# hadoop archive -archiveName zoo.har -p /zc/test -r 3 /outputdir
+# -p 指定归档路径，-r 指定副本数，默认是3份
+# hadoop fs -ls -R har:/user/admin/test3.har
+# 数据文件一经归档，不可删除修改，只能重新归档才能操作
+# hadoop fs -cp har:/user/admin/test3.har /user/admin/test       #使用cp命令解除归档
+```
 
 ### 负载均衡
 
