@@ -1211,7 +1211,7 @@ Queue Name : default
 # 配置多队列的容量调度器
 
 ```
-# cat /opt/eoi/core/hadoop/etc/hadoop/capacity-scheduler.xml
+# vim capacity-scheduler.xml
 
 <!-- 指定多队列，增加hive队列-->
 <property>
