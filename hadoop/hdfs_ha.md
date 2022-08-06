@@ -187,7 +187,7 @@ export HADOOP_PID_DIR=${HADOOP_HOME}/pids
 ``` xml
 # vim hdfs-site.xml  
 <configuration>
-	<!-- 指定数据冗余份数 -->
+	<!-- 配置block副本数量 -->
 	<property>
 		<name>dfs.replication</name>
 		<value>3</value>
@@ -232,13 +232,13 @@ export HADOOP_PID_DIR=${HADOOP_HOME}/pids
 	<!-- nn1的servicerpc地址 -->
         <property>
                 <name>dfs.namenode.servicerpc-address.mycluster.nn1</name>  
-                <value> node01:53310</value>
+                <value> node01:8022</value>
         </property>
 
         <!-- nn2的servicerpc地址 -->
         <property>
                 <name>dfs.namenode.servicerpc-address.mycluster.nn2</name>  
-                <value> node02:53310</value>
+                <value> node02:8022</value>
         </property>
 
 	<!-- 指定NameNode元数据在JournalNode上的存放位置，namenode2可以从JournalNode集群里获取最新的namenode的信息，达到热备的效果 -->
@@ -326,6 +326,18 @@ export HADOOP_PID_DIR=${HADOOP_HOME}/pids
                 <value>true</value>
         </property>
 
+        <!--配置白名单-->
+        <property>
+            <name>dfs.hosts</name>
+            <value>/date/hadoop/etc/hadoop/whitelist</value>   #需手动创建文件
+        </property>
+        
+	<!--配置黑名单-->
+        <property>
+            <name>dfs.hosts.exclude</name>
+            <value>/date/hadoop/etc/hadoop/blacklist</value>   #需手动创建文件
+	</property>
+	
 </configuration>
 ```
 - 访问namenode的hdfs使用50070端口，访问datanode的webhdfs使用50075端口。访问文件、文件夹信息使用namenode的IP和50070端口，访问文件内容或者进行打开、上传、修改、下载等操作使用datanode的IP和50075端口。要想不区分端口，直接使用namenode的IP和端口进行所有的webhdfs操作，就需要在所有的datanode上都设置hefs-site.xml中的dfs.webhdfs.enabled为true
@@ -345,6 +357,12 @@ export HADOOP_PID_DIR=${HADOOP_HOME}/pids
 		<name>hadoop.tmp.dir</name>
 		<value>/opt/modules/cdh/hadoop/data</value>
 	</property>
+
+        <!--配置HDFS网页登录使用的静态用户为Hadoop-->
+        <property>
+            <name>hadoop.http.staticuser.user</name>
+            <value>hadoop</value>hadoop.http.staticuser.user
+        </property>
 	
 	<!--整合hive 用户代理设置 -->
         <property>
@@ -684,6 +702,17 @@ export YARN_PID_DIR=${HADOOP_HOME}/pids
     <property>
         <name>yarn.nm.liveness-monitor.expiry-interval-ms</name>
         <value>600000</value>
+    </property>
+
+    <!--环境变量的继承-->
+    <property>
+        <name>yarn.nodemanager.env-whitelist</name>         					 <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME</value>
+    </property>
+
+    <!--设置任务优先级-->
+    <property>
+        <name>yarn.cluster.max-application-priority</name>
+        <value>5</value>
     </property>
 
 </configuration>
