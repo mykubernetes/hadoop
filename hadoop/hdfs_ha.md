@@ -422,6 +422,7 @@ node03
 ```
 # sbin/hadoop-daemon.sh start journalnode
 ```
+- 对应hdfs-site.xml的配置`dfs.namenode.shared.edits.dir`主机，在三台机器上分别执行
 
 该命令把slaves里的主机都启动（不推荐执行，用上面的单一启动即可）
 ```
@@ -1175,10 +1176,118 @@ Queue Name : default
 | yarn application                  | 列出所有的application信息                                    |
 | yarn application -kill id         | 杀死一个application，需要指定一个application ID              |
 | yarn node -status  NodeId        | 查看nodemanager节点的具体信息                                |
-| yarn logs <application id>        | 查看任务日志信息                                             |
+| yarn logs `<application id>`        | 查看任务日志信息                                             |
 | yarn application -list -appStates | 状态过滤（all，new，new_saving，submitted，accepted，running，finished，failed，killed） |
 | yarn container -list              | 查看容器                                                     |
 | yarn rmadmin                      | 更新配置，加载队列配置（yarn rmadmin -refreshQueues）        |
 | yarn queue -status                | 查看队列，打印队列信息                                       |
 
 
+
+### 负载均衡
+
+```
+# 如果机器与机器之间磁盘使用率偏差小于10%，那么我们就认为HDFS集群已经达到了平衡的状态。Balancer运行时允许占用的带宽默认设置为1M/S
+# sh $HADOOP_HOME/bin/start-balancer.sh –t 10%                # -t参数后面跟的是HDFS达到平衡状态的磁盘使用率偏差值。
+
+# 获取当前机器可使用的负载带宽
+# hdfs getconf -confKey dfs.datanode.balance.bandwidthPerSec
+
+# 设置均衡带宽,带宽单位为MB(byte)，可使用如下值进行替换：100M（104857600），200M（209715200），300M（314572800）
+# hdfs dfsadmin -setBalancerBandwidth 104857600
+
+# 开始手动均衡，选择下述方式之一进行执行（非结构化集群任意节点，使用hadoop用户执行均可）
+
+# 集群内全部节点参与数据均衡
+# start-balancer.sh -threshold 5
+
+# 指定集群内节点参与数据均衡
+# start-balancer.sh -threshold 5 -include hadoop006,hadoop009
+
+# 如遇异常情况，使用如下命令停止
+# stop-balancer.sh
+```
+
+# 配置多队列的容量调度器
+
+```
+# cat /opt/eoi/core/hadoop/etc/hadoop/capacity-scheduler.xml
+
+<!-- 指定多队列，增加hive队列-->
+<property>
+    <name>yarn.scheduler.capacity.root.queues</name>
+    <value>default,hive</value>
+    <description>
+      The queues at the this level (root is the root queue).
+    </description>
+</property>
+
+<!-- 降低default队列资源额定容量为40%，默认100% -->
+<property>
+    <name>yarn.scheduler.capacity.root.default.capacity</name>
+    <value>40</value>
+</property>
+
+<!-- 降低default队列资源最大容量为60%，默认100% -->
+<property>
+    <name>yarn.scheduler.capacity.root.default.maximum-capacity</name>
+    <value>60</value>
+</property>
+<!-- 指定hive队列的资源额定容量 -->
+<property>
+    <name>yarn.scheduler.capacity.root.hive.capacity</name>
+    <value>60</value>
+</property>
+
+<!-- 用户最多可以使用队列多少资源，1表示 -->
+<property>
+    <name>yarn.scheduler.capacity.root.hive.user-limit-factor</name>
+    <value>1</value>
+</property>
+
+<!-- 指定hive队列的资源最大容量 -->
+<property>
+    <name>yarn.scheduler.capacity.root.hive.maximum-capacity</name>
+    <value>80</value>
+</property>
+
+<!-- 启动hive队列 -->
+<property>
+    <name>yarn.scheduler.capacity.root.hive.state</name>
+    <value>RUNNING</value>
+</property>
+
+<!-- 哪些用户有权向队列提交作业 -->
+<property>
+    <name>yarn.scheduler.capacity.root.hive.acl_submit_applications</name>
+    <value>*</value>
+</property>
+
+<!-- 哪些用户有权操作队列，管理员权限（查看/杀死） -->
+<property>
+    <name>yarn.scheduler.capacity.root.hive.acl_administer_queue</name>
+    <value>*</value>
+</property>
+
+<!-- 哪些用户有权配置提交任务优先级 -->
+<property>
+    <name>yarn.scheduler.capacity.root.hive.acl_application_max_priority</name>
+    <value>*</value>
+</property>
+
+<!-- 任务的超时时间设置：yarn application -appId appId -updateLifetime Timeout
+参考资料：https://blog.cloudera.com/enforcing-application-lifetime-slas-yarn/ -->
+
+<!-- 如果application指定了超时时间，则提交到该队列的application能够指定的最大超时时间不能超过该值-->
+<property>
+    <name>yarn.scheduler.capacity.root.hive.maximum-application-lifetime</name>
+    <value>-1</value>
+</property>
+
+<!-- 如果application没指定超时时间，则用default-application-lifetime作为默认值 -->
+<property>
+    <name>yarn.scheduler.capacity.root.hive.default-application-lifetime</name>
+    <value>-1</value>
+</property>
+#重启Yarn或者执行yarn rmadmin -refreshQueues刷新队列，就可以看到两条资源队列
+```
