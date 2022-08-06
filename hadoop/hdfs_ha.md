@@ -719,6 +719,18 @@ export HADOOP_MAPRED_PID_DIR=${HADOOP_HOME}/pids
         <name>mapreduce.framework.name</name>    
         <value>yarn</value>
     </property>
+
+    <!--历史服务器内部端口地址-->
+    <property>
+        <name>mapreduce.jobhistory.address</name>
+        <value>node01:10020</value>
+    </property>
+
+    <!--历史服务器web端地址-->
+    <property>
+        <name>mapreduce.jobhistory.webapp.address</name>
+        <value>node01:19888</value>
+    </property>
 </configuration>
 ```
 
