@@ -124,3 +124,5 @@ bin/flink run --class com.atguigu.hotitems_analysis.HotItems /data/cdh/test/HotI
 bin/flink run --class com.atguigu.hotitems_analysis.HotItems /data/cdh/test/HotItemsAnalysis-5.0.jar
 bin/flink run -m yarn-cluster -yjm 1024 -ytm 1024 --class com.atguigu.hotitems_analysis.HotItems /data/cdh/test/HotItemsAnalysis-5.0.jar
 ```
+
+- https://blog.csdn.net/BlackArmand/article/details/118521150
