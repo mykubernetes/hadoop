@@ -126,3 +126,8 @@ bin/flink run -m yarn-cluster -yjm 1024 -ytm 1024 --class com.atguigu.hotitems_a
 ```
 
 - https://blog.csdn.net/BlackArmand/article/details/118521150
+- https://www.it610.com/article/1295589346073714688.htm
+- https://developer.aliyun.com/article/632124
+- https://blog.csdn.net/weixin_46669856/article/details/122927506
+- https://blog.csdn.net/u011487470/article/details/123043948
+- https://blog.csdn.net/u010772882/article/details/125471427
