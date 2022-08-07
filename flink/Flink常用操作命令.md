@@ -104,3 +104,4 @@
 - https://blog.csdn.net/u011487470/article/details/123043948
 - https://blog.csdn.net/u010772882/article/details/125471427
 - https://flink-learning.org.cn/article/detail/758a865c6c808d6b89d494c0827a1d61?name=article
+- https://nightlies.apache.org/flink/flink-docs-release-1.13/zh/docs/deployment/cli/
