@@ -481,6 +481,14 @@ $ jps
 
 使用浏览器访问http://node01:50070和http:// node02:50070，如果其中一个状态为Active另一个为Standby，则安装成功
 
+
+通过命令查看主备状态
+```
+yarn rmadmin -getAllServiceState
+
+hdfs haadmin -getAllServiceState
+```
+
 ### HDFS常用shell命令
 
 | 命令名称                                                     | 命令解释                                                |
