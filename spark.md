@@ -123,13 +123,12 @@ $ start-all.sh
 - Hadoop YARN 任务运行情况查看端口号： 8088
 
 
-
 # 二、Spark程序on standalone
 
 | 参数 | 解释 | 可选值举例 |
 |------|------|------------|
 | --class | Spark程序中包含主函数的累 | |
-| --master | Spark程序运行的模式（环境） | 模式：local[*]、spark://ip:7077、yarn 
+| --master | Spark程序运行的模式（环境） | `模式：local[*]、spark://ip:7077、yarn` |
 | --executor-memory 1G | 指定每个excutor可用内存为1G | 符合集群内存配置即可，具体情况具体分析 |
 | --total-executor-cores 2 | 指定所有executor使用的cpu核数为2个 | 符合集群内存配置即可，具体情况具体分析 |
 | --executor-cores | 指定每个executor使用的cpu核数 | 符合集群内存配置即可，具体情况具体分析 |
