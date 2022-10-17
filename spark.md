@@ -139,7 +139,7 @@ $ start-all.sh
 ```
 $SPARK_HOME/bin/spark-submit \ 
 --class org.apache.spark.examples.SparkPi \ 
---master spark://hadoop01:7077 \ 
+--master spark://hadoop01:7077,hadoop02:7077 \ 
 --executor-memory 512m \ 
 --total-executor-cores 3 \
 $SPARK_HOME/examples/jars/spark-examples_2.11-2.3.0.jar \ 
