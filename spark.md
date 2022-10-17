@@ -7,21 +7,16 @@ http://mirrors.hust.edu.cn/apache/
 3、从清华的镜像站下载  
 https://mirrors.tuna.tsinghua.edu.cn/apache/
 
-https://www.cnblogs.com/lanrish/p/12267623.html#spark20on20k8se78eafe5a283e983a8e7bdb2e7bb86e88a82_1
+# 安装基础
 
-安装基础
-===
-1、Java8安装成功
-
-2、zookeeper安装成功
-
-3、hadoop2.7.5 HA安装成功
-
-4、Scala安装成功（不安装进程也可以启动）
+- 1、Java8安装成功
+- 2、zookeeper安装成功
+- 3、hadoop2.7.5 HA安装成功
+- 4、Scala安装成功（不安装进程也可以启动）
 
 
-Spark安装过程
----
+# 一、Spark安装
+
  1、安装
 ```
 $ tar -zxvf spark-2.3.0-bin-hadoop2.7.tgz -C apps/
@@ -90,7 +85,7 @@ export PATH=$PATH:$SPARK_HOME/bin
 $ source ~/.bashrc 
 ```
 
-四、启动
+5、启动
 
 1、先启动zookeeper集群
 ```
@@ -129,8 +124,7 @@ $ start-all.sh
 
 
 
-Spark程序on standalone
----
+# 二、Spark程序on standalone
 
 | 参数 | 解释 | 可选值举例 |
 |------|------|------------|
@@ -195,8 +189,8 @@ $ hadoop fs -cat /spark/out/p*
 - reduceByKey(_+_)按照key进行reduce，并将value累加
 - saveAsTextFile("/spark/out")将结果写入到hdfs中
 
-Spark程序on YARN
----
+# 三、Spark程序on YARN
+
 1、前提
 
 成功启动zookeeper集群、HDFS集群、YARN集群
@@ -246,8 +240,8 @@ $ spark-submit --class org.apache.spark.examples.SparkPi \
 https://www.cnblogs.com/aibabel/p/10828081.html
 
 
-Spark on K8S 的几种模式
----
+# 四、Spark on K8S 的几种模式
+
 - Standalone：在 K8S 启动一个长期运行的集群，所有 Job 都通过 spark-submit 向这个集群提交
 - Kubernetes Native：通过 spark-submit 直接向 K8S 的 API Server 提交，申请到资源后启动 Pod 做为 Driver 和 Executor 执行 Job，参考 http://spark.apache.org/docs/2.4.6/running-on-kubernetes.html
 - Spark Operator：安装 Spark Operator，然后定义 spark-app.yaml，再执行 kubectl apply -f spark-app.yaml，这种申明式 API 和调用方式是 K8S 的典型应用方式，参考 https://github.com/GoogleCloudPlatform/spark-on-k8s-operator
