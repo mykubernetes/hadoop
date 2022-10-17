@@ -24,7 +24,21 @@ $ cd apps/
 $ ln -s spark-2.3.0-bin-hadoop2.7/ spark
 ```
 
-2、进入spark/conf修改配置文件
+2、开启历史服务，修改配置文件spark-defaults.conf.template文件名为spark-defaults.conf
+```
+$ cp spark-defaults.conf.template spark-defaults.conf
+
+$ vim spark-defaults.conf
+spark.eventLog.enabled   true
+spark.eventLog.dir       hdfs://hadoop01:8020/directory
+```
+
+部署历史服务，需要在hadoop集群，HDFS上的directory目录需要提前存在。
+```
+hadoop fs -mkdir /directory
+```
+
+3、进入spark/conf修改配置文件
 ```
 $ cd apps/spark/conf/
 
@@ -46,36 +60,18 @@ export SPARK_WORKER_CORES=1                        #启动需要的cpu盒数
 SPARK_MASTER_WEBUI_PORT=89889                      #spark web端口号
 export SPARK_DAEMON_JAVA_OPTS="-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=hadoop1:2181,hadoop2:2181,hadoop3:2181 -Dspark.deploy.zookeeper.dir=/spark"
 
-
 # 配置历史服务
-spark.eventLog.enabled   true
-spark.eventLog.dir       hdfs://hadoop01:8020/directory
+export SPARK_HISTORY_OPTS="-Dspark.history.ui.port=18080 -Dspark.history.fs.logDircetory=hdfs://hadoop01:8020/directory -Dspark.history.retainedApplications=30"
 ```
-- spark.deploy.recoveryMode 集群状态由zk来维护。通过zk实现spark的HA，Master(Active)挂掉的话，Master(standby)成为Master（Active），Master(Standby)需要读取zk集群状态信息，进行恢复所有Worker和Driver的状态信息，和所有的Application状态信息;
-- spark.deploy.zookeeper.url： zookeeper的server地址
-- Dspark.deploy.zookeeper.dir=/spark 保存集群元数据信息的文件，目录。包括Worker，Driver和Application。
-
-3、部署历史服务，需要在hadoop集群，HDFS上的directory目录需要提前存在。
-```
-hadoop fs -mkdir /directory
-```
-
-4、修改spark-env.sh添加日志配置
-```
-export JAVA_HOME=/app/java8
-SPARK_MASTER_HOST=hadoop01
-SPARK_MASTER_PORT=7077
-
-export SPARK_HISTORY_OPTS="
--Dspark.history.ui.port=18080
--Dspark.history.fs.logDircetory=hdfs://hadoop01:8020/directory
--Dspark.history.retainedApplications=30"
-```
+- -Dspark.deploy.recoveryMode 集群状态由zk来维护。通过zk实现spark的HA，Master(Active)挂掉的话，Master(standby)成为Master（Active），Master(Standby)需要读取zk集群状态信息，进行恢复所有Worker和Driver的状态信息，和所有的Application状态信息;
+- -Dspark.deploy.zookeeper.url： zookeeper的server地址
+- -Dspark.deploy.zookeeper.dir=/spark 保存集群元数据信息的文件，目录。包括Worker，Driver和Application。
 - -Dspark.history.ui.port #web ui访问的端口号
 - -Dspark.history.fs.logDircetory #指定历史服务器日志存储路径
 - -Dspark.history.retainedApplications 指定保持Application历史记录的个数，如果超过这个值，旧的应用程序会被删除
 
-5、配置从节点
+
+4、配置从节点
 ```
 # 1、复制slaves.template成slaves
 $ cp slaves.template slaves
@@ -87,7 +83,7 @@ hadoop2
 hadoop3
 ```
 
-6、将安装包分发给其他节点
+5、将安装包分发给其他节点
 ```
 $ cd apps/
 $ scp -r spark-2.3.0-bin-hadoop2.7/ hadoop2:$PWD
@@ -98,7 +94,7 @@ $ cd apps/
 $ ln -s spark-2.3.0-bin-hadoop2.7/ spark
 ```
 
-7、配置环境变量
+6、配置环境变量
 ```
 # 1、所有节点均要配置
 $ vi ~/.bashrc 
@@ -110,7 +106,7 @@ export PATH=$PATH:$SPARK_HOME/bin
 $ source ~/.bashrc 
 ```
 
-8、启动
+7、启动
 
 1、先启动zookeeper集群
 ```
