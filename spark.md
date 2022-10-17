@@ -62,6 +62,10 @@ hadoop fs -mkdir /directory
 
 4、修改spark-env.sh添加日志配置
 ```
+export JAVA_HOME=/app/java8
+SPARK_MASTER_HOST=hadoop01
+SPARK_MASTER_PORT=7077
+
 export SPARK_HISTORY_OPTS="
 -Dspark.history.ui.port=18080
 -Dspark.history.fs.logDircetory=hdfs://hadoop01:8020/directory
