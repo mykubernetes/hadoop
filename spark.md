@@ -105,14 +105,20 @@ Mode: follower
 2、在启动HDFS集群
 ```
 任意一个节点执行即可
-$ start-dfs.sh
+$ ./start-dfs.sh
 ```
 
 3、在启动Spark集群
 ```
 在一个节点上执行
 $ cd apps/spark/sbin/
-$ start-all.sh
+$ s./tart-all.sh
+```
+
+4、在hadoop2上再启动一个master做主备切换
+```
+$ cd apps/spark/sbin/
+$ ./start-master.sh
 ```
 
 端口号：
