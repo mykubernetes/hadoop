@@ -263,6 +263,33 @@ $ spark-submit --class org.apache.spark.examples.SparkPi \
 > 10
 ```
 
+5、yarn历史模式需要关联
+```
+$ vim spark-default.conf
+spark.eventLog.enabled   true
+spark.eventLog.dir       hdfs://hadoop01:8020/directory
+spark.yarn.historyServer.address=hadoop01:18080
+spark.history.ui.port=18080
+```
+
+6、启动历史服务
+```
+$ sbin/start-history-server.sh
+```
+
+7、不使用cluster模式，使用client模式启动
+```
+$ spark-submit --class org.apache.spark.examples.SparkPi \
+> --master yarn \
+> --deploy-mode client \
+> --driver-memory 500m \
+> --executor-memory 500m \
+> --executor-cores 1 \
+> /home/hadoop/apps/spark/examples/jars/spark-examples_2.11-2.3.0.jar \
+> 10
+```
+
+
 https://www.cnblogs.com/aibabel/p/10828081.html
 
 
