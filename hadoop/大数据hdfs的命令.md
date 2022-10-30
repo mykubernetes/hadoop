@@ -174,8 +174,8 @@ Usage: hdfs oev [OPTIONS] -i INPUT_FILE -o OUTPUT_FILE
 
 用法：`hdfs snapshotDiff <path> <fromSnapshot> <toSnapshot>`
 
-确定HDFS快照之间的差异。有关更多信息，请参阅HDFS快照文档。
- 
+确定HDFS快照之间的差异。有关更多信息，请参阅[HDFS快照文档](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsSnapshots.html#Get_Snapshots_Difference_Report)。
+
 ## 管理命令(较为常用)
 
 - 对hadoop集群的管理员有用的命令,
@@ -495,3 +495,6 @@ hdfs dfsadmin [-help [cmd]]
 | [ -retries **num-retries** ] | 客户端重试调用recoverLease的次数。默认重试次数为1。 |
 
 恢复指定路径上的租约。该路径必须驻留在HDFS文件系统上。默认重试次数为1。
+
+参考：
+- https://www.cnblogs.com/shudazhaofeng/p/14332409.html
