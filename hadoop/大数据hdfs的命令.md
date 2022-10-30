@@ -139,8 +139,8 @@ Usage: hdfs oev [OPTIONS] -i INPUT_FILE -o OUTPUT_FILE
 ```
 | 命令选项                | 描述                                                         |
 | :---------------------- | :----------------------------------------------------------- |
-| -i， - inputFile *arg*  | 编辑要处理的文件，xml（不区分大小写）扩展名表示XML格式，任何其他文件名表示二进制格式 |
-| -o， - outputFile *arg* | 输出文件的名称。如果指定的文件存在，则将覆盖该文件，文件的格式由-p选项确定 |
+| -i， - inputFile **arg**  | 编辑要处理的文件，xml（不区分大小写）扩展名表示XML格式，任何其他文件名表示二进制格式 |
+| -o， - outputFile **arg** | 输出文件的名称。如果指定的文件存在，则将覆盖该文件，文件的格式由-p选项确定 |
 
 可选的命令行参数：
 
@@ -149,7 +149,7 @@ Usage: hdfs oev [OPTIONS] -i INPUT_FILE -o OUTPUT_FILE
 | -f， --fix-txids       | 重新编号输入中的事务ID，以便没有间隙或无效的事务ID。         |
 | -h，--help             | 显示使用信息并退出                                           |
 | -r，--recover          | 读取二进制编辑日志时，请使用恢复模式。这将使您有机会跳过编辑日志的损坏部分。 |
-| -p， --processor *arg* | 选择要对图像文件应用的处理器类型，当前支持的处理器是：二进制（Hadoop使用的本机二进制格式），xml（默认，XML格式），统计信息（打印有关编辑文件的统计信息） |
+| -p， --processor **arg** | 选择要对图像文件应用的处理器类型，当前支持的处理器是：二进制（Hadoop使用的本机二进制格式），xml（默认，XML格式），统计信息（打印有关编辑文件的统计信息） |
 | -v， --verbose         | 更详细的输出，打印输入和输出文件名，用于写入文件的处理器，也输出到屏幕。在大图像文件上，这将大大增加处理时间（默认为false）。 |
 
 
@@ -161,14 +161,14 @@ Usage: hdfs oev [OPTIONS] -i INPUT_FILE -o OUTPUT_FILE
 
 | 命令选项                       | 描述                                                         |
 | :----------------------------- | :----------------------------------------------------------- |
-| `-i \| --inputFile *input file*` | 指定要处理的输入fsimage文件（或XML文件，如果使用ReverseXML处理器）。 |
+| -i \| --inputFile **input file** | 指定要处理的输入fsimage文件（或XML文件，如果使用ReverseXML处理器）。 |
 
 可选的命令行参数：
 
 | 命令选项                        | 描述                                                         |
 | :------------------------------ | :----------------------------------------------------------- |
-| `-o， --outputFile *output file*` | 如果指定的输出处理器生成一个，请指定输出文件名。如果指定的文件已存在，则会以静默方式覆盖该文件。（默认情况下输出到stdout）如果输入文件是XML文件，它还会创建`<outputFile>.md5`。 |
-| `-p，--processor*processor*`     | 指定要对图像文件应用的图像处理器。目前有效的选项是Web（默认），XML，Delimited，FileDistribution和ReverseXML。 |
+| -o， --outputFile **output file** | 如果指定的输出处理器生成一个，请指定输出文件名。如果指定的文件已存在，则会以静默方式覆盖该文件。（默认情况下输出到stdout）如果输入文件是XML文件，它还会创建`<outputFile>.md5`。 |
+| -p，--processor **processor**     | 指定要对图像文件应用的图像处理器。目前有效的选项是Web（默认），XML，Delimited，FileDistribution和ReverseXML。 |
 
 ### snapshotDiff
 
@@ -321,15 +321,15 @@ hdfs dfsadmin [-help [cmd]]
 
 | 命令选项                                               | 描述                                                         |
 | :----------------------------------------------------- | :----------------------------------------------------------- |
-| `-add *source* *nameservices* *destination*`             | 添加装入表条目或更新（如果存在）。                           |
-| `-update *source* *nameservices* *destination*`          | 更新装入表条目或创建一个条目（如果不存在）。                 |
-| `-rm *source*`                                           | 删除指定路径的安装点。                                       |
-| `-ls *path*`                                             | 列出指定路径下的挂载点。                                     |
-| `-setQuota *path* -nsQuota *nsQuota* -ssQuota *ssQuota*` | 设置指定路径的配额。有关配额详细信息，请参阅[HDFS配额指南](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsQuotaAdminGuide.html)。 |
-| `-clrQuota *path*`                                       | 清除给定挂载点的配额。有关配额详细信息，请参阅[HDFS配额指南](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsQuotaAdminGuide.html)。 |
-| `-safemode enter leave get`                              | 手动设置路由器进入或离开安全模式。选项*get*将用于验证路由器是否处于安全模式状态。 |
-| `-nameservice disable enable *nameservice*`              | 禁用/启用联盟中的名称服务。如果禁用，请求将不会转到该名称服务。 |
-| `-getDisabledNameservices`                               | 获取联合中禁用的名称服务。                                   |
+| -add **source** **nameservices** **destination**             | 添加装入表条目或更新（如果存在）。                           |
+| -update **source** **nameservices** **destination**          | 更新装入表条目或创建一个条目（如果不存在）。                 |
+| -rm **source**                                           | 删除指定路径的安装点。                                       |
+| -ls **path**                                             | 列出指定路径下的挂载点。                                     |
+| -setQuota **path** -nsQuota **nsQuota** -ssQuota **ssQuota** | 设置指定路径的配额。有关配额详细信息，请参阅[HDFS配额指南](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsQuotaAdminGuide.html)。 |
+| -clrQuota **path**                                       | 清除给定挂载点的配额。有关配额详细信息，请参阅[HDFS配额指南](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsQuotaAdminGuide.html)。 |
+| -safemode enter leave get                              | 手动设置路由器进入或离开安全模式。选项*get*将用于验证路由器是否处于安全模式状态。 |
+| -nameservice disable enable **nameservice**              | 禁用/启用联盟中的名称服务。如果禁用，请求将不会转到该名称服务。 |
+| -getDisabledNameservices                               | 获取联合中禁用的名称服务。                                   |
 
 用于管理基于路由器的联合的命令。有关详细信息，请参阅挂载表管理。
 
@@ -478,8 +478,8 @@ hdfs dfsadmin [-help [cmd]]
 
 | 命令选项                    | 描述                                                       |
 | :-------------------------- | :--------------------------------------------------------- |
-| -block *block-file*         | 数据节点的本地文件系统上的块文件的绝对路径。               |
-| -out *output-metadata-file* | 输出元数据文件的绝对路径，用于存储块文件的校验和计算结果。 |
+| -block **block-file**         | 数据节点的本地文件系统上的块文件的绝对路径。               |
+| -out **output-metadata-file** | 输出元数据文件的绝对路径，用于存储块文件的校验和计算结果。 |
 
 从块文件计算HDFS元数据。如果指定了块文件，我们将从块文件计算校验和，并将其保存到指定的输出元数据文件中。
 
@@ -491,7 +491,7 @@ hdfs dfsadmin [-help [cmd]]
 
 | 命令选项                   | 描述                                                |
 | :------------------------- | :-------------------------------------------------- |
-| [ -path *path* ]           | 要恢复租约的HDFS路径。                              |
-| [ -retries *num-retries* ] | 客户端重试调用recoverLease的次数。默认重试次数为1。 |
+| [ -path **path** ]           | 要恢复租约的HDFS路径。                              |
+| [ -retries **num-retries** ] | 客户端重试调用recoverLease的次数。默认重试次数为1。 |
 
 恢复指定路径上的租约。该路径必须驻留在HDFS文件系统上。默认重试次数为1。
