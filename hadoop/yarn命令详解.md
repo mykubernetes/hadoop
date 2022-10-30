@@ -319,3 +319,4 @@ Queue Name : default
 
 参考： 
 - https://zhuanlan.zhihu.com/p/517237014
+- https://hadoop.apache.org/docs/r3.3.4/hadoop-yarn/hadoop-yarn-site/YarnCommands.html
