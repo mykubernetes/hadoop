@@ -360,7 +360,36 @@ hdfs dfsadmin [-help [cmd]]
 | -cancle  | 取消正在运行的计划                   |
 | -report  | 报告来自datanode的卷信息             |
 
-运行diskbalancer CLI。有关此命令的更多信息，请参阅HDFS Diskbalancer。
+运行diskbalancer CLI。有关此命令的更多信息，请参阅[HDFS Diskbalancer](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HDFSDiskbalancer.html)。
+
+### ec
+用法：
+```
+hdfs ec [generic options]
+     [-setPolicy -policy <policyName> -path <path>]
+     [-getPolicy -path <path>]
+     [-unsetPolicy -path <path>]
+     [-listPolicies]
+     [-addPolicies -policyFile <file>]
+     [-listCodecs]
+     [-enablePolicy -policy <policyName>]
+     [-disablePolicy -policy <policyName>]
+     [-help [cmd ...]]
+```
+
+| 命令选项 | 描述                                 |
+| :------- | :----------------------------------- |
+| -setPolicy | 将指定的ErasureCoding策略设置为目录 |
+| -getPolicy | 获取有关指定路径的ErasureCoding策略信息 |
+| -unsetPolicy | 取消先前对目录上的“setPolicy”调用设置的ErasureCoding策略 |
+| -listPolicies | 列出所有支持的ErasureCoding策略 |
+| -addPolicies | 添加擦除编码策略列表 |
+| -listCodecs | 获取系统中支持的擦除编码编解码器和编码器列表 |
+| -enablePolicy | 在系统中启用ErasureCoding策略 |
+| -disablePolicy | 在系统中禁用ErasureCoding策略 |
+
+运行ErasureCoding CLI。有关此命令的更多信息，请参阅[HDFS ErasureCoding](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HDFSErasureCoding.html#Administrative_commands)。
+
 
 ### haadmin
 用法：
