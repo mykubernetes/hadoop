@@ -1,5 +1,5 @@
 
-[原文链接hadoop官方文档](hadoop3.2.0]https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-common/CommandsManual.html)
+[原文链接hadoop官方文档](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-common/CommandsManual.html)
 
 # User Commands
 
