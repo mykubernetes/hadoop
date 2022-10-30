@@ -316,3 +316,6 @@ Queue Name : default
 | yarn container -list              | 查看容器                                                     |
 | yarn rmadmin                      | 更新配置，加载队列配置（yarn rmadmin -refreshQueues）        |
 | yarn queue -status                | 查看队列，打印队列信息                                       |
+
+参考： 
+- https://zhuanlan.zhihu.com/p/517237014
