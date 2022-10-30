@@ -40,127 +40,242 @@ Most commands print help when invoked w/o parameters.
 
 # 二.hdfs与dfs结合使用的案例
 
-- 其实hdfs 和dfs 结合使用的话实际上调用的是hadoop fs这个命令。
+- 其实`hdfs`和`dfs`结合使用的话实际上调用的是`hadoop fs`这个命令。
 ```
 # hdfs dfs
 ```
 
-1>.查看hdfs子命令的帮助信息
+1.查看`hdfs`子命令的帮助信息
 ```
 # hdfs dfs -help ls
 ```
 
-2>.查看hdfs文件系统中已经存在的文件
+2.`ls`查看hdfs文件系统中已经存在的文件
 ```
 # hdfs dfs -ls /
 ```
+- 显示目录下的所有文件可以加 -R 选项
 
-3>.在hdfs文件系统中创建文件
+3.`touchz`在hdfs文件系统中创建空文件
 ```
 # hdfs dfs -touchz /user/yinzhengjie/data/1.txt
 ```
 
-4>.上传文件至根目录(在上传的过程中会产生一个以"*.Copying"字样的临时文件)
+4.`put`将本地的文件上传（复制）到HDFS是dst目录下(在上传的过程中会产生一个以`*.Copying`字样的临时文件)
+- 用法： `hdfs dfs -put <localsrc> ... <dst>`
 ```
 # hdfs dfs -put hadoop-2.7.3.tar.gz /
+# hdfs dfs -put hadoop-2.7.3.tar.gz /user/hadoop/testEason
+# hdfs dfs -put hadoop-2.7.3.tar.gz hadoop-3.0.1.tar.gz /user/hadoop/testEason
+# hdfs dfs -put hadoop-2.7.3.tar.gz hdfs://nn.example.com:8020/hadoop/testEason
 ```
 
-5>.在hdfs文件系统中下载文件
+5.`moveFromLocal`类似于put命令，和put命令不同的是，该操作是移动（意思就是localfile将被删除）
+- 用法：`hdfs dfs -moveFromLocal <localsrc> <dst>`　
+```
+# hdfs dfs -moveFromLocal localfile /user/hadoop/testEason
+```
+
+6.`copyFromLocal`类似于put命令，和put命令不同的是，拷贝的源地址必须是本地文件地址
+- 用法：`hdfs dfs -copyFromLocal <localsrc> URI
+- -f  参数选项：当拷贝的目标文件存在时，进行覆盖
+
+```
+[user@hadoop01 ~]$ hdfs dfs -copyFromLocal localfile.txt /user/hadoop/testEason/test.txt
+copyFromLocal: `/test.txt': File exists
+[user@hadoop01 ~]$ hdfs dfs -copyFromLocal -f localfile.txt /user/hadoop/testEason/test.txt
+```
+
+7.`get`在hdfs文件系统中下载文件
+- 用法：`hdfs dfs -get [-ignorecrc] [-crc] <src> <localdst>`
+- -ignorecrc 参数选项：复制CRC校验失败的文件
+- -crc 参数选项：复制文件以及CRC信息
 ```
 # hdfs dfs -get /1.txt
 ```
 
-6>.在hdfs文件系统中删除文件
+8.`copyToLocal` 类似于get指令。和get命令不同的是，拷贝的目的地址必须是本地文件地址
+- 用法：`hdfs dfs -copyToLocal [-ignorecrc] [-crc] URI <localdst>`
+```
+# hdfs dfs -copyToLocal /word /usr/eason/temp/word.txt
+```
+
+
+9.`rm`在hdfs文件系统中删除文件
 ```
 # hdfs dfs -rm /1.txt
 ```
 
-7>.在hdfs文件系统中查看文件内容
+- 删除文件夹加上`-r`
+```
+# hdfs dfs -rm -r /testEason/test/path
+```
+
+10.`cat | tail`在hdfs文件系统中查看文件内容
 ```
 # hdfs dfs -cat /xrsync.sh
 ```
 
-8>.在hdfs文件系统中创建目录
+```
+# hdfs dfs -tail /xrsync.sh
+```
+
+11.`mkdir`在hdfs文件系统中创建目录
 ```
 # hdfs dfs -mkdir /shell
 ```
 
-9>.在hdfs文件系统中修改文件名称（当然你可以可以用来移动文件到目录哟）
+- `mkdir`创建多级目录加上 –p
+```
+# hdfs dfs -mkdir /shell/bash/test.txt
+```
+
+12.`mv`在hdfs文件系统中修改文件名称（当然你可以可以用来移动文件到目录哟）
 ```
 # hdfs dfs -mv /xcall.sh /call.sh
 
 ```
-```
-# hdfs dfs -mv /call.sh /shell
-```
 
-10>.在hdfs问系统中拷贝文件到目录
+13.`cp` HDFS文件系统中进行的拷贝操作，将文件从源路径复制到目标路径；这个命令允许有多个源路径，此时目标路径必须是一个目录　　
+
+用法：`hdfs dfs -cp [-f] [-p | -p[topax]] URI [URI ...] <dest>`
+- -f 参数选项：当文件存在时，进行覆盖
+- -p 参数选项：将权限、所属组、时间戳、ACL以及XAttr等也进行拷贝
 ```
 # hdfs dfs -cp /xrsync.sh /shell
 ```
 
-11>.递归删除目录
+14.`rmr`递归删除目录
 ```
 # hdfs dfs -rmr /shell
 ```
 
-12>.列出本地文件的内容（默认是hdfs文件系统哟）
+15.列出本地文件的内容（默认是hdfs文件系统哟）
 ```
 # hdfs dfs -ls file:///home/yinzhengjie/
 
 ```
 ```
-# hdfs dfs -ls hdfs:/
+# hdfs dfs -ls hdfs://namenode:8020/
 ```
 
-13>.追加文件内容到hdfs文件系统中的文件
+
+16.追加文件内容到hdfs文件系统中的文件
+
+用法：`hdfs dfs -appendToFile <localsrc> ... <dst>`
 ```
 # hdfs dfs -appendToFile xrsync.sh /xcall.sh
 ```
 
-14>.格式化名称节点
+
+
+
+17.格式化名称节点
 ```
 # hdfs namenode
 ```
 
-15>.创建快照（关于快照更详细的用法请参考：https://www.cnblogs.com/yinzhengjie/p/9099529.html）
+18.`createSnapshot`创建快照（关于快照更详细的用法请参考：https://www.cnblogs.com/yinzhengjie/p/9099529.html）
 ```
 # hdfs dfs -createSnapshot /data firstSnapshot
 ```
 
-16>.重命名快照
+19.`renameSnapshot`重命名快照
 ```
 # hdfs dfs -renameSnapshot /data firstSnapshot newSnapshot
 ```
 
-17>.删除快照
+20.`deleteSnapshot`删除快照
 ```
 # hdfs dfs -deleteSnapshot /data newSnapshot
 ```
 
-18>.查看hadoop的Sequencefile文件内容
+21.`text`查看hadoop的Sequencefile文件内容
 ```
 # hdfs dfs -text file:///home/yinzhengjie/data/seq
 ```
 
-19>.使用df命令查看可用空间
+22.`df`使用df命令查看可用空间
+- 用法：`hdfs dfs -df [-h] URI [URI ...]`
 ```
-# hdfs dfs -df
-# hdfs dfs -df -h
+# hdfs dfs -df /
+# hdfs dfs -df -h /
 ```
 
-20>.降低复制因子
+23.降低复制因子
 ```
 # hdfs dfs -setrep -w 2 /user/yinzhengjie/data/1.txt
 ```
 
-21>.使用du命令查看已用空间
+21.`du`使用du命令查看已用空间
+- 用法：`hdfs dfs -du URI [URI …]`
+- -s 参数选项：显示当前目录或者文件夹的大小
 ```
 # hdfs dfs -du /user/yinzhengjie/data/day001
-
 # hdfs dfs -du -h /user/yinzhengjie/data/day001
-
 # hdfs dfs -du -s -h /user/yinzhengjie/data/day001
+```
+
+22.`chmod`改变文件访问权限，参考Linux命令
+- 用法：`hdfs dfs -chmod [-R] <MODE[,MODE]... | OCTALMODE> URI [URI ...]`
+- -R 参数选项：将使改变在目录结构下递归进行；命令的使用者必须是文件的所有者或者超级用户；
+
+
+23.`checksum`查看校验码信息
+- 用法： hdfs dfs -checksum URI
+```
+# hdfs dfs -checksum hdfs://nn1.example.com/file1
+# hdfs dfs -checksum file:///etc/hosts
+```
+
+24.`chgrp`改变文件所属的组(Change group association of files.)
+- 用法： hdfs dfs -chgrp [-R] GROUP URI [URI ...]
+- -R 参数选项：将使改变在目录结构下递归进行；命令的使用者必须是文件的所有者或者超级用户
+```
+# hdfs dfs -chgrp -R test /a
+```
+
+25.`chown`改变文件的所有者　　
+- 用法：hdfs dfs -chown [-R] [OWNER][:[GROUP]] URI [URI]
+- -R 参数选项：将使改变在目录结构下递归进行；命令的使用者必须是超级用户
+```
+# hdfs dfs -chown -R test /a
+```
+
+26.`expunge`从垃圾桶目录永久删除超过保留阈值的检查点中的文件，并创建新检查点　
+- 用法：hdfs dfs -expunge
+
+
+27.`find`查找满足表达式的文件和文件夹，没有配置path的话，默认的就是全部目录/；如果表达式没有配置，则默认为 -print
+
+用法: `hdfs dfs -find <path> ... <expression> ...`
+- -name pattern 参数选项：所要查找文件的文件名
+- -iname pattern 参数选项：所要查找的文件名，不区分大小写
+- -print  参数选项：打印
+- -print0 参数选项：打印在一行，如下图所示
+
+```
+# hdfs dfs -find /usr/hadoop/testEason -name test -print
+```
+
+28.`getmerge`是将HDFS上一个目录中所有的文件合并到一起输出到一个本地文件上
+- 用法：`hdfs dfs -getmerge [-nl] <src> <localdst>`
+```
+# hdfs dfs -getmerge -nl /src /opt/output.txt
+# hdfs dfs -getmerge -nl /src/file1.txt /src/file2.txt /output.txt
+```
+
+29.`test`判断文件信息
+- 用法：`hadoop fs -test -[defsz] URI`　　　　
+- -d 参数选项：如果路径是一个目录，返回0
+- -e 参数选项：如果路径已经存在，返回0
+- -f 参数选项：如果路径是一个文件，返回0
+- -s 参数选项：如果路径不是空，返回0
+- -z 参数选项：如果文件长度为0，返回0
+
+URI 参数选项：资源地址，可以是文件也可以是目录。
+```
+# hdfs dfs <em id="__mceDel">-test -e filename</em>
 ```
 
 # 三.hdfs与getconf结合使用的案例
@@ -182,6 +297,18 @@ Most commands print help when invoked w/o parameters.
 
 # 四.hdfs与dfsadmin结合使用的案例
 
+| 命令选项 | 描述 |
+|---------|-------|
+| -report | 报告文件系统的基本信息和统计信息。 |
+| -safemode `enter` `leave` `get` `wait` | 安全模式维护命令。安全模式是Namenode的一个状态，这种状态下，Namenode 1. 不接受对名字空间的更改(只读) 2. 不复制或删除块 Namenode会在启动时自动进入安全模式，当配置的块最小百分比数满足最小的副本数条件时，会自动离开安全模式。安全模式可以手动进入，但是这样的话也必须手动关闭安全模式。 |
+| -refreshNodes | 重新读取hosts和exclude文件，更新允许连到Namenode的或那些需要退出或入编的Datanode的集合。| 
+| -finalizeUpgrade | 终结HDFS的升级操作。Datanode删除前一个版本的工作目录，之后Namenode也这样做。这个操作完结整个升级过程。| 
+| -upgradeProgress `status` `details` `force` | 请求当前系统的升级状态，状态的细节，或者强制升级操作进行。| 
+| -metasave filename | 保存Namenode的主要数据结构到hadoop.log.dir属性指定的目录下的`<filename>`文件。对于下面的每一项，`<filename>`中都会一行内容与之对应 1. Namenode收到的Datanode的心跳信号 2. 等待被复制的块 3. 正在被复制的块 4. 等待被删除的块 |
+| -setQuota `<quota>` `<dirname>`...`<dirname>` | 为每个目录 `<dirname>`设定配额`<quota>`。目录配额是一个长整型整数，强制限定了目录树下的名字个数。命令会在这个目录上工作良好，以下情况会报错：1. N不是一个正整数，或者2. 用户不是管理员，或者3. 这个目录不存在或是文件，或者4. 目录会马上超出新设定的配额。 |
+| -clrQuota `<dirname>`...`<dirname>` | 为每一个目录<dirname>清除配额设定。 命令会在这个目录上工作良好，以下情况会报错：1. 这个目录不存在或是文件，或者2. 用户不是管理员。如果目录原来没有配额不会报错。 |
+| -help [cmd] | 显示给定命令的帮助信息，如果没有给定命令，则显示所有命令的帮助信息。 |
+
 1>.查看hdfs dfsadmin的帮助信息
 ```
 # hdfs dfsadmin
@@ -197,33 +324,96 @@ Most commands print help when invoked w/o parameters.
 # hdfs dfsadmin -rollEdits
 ```
 
-4>.查看当前的模式
+4.`safemode`安全模式命令
+-安全模式是NameNode的一种状态，在这种状态下，NameNode不接受对名字空间的更改（只读），不复制或删除块；NameNode在启动时自动进入安全模式，当配置块的最小百分数满足最小副本数的条件时，会自动离开安全模式
+- enter 参数选项：enter是进入
+- leave 参数选项：leave是离开
+
 ```
-# hdfs dfsadmin -safemode get
+# hdfs dfsadmin -safemode get     #返回安全模式是否开启的信息，返回 Safe mode is OFF/OPEN
+# hdfs dfsadmin -safemode enter   #进入安全模工
+# hdfs dfsadmin -safemode leave   # 强制 NameNode 离开安全模式
+# hdfs dfsadmin -safemode wait    #等待，一直到安全模式结束
 ```
 
-5>.进入安全模式
-```
-# hdfs dfsadmin -safemode enter
-```
-
-6>.离开安全模式
-```
-# hdfs dfsadmin -safemode leave
-```
-
-7>.安全模式的wait状态
-```
-# hdfs dfsadmin -safemode wait
-```
-
-8>.检查HDFS集群的状态
+8>.查看文件系统的基本信息和统计信息
 ```
 # hdfs dfsadmin -help report
-```
-
-```
 # hdfs dfsadmin -report
+Configured Capacity: 16493959577600 (15.00 TB)　　　　　　　　　 　#此集群中HDFS的已配置容量
+Present Capacity: 16493959577600 (15.00 TB)　　　　　　　　　　　　#此集群中现有的容量
+DFS Remaining: 16493167906816 (15.00 TB)　　　　　　　　　　　　　  #此集群中剩余容量
+DFS Used: 791670784 (755.00 MB)　　　　　　　　　　　　　  　　　　#HDFS使用的存储统计信息
+DFS Used%: 0.00%　　　　　　　　　　　　　　　　　　　　　　　　　 　#同上，只不过以百分比显示而已
+Under replicated blocks: 16　　　　　　　　　　　　　　　　　　　　 #显示是否由任何未充分复制，损坏或丢失的块
+Blocks with corrupt replicas: 0　　　　　　　　　　　　　　　　　　 #具有损坏副本的块
+Missing blocks: 0　　　　　　　　　　　　　　　　　　　　　　　　　　 #丢失的块
+Missing blocks (with replication factor 1): 0　　　　　　　　　　  #丢失的块(复制因子为1)
+Pending deletion blocks: 0　　　　　　　　　　　　　　　　　　　　　 #挂起的删除块。
+
+-------------------------------------------------
+Live datanodes (2):　　　　　　　　　　　　　　　　　            　#显示集群中由多少个DataNode是活动的并可用
+
+Name: 172.200.6.102:50010 (hadoop102.yinzhengjie.com)　　　　　　 #DN节点的IP地址及端口号
+Hostname: hadoop102.yinzhengjie.com　　　　　　　　　　　　　　　　#DN节点的主机名
+Rack: /rack001　　　　　　　　　　　　　　　　　　　　　　　　　　　#该DN节点的机架编号
+Decommission Status : Normal　　　　　　　　　　　　　　　　　　　　#DataNode的退役状态
+Configured Capacity: 8246979788800 (7.50 TB)　　　　　　　　　　　#DN节点的配置容量
+DFS Used: 395841536 (377.50 MB)　　　　　　　　　　　　　　　　　　#DN节点的使用容量
+Non DFS Used: 0 (0 B)　　　　　　　　　　　　　　　　　　　　　　　　#未使用的容量
+DFS Remaining: 8246583947264 (7.50 TB)　　　　　　　　　　　　　　　#剩余的容量
+DFS Used%: 0.00%　　　　　　　　　　　　　　　　　　　　　　　　　　　#DN节点的使用百分比
+DFS Remaining%: 100.00%　　　　　　　　　　　　　　　　　　　　　　　#DN节点的剩余百分比　　
+Configured Cache Capacity: 32000000 (30.52 MB)　　　　　　　　　　#缓存使用情况
+Cache Used: 319488 (312 KB)
+Cache Remaining: 31680512 (30.21 MB)
+Cache Used%: 1.00%
+Cache Remaining%: 99.00%
+Xceivers: 2
+Last contact: Mon Aug 17 05:08:10 CST 2020
+Last Block Report: Mon Aug 17 04:18:40 CST 2020
+
+
+Name: 172.200.6.103:50010 (hadoop103.yinzhengjie.com)
+Hostname: hadoop103.yinzhengjie.com
+Rack: /rack002
+Decommission Status : Normal
+Configured Capacity: 8246979788800 (7.50 TB)
+DFS Used: 395829248 (377.49 MB)
+Non DFS Used: 0 (0 B)
+DFS Remaining: 8246583959552 (7.50 TB)
+DFS Used%: 0.00%
+DFS Remaining%: 100.00%
+Configured Cache Capacity: 32000000 (30.52 MB)
+Cache Used: 0 (0 B)
+Cache Remaining: 32000000 (30.52 MB)
+Cache Used%: 0.00%
+Cache Remaining%: 100.00%
+Xceivers: 2
+Last contact: Mon Aug 17 05:08:10 CST 2020
+Last Block Report: Mon Aug 17 01:43:05 CST 2020
+
+
+Dead datanodes (1):
+
+Name: 172.200.6.104:50010 (hadoop104.yinzhengjie.com)
+Hostname: hadoop104.yinzhengjie.com
+Rack: /rack002
+Decommission Status : Normal
+Configured Capacity: 8246979788800 (7.50 TB)
+DFS Used: 395776000 (377.44 MB)
+Non DFS Used: 0 (0 B)
+DFS Remaining: 8246584012800 (7.50 TB)
+DFS Used%: 0.00%
+DFS Remaining%: 100.00%
+Configured Cache Capacity: 0 (0 B)
+Cache Used: 0 (0 B)
+Cache Remaining: 0 (0 B)
+Cache Used%: 100.00%
+Cache Remaining%: 0.00%
+Xceivers: 0
+Last contact: Mon Aug 17 04:02:57 CST 2020
+Last Block Report: Mon Aug 17 01:43:05 CST 2020
 ```
 
 9>.目录配额（计算目录下的所有文件的总个数，如果为1，表示目录下不能放文件，即空目录！）
