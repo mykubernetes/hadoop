@@ -463,7 +463,7 @@ hdfs ec [generic options]
 | -recover [-force]                                            | 在损坏的文件系统上恢复丢失的元数据。有关详细信息，请参阅[HDFS用户指南](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html#Recovery_Mode)。 |
 | -metadataVersion                                             | 验证配置的目录是否存在，然后打印软件和映像的元数据版本。     |
 
-运行namenode。有关升级和回滚的更多信息，请参阅升级回滚。
+运行namenode。有关升级和回滚的更多信息，请参阅[升级回滚](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html#Upgrade_and_Rollback)。
 
 
 
