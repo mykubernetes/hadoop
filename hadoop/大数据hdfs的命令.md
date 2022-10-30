@@ -209,7 +209,7 @@ hdfs balancer
 
 ### 数据节点升级命令
 
-  用法：`hdfs datanode [-regular | -rollback | -rollingupgrade rollback]`
+用法：`hdfs datanode [-regular | -rollback | -rollingupgrade rollback]`
 
 | 命令选项                 | 描述                                                         |
 | :----------------------- | :----------------------------------------------------------- |
@@ -353,6 +353,7 @@ hdfs dfsadmin [-help [cmd]]
 | -query   | 从datanode获取当前的diskbalancer状态 |
 | -cancle  | 取消正在运行的计划                   |
 | -report  | 报告来自datanode的卷信息             |
+
 运行diskbalancer CLI。有关此命令的更多信息，请参阅HDFS Diskbalancer。
 
 ### haadmin
