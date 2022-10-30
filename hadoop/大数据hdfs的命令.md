@@ -337,7 +337,7 @@ hdfs dfsadmin [-help [cmd]]
 | -nameservice disable enable **nameservice**              | 禁用/启用联盟中的名称服务。如果禁用，请求将不会转到该名称服务。 |
 | -getDisabledNameservices                               | 获取联合中禁用的名称服务。                                   |
 
-用于管理基于路由器的联合的命令。有关详细信息，请参阅挂载表管理。
+用于管理基于路由器的联合的命令。有关详细信息，请参阅[挂载表管理](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs-rbf/HDFSRouterFederation.html#Mount_table_management)。
 
 ### diskbalancer
 用法：
