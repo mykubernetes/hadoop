@@ -111,19 +111,25 @@ hdfs fsck <path>
 ### getconf
 用法：
 ```
-   hdfs getconf -namenodes        -->基本不用
-   hdfs getconf -journalNodes     -->基本不用
-   hdfs getconf -includeFile      -->基本不用
-   hdfs getconf -excludeFile      -->基本不用
-   hdfs getconf -confKey [key]    -->使用较多
+   hdfs getconf -namenodes           -->基本不用
+   hdfs getconf -secondaryNameNodes
+   hdfs getconf -nnRpcAddresses
+   hdfs getconf -journalNodes        -->基本不用
+   hdfs getconf -backupNodes
+   hdfs getconf -includeFile         -->基本不用
+   hdfs getconf -excludeFile         -->基本不用
+   hdfs getconf -confKey [key]       -->使用较多
 ```
 
 | 命令选项       | 描述                                               |
 | :------------- | :------------------------------------------------- |
 | -namenodes     | 获取集群中的名称节点列表                           |
 | -journalNodes  | 获取群集中的日记节点列表                           |
-| -includeFile   | 获取包含文件路径，该路径定义可以加入群集的datanode |
-| -excludeFile   | 获取排除文件路径，该路径定义需要停用的数据节点     |
+| -secondaryNameNodes	| 获取群集中的辅助名称节点列表                  |
+| -backupNodes | 获取群集中的备份节点列表。                           |
+| -includeFile   | 获取包含文件路径，该路径定义可以加入群集的datanode   |
+| -excludeFile   | 获取排除文件路径，该路径定义需要停用的数据节点       |
+| -nnRpcAddresses | 获取namenode rpc地址                            |
 | -confKey [key] | 从配置中获取配置的参数值                           |
 
 ### lsSnapshottableDir
