@@ -64,6 +64,13 @@ hadoop [--config confdir] [COMMAND] [GENERIC_OPTIONS] [COMMAND_OPTIONS]
   - -libjars `<逗号分隔的jar列表>` 指定要包含到classpath中的jar文件的逗号分隔的列表，只适用于job
   - -archives `<逗号分隔的archive列表>` 指定要被解压到计算节点上的档案文件的逗号分割的列表，只适用于job
 
+| COMMAND_OPTIONS | 描述 |
+| ---------------| ----- |
+| SHELL_OPTIONS | 常见的shell选项集。这些内容记录在“[命令手册](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-common/CommandsManual.html#Shell_Options)”页面上。 |
+| GENERIC_OPTIONS | 多个命令支持的通用选项集。有关更多信息，请参阅“[Hadoop 命令手册](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-common/CommandsManual.html#Generic_Options)”。 |
+| COMMAND COMMAND_OPTIONS | 以下各节介绍了各种命令及其选项。这些命令已分组为“[用户命令](https://blog.csdn.net/zhanglong_4444/article/details/87696852#User_Commands)”和“[管理命令](https://blog.csdn.net/zhanglong_4444/article/details/87696852#Administration_Commands)”。 |
+
+
 ## COMMAND 描述
 
 ### dfs（使用率最高）
