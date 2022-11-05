@@ -12,9 +12,12 @@
 
 # 三、 掉线时限参数设置  
 datanode进程死亡或者网络故障造成datanode无法与namenode通信，namenode不会立即把该节点判定为死亡，要经过一段时间，这段时间暂称作超时时长。HDFS默认的超时时长为10分钟+30秒。如果定义超时时间为timeout，则超时时长的计算公式为：  
-	timeout  = 2 * dfs.namenode.heartbeat.recheck-interval + 10 * dfs.heartbeat.interval。  
-	而默认的dfs.namenode.heartbeat.recheck-interval 大小为5分钟，dfs.heartbeat.interval默认为3秒。  
-	需要注意的是hdfs-site.xml 配置文件中的heartbeat.recheck.interval的单位为毫秒，dfs.heartbeat.interval的单位为秒。  
+
+timeout  = 2 * dfs.namenode.heartbeat.recheck-interval + 10 * dfs.heartbeat.interval。  
+
+而默认的dfs.namenode.heartbeat.recheck-interval 大小为5分钟，dfs.heartbeat.interval默认为3秒。  
+
+需要注意的是hdfs-site.xml 配置文件中的heartbeat.recheck.interval的单位为毫秒，dfs.heartbeat.interval的单位为秒。  
 ```
 <property>
     <name>dfs.namenode.heartbeat.recheck-interval</name>
@@ -27,8 +30,10 @@ datanode进程死亡或者网络故障造成datanode无法与namenode通信，na
 ```
 
 # 四、 DataNode的目录结构  
-和namenode不同的是，datanode的存储目录是初始阶段自动创建的，不需要额外格式化。  
-1、在/opt/module/hadoop-2.7.2/data/tmp/dfs/data/current这个目录下查看版本号  
+
+和namenode不同的是，datanode的存储目录是初始阶段自动创建的，不需要额外格式化。
+
+1、在/opt/module/hadoop-2.9.2/data/tmp/dfs/data/current这个目录下查看版本号  
 ```
 $ cat VERSION   
 storageID=DS-1b998a1d-71a3-43d5-82dc-c0ff3294921b  
@@ -38,14 +43,14 @@ datanodeUuid=970b2daf-63b8-4e17-a514-d81741392165
 storageType=DATA_NODE  
 layoutVersion=-56  
 ```
-2、具体解释  
-	（1）storageID：存储id号  
-	（2）clusterID集群id，全局唯一  
-	（3）cTime属性标记了datanode存储系统的创建时间，对于刚刚格式化的存储系统，这个属性为0；但是在文件系统升级之后，该值会更新到新的时间戳。  
-	（4）datanodeUuid：datanode的唯一识别码  
-	（5）storageType：存储类型  
-	（6）layoutVersion是一个负整数。通常只有HDFS增加新特性时才会更新这个版本号。  
-3、在/opt/module/hadoop-2.7.2/data/tmp/dfs/data/current/BP-97847618-192.168.10.102-1493726072779/current这个目录下查看该数据块的版本号  
+- storageID：存储id号  
+- clusterID集群id，全局唯一  
+- cTime属性标记了datanode存储系统的创建时间，对于刚刚格式化的存储系统，这个属性为0；但是在文件系统升级之后，该值会更新到新的时间戳。  
+- datanodeUuid：datanode的唯一识别码  
+- storageType：存储类型  
+- layoutVersion是一个负整数。通常只有HDFS增加新特性时才会更新这个版本号。  
+
+2、在/opt/module/hadoop-2.9.2/data/tmp/dfs/data/current/BP-97847618-192.168.10.102-1493726072779/current这个目录下查看该数据块的版本号  
 ```
 $ cat VERSION
 #Mon May 08 16:30:19 CST 2017
@@ -54,131 +59,164 @@ cTime=0
 blockpoolID=BP-97847618-192.168.10.102-1493726072779
 layoutVersion=-56
 ```
-4、具体解释  
-（1）namespaceID：是datanode首次访问namenode的时候从namenode处获取的storageID对每个datanode来说是唯一的（但对于单个datanode中所有存储目录来说则是相同的），namenode可用这个属性来区分不同datanode。  
-（2）cTime属性标记了datanode存储系统的创建时间，对于刚刚格式化的存储系统，这个属性为0；但是在文件系统升级之后，该值会更新到新的时间戳。  
-（3）blockpoolID：一个block pool id标识一个block pool，并且是跨集群的全局唯一。当一个新的Namespace被创建的时候(format过程的一部分)会创建并持久化一个唯一ID。在创建过程构建全局唯一的BlockPoolID比人为的配置更可靠一些。NN将BlockPoolID持久化到磁盘中，在后续的启动过程中，会再次load并使用。  
-（4）layoutVersion是一个负整数。通常只有HDFS增加新特性时才会更新这个版本号。  
+- namespaceID：是datanode首次访问namenode的时候从namenode处获取的storageID对每个datanode来说是唯一的（但对于单个datanode中所有存储目录来说则是相同的），namenode可用这个属性来区分不同datanode。  
+- cTime属性标记了datanode存储系统的创建时间，对于刚刚格式化的存储系统，这个属性为0；但是在文件系统升级之后，该值会更新到新的时间戳。  
+- blockpoolID：一个block pool id标识一个block pool，并且是跨集群的全局唯一。当一个新的Namespace被创建的时候(format过程的一部分)会创建并持久化一个唯一ID。在创建过程构建全局唯一的BlockPoolID比人为的配置更可靠一些。NN将BlockPoolID持久化到磁盘中，在后续的启动过程中，会再次load并使用。  
+- layoutVersion是一个负整数。通常只有HDFS增加新特性时才会更新这个版本号。  
 
 # 五、 服役新数据节点  
-1、需求：  
-随着公司业务的增长，数据量越来越大，原有的数据节点的容量已经不能满足存储数据的需求，需要在原有集群基础上动态添加新的数据节点。  
+
+1、需求：随着公司业务的增长，数据量越来越大，原有的数据节点的容量已经不能满足存储数据的需求，需要在原有集群基础上动态添加新的数据节点。  
+
 2、环境准备  
-	（1）准备新加入的节点  
-	（2）修改ip地址和主机名称  
-	（3）将其他配置好的机器的hadoop配置文件scp到新加入节点    
-	（4）删除原来HDFS文件系统留存的文件  
-		/opt/module/hadoop-2.7.2/data  
+
+2.1、准备新加入的节点
+
+2.2、修改ip地址和主机名称
+
+2.3、将其他配置好的机器的hadoop配置文件scp到新加入节点
+
+2.4、删除原来HDFS文件系统留存的文件
+```
+/opt/module/hadoop-2.9.2/data  
+```
+
 3、服役新节点具体步骤  
-（1）在namenode的/opt/module/hadoop-2.7.2/etc/hadoop目录下创建dfs.hosts文件  
+
+（1）在namenode的/opt/module/hadoop-2.9.2/etc/hadoop目录下创建dfs.hosts文件  
 ```
 $ pwd
-/opt/module/hadoop-2.7.2/etc/hadoop
+/opt/module/hadoop-2.9.2/etc/hadoop
+
 $ touch dfs.hosts
+
+# 添加如下主机名称（包含新服役的节点）  
 $ vi dfs.hosts
-```
-添加如下主机名称（包含新服役的节点）  
-```
 node001
 node002
 node003
 node004
 ```
+
 (2）在namenode的hdfs-site.xml配置文件中增加dfs.hosts属性  
 ```
+<!--动态上下线配置: 如果配置文件中有, 就不需要配置-->
 <property>
       <name>dfs.hosts</name>
-      <value>/opt/module/hadoop-2.7.2/etc/hadoop/dfs.hosts</value>
+      <value>/opt/module/hadoop-2.9.2/etc/hadoop/dfs.hosts</value>
 </property>
 ```
+
 (3)刷新namenode   
-```$ hdfs dfsadmin -refreshNodes  ```  
-Refresh nodes successful  
+```
+$ hdfs dfsadmin -refreshNodes
+Refresh nodes successful
+```
+
 (4）更新resourcemanager节点  
-```$ yarn rmadmin -refreshNodes  ```  
-17/06/24 14:17:11 INFO client.RMProxy: Connecting to ResourceManager at node002/192.168.1.103:8033  
+```
+$ yarn rmadmin -refreshNodes
+17/06/24 14:17:11 INFO client.RMProxy: Connecting to ResourceManager at node002/192.168.1.103:8033
+```
+
 (5)在namenode的slaves文件中增加新主机名称  
-	增加node004  不需要分发  
+
+增加node004  不需要分发  
 ```
 node001
 node002
 node003
 node004
 ```
+
 (6)单独命令启动新的数据节点和节点管理器 
 ```
 $ sbin/hadoop-daemon.sh start datanode
-starting datanode, logging to /opt/module/hadoop-2.7.2/logs/hadoop-atguigu-datanode-hadoop105.out
+starting datanode, logging to /opt/module/hadoop-2.9.2/logs/hadoop-atguigu-datanode-hadoop105.out
+
 $ sbin/yarn-daemon.sh start nodemanager
-starting nodemanager, logging to /opt/module/hadoop-2.7.2/logs/yarn-atguigu-nodemanager-hadoop105.out
+starting nodemanager, logging to /opt/module/hadoop-2.9.2/logs/yarn-atguigu-nodemanager-hadoop105.out
 ```
+
 (7)在web浏览器上检查是否ok  
+
 4、如果数据不均衡，可以用命令实现集群的再平衡  
 ```
 $ ./start-balancer.sh
-starting balancer, logging to /opt/module/hadoop-2.7.2/logs/hadoop-atguigu-balancer-hadoop102.out
+starting balancer, logging to /opt/module/hadoop-2.9.2/logs/hadoop-atguigu-balancer-hadoop102.out
 Time Stamp               Iteration#  Bytes Already Moved  Bytes Left To Move  Bytes Being Moved
 ```
 
 # 六、退役旧数据节点  
-1、在namenode的/opt/module/hadoop-2.7.2/etc/hadoop目录下创建dfs.hosts.exclude文件  
+
+1、在namenode的/opt/module/hadoop-2.9.2/etc/hadoop目录下创建dfs.hosts.exclude文件  
 ```
 $ pwd  
-/opt/module/hadoop-2.7.2/etc/hadoop  
+/opt/module/hadoop-2.9.2/etc/hadoop  
 $ touch dfs.hosts.exclude  
+
+# 添加如下主机名称（要退役的节点）  
 $ vi dfs.hosts.exclude
-```
-添加如下主机名称（要退役的节点）  
-```
 node004
 ```
+
 2、在namenode的hdfs-site.xml配置文件中增加dfs.hosts.exclude属性  
 ```
 <property>
       <name>dfs.hosts.exclude</name>
-      <value>/opt/module/hadoop-2.7.2/etc/hadoop/dfs.hosts.exclude</value>
+      <value>/opt/module/hadoop-2.9.2/etc/hadoop/dfs.hosts.exclude</value>
 </property>
 ```
+
 3、刷新namenode、刷新resourcemanager  
 ```
 $ hdfs dfsadmin -refreshNodes
 Refresh nodes successful
+
 $ yarn rmadmin -refreshNodes
 17/06/24 14:55:56 INFO client.RMProxy: Connecting to ResourceManager at node002/192.168.1.103:8033
 ```
+
 4、检查web浏览器，退役节点的状态为decommission in progress（退役中），说明数据节点正在复制块到其他节点。  
  
 5、等待退役节点状态为decommissioned（所有块已经复制完成），停止该节点及节点资源管理器。注意：如果副本数是3，服役的节点小于等于3，是不能退役成功的，需要修改副本数后才能退役。·  
 ```
 $ sbin/hadoop-daemon.sh stop datanode
 stopping datanode
+
 $ sbin/yarn-daemon.sh stop nodemanager
 stopping nodemanager
 ```
+
 6、从include文件中删除退役节点，再运行刷新节点的命令  
+
 (1）从namenode的dfs.hosts文件中删除退役节点node004  
 ```
 node001
 node002
 node003
 ```
+
 (2）刷新namenode，刷新resourcemanager  
 ```	
 $hdfs dfsadmin -refreshNodes
  Refresh nodes successful
+
 $yarn rmadmin -refreshNodes
 17/06/24 14:55:56 INFO client.RMProxy: Connecting to ResourceManager at hadoop103/192.168.1.103:8033
 ```
+
 7、从namenode的slave文件中删除退役节点node004  
 ```
 node001
 node002
 node003
 ```
+
 8、如果数据不均衡，可以用命令实现集群的再平衡  
 ```
 bin/start-balancer.sh   
-starting balancer, logging to /opt/module/hadoop-2.7.2/logs/hadoop-atguigu-balancer-hadoop102.out
+starting balancer, logging to /opt/module/hadoop-2.9.2/logs/hadoop-atguigu-balancer-hadoop102.out
 Time Stamp               Iteration#  Bytes Already Moved  Bytes Left To Move  Bytes Being Moved
 ```
 
@@ -248,4 +286,52 @@ HDFS文件权限的目的，防止好人做错事，而不是阻止坏人做坏�
      <name>dfs.replication</name>
      <value>3</value>
 </property>
+```
+
+# 九block块手动拼接成为完整数据
+
+所有的数据都是以一个个的block块存储的，只要我们能够将文件的所有block块全部找出来，拼接到一起，又会成为一个完整的文件，接下来我们就来通过命令将文件进行拼接:
+
+1、上传一个大于128M的文件到hdfs上面去,只有一个大于128M的文件才会有多个block块。
+
+```
+cd /export/softwares/
+hdfs dfs -put jdk-8u141-linux-x64.tar.gz  /
+```
+
+2、web浏览器界面查看jdk的两个block块id
+
+这里我们看到两个block块id分别为
+```
+1073742699和1073742700
+```
+
+那么我们就可以通过blockid将我们两个block块进行手动拼接了。
+
+3、根据我们的配置文件找到block块所在的路径
+```
+根据我们hdfs-site.xml的配置，找到datanode所在的路径
+<!--  定义dataNode数据存储的节点位置，实际工作中，一般先确定磁盘的挂载目录，然后多个目录用，进行分割  -->
+        <property>
+                <name>dfs.datanode.data.dir</name>
+                <value>file:///export/servers/hadoop-2.9.2/hadoopDatas/datanodeDatas</value>
+        </property>
+```
+
+4、进入到以下路径 : 此基础路径为 上述配置中value的路径
+```
+cd /export/servers/hadoop-2.9.2/hadoopDatas/datanodeDatas/current/BP-557466926-192.168.52.100-1549868683602/current/finalized/subdir0/subdir3
+```
+
+5、 执行block块的拼接
+```
+# 将不同的各个block块按照顺序进行拼接起来，成为一个完整的文件
+cat blk_1073742699 >> jdk8u141.tar.gz
+cat blk_1073742700 >> jdk8u141.tar.gz
+
+# 移动我们的jdk到/export路径，然后进行解压
+mv  jdk8u141.tar.gz /export/
+cd /export/
+tar -zxf jdk8u141.tar.gz
+正常解压，没有问题，说明我们的程序按照block块存储没有问题
 ```
