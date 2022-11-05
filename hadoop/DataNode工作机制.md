@@ -1,19 +1,19 @@
-DataNode工作机制  
+# DataNode工作机制  
  ![image](https://github.com/mykubernetes/hadoop/blob/master/image/datanode.png)
 
-一、DataNode工作机制  
+# 一、DataNode工作机制  
 1）一个数据块在datanode上以文件形式存储在磁盘上，包括两个文件，一个是数据本身，一个是元数据包括数据块的长度，块数据的校验和，以及时间戳。  
 2）DataNode启动后向namenode注册，通过后，周期性（1小时）的向namenode上报所有的块信息。  
 3）心跳是每3秒一次，心跳返回结果带有namenode给该datanode的命令如复制块数据到另一台机器，或删除某个数据块。如果超过10分钟没有收到某个datanode的心跳，则认为该节点不可用。  
 4）集群运行中可以安全加入和退出一些机器
 
-二、 数据完整性  
+# 二、 数据完整性  
 1）当DataNode读取block的时候，它会计算checksum  
 2）如果计算后的checksum，与block创建时值不一样，说明block已经损坏  
 3）client读取其他DataNode上的block.  
 4）datanode在其文件创建后周期验证checksum  
 
-三、 掉线时限参数设置  
+# 三、 掉线时限参数设置  
 datanode进程死亡或者网络故障造成datanode无法与namenode通信，namenode不会立即把该节点判定为死亡，要经过一段时间，这段时间暂称作超时时长。HDFS默认的超时时长为10分钟+30秒。如果定义超时时间为timeout，则超时时长的计算公式为：  
 	timeout  = 2 * dfs.namenode.heartbeat.recheck-interval + 10 * dfs.heartbeat.interval。  
 	而默认的dfs.namenode.heartbeat.recheck-interval 大小为5分钟，dfs.heartbeat.interval默认为3秒。  
@@ -29,7 +29,7 @@ datanode进程死亡或者网络故障造成datanode无法与namenode通信，na
 </property>
 ```
 
-四、 DataNode的目录结构  
+# 四、 DataNode的目录结构  
 和namenode不同的是，datanode的存储目录是初始阶段自动创建的，不需要额外格式化。  
 1、在/opt/module/hadoop-2.7.2/data/tmp/dfs/data/current这个目录下查看版本号  
 ```
@@ -63,7 +63,7 @@ layoutVersion=-56
 （3）blockpoolID：一个block pool id标识一个block pool，并且是跨集群的全局唯一。当一个新的Namespace被创建的时候(format过程的一部分)会创建并持久化一个唯一ID。在创建过程构建全局唯一的BlockPoolID比人为的配置更可靠一些。NN将BlockPoolID持久化到磁盘中，在后续的启动过程中，会再次load并使用。  
 （4）layoutVersion是一个负整数。通常只有HDFS增加新特性时才会更新这个版本号。  
 
-五、 服役新数据节点  
+# 五、 服役新数据节点  
 1、需求：  
 随着公司业务的增长，数据量越来越大，原有的数据节点的容量已经不能满足存储数据的需求，需要在原有集群基础上动态添加新的数据节点。  
 2、环境准备  
@@ -123,7 +123,7 @@ starting balancer, logging to /opt/module/hadoop-2.7.2/logs/hadoop-atguigu-balan
 Time Stamp               Iteration#  Bytes Already Moved  Bytes Left To Move  Bytes Being Moved
 ```
 
-六、退役旧数据节点  
+# 六、退役旧数据节点  
 1、在namenode的/opt/module/hadoop-2.7.2/etc/hadoop目录下创建dfs.hosts.exclude文件  
 ```
 $ pwd  
@@ -185,7 +185,7 @@ starting balancer, logging to /opt/module/hadoop-2.7.2/logs/hadoop-atguigu-balan
 Time Stamp               Iteration#  Bytes Already Moved  Bytes Left To Move  Bytes Being Moved
 ```
 
-七、 Datanode多目录配置  
+# 七、 Datanode多目录配置  
 1）datanode也可以配置成多个目录，每个目录存储的数据不一样。即：数据不是副本。  
 2）具体配置如下：  
 ```
