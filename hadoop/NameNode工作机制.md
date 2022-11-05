@@ -94,7 +94,7 @@
 
 # 四、Fsimage和Edits解析
 
-1）概念: NameNode被格式化之后，将在/opt/module/hadoop-2.9.2/data/tmp/dfs/name/current目录中产生如下文件
+1、概念: NameNode被格式化之后，将在/opt/module/hadoop-2.9.2/data/tmp/dfs/name/current目录中产生如下文件
 ```
 edits_0000000000000000000
 fsimage_0000000000000000000.md5
@@ -106,8 +106,41 @@ VERSION
 - **seen_txid**： 该⽂件是保存了一个数字，数字对应着最后一个Edits⽂件名的数字
 - **VERSION**： 该⽂件记录namenode的一些版本号信息，比如:CusterId,namespaceID等
 
-2）每次Namenode启动的时候都会将fsimage文件读入内存，并从00001开始到seen_txid中记录的数字依次执行每个edits里面的更新操作，保证内存中的元数据信息是最新的、同步的，可以看成Namenode启动的时候就将fsimage和edits文件进行了合并。  
+2、每次Namenode启动的时候都会将fsimage文件读入内存，并从00001开始到seen_txid中记录的数字依次执行每个edits里面的更新操作，保证内存中的元数据信息是最新的、同步的，可以看成Namenode启动的时候就将fsimage和edits文件进行了合并。  
 
+3、所有的元数据信息都保存在了FsImage与Eidts文件当中，这两个文件就记录了所有的数据的元数据信息，元数据信息的保存目录配置在了**hdfs-site.xml**当中
+
+- namenode保存fsimage的配置路径
+```
+<!--  namenode元数据存储路径，实际工作当中一般使用SSD固态硬盘，并使用多个固态硬盘隔开，冗余元数据 -->
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>file:///opt/module/hadoop-2.9.2/hadoopDatas/namenodeDatas</value>
+    </property>
+```
+- namenode保存edits文件的配置路径
+```
+<property>
+        <name>dfs.namenode.edits.dir</name>
+        <value>file:///opt/module/hadoop-2.9.2/hadoopDatas/dfs/nn/edits</value>
+</property>
+```
+
+- secondaryNamenode保存fsimage文件的配置路径
+```
+<property>
+        <name>dfs.namenode.checkpoint.dir</name>
+        <value>file:///opt/module/hadoop-2.9.2/hadoopDatas/dfs/snn/name</value>
+</property>
+```
+
+- secondaryNamenode保存edits文件的配置路径
+```
+<property>
+        <name>dfs.namenode.checkpoint.edits.dir</name>
+        <value>file:///opt/module/hadoop-2.9.2/hadoopDatas/dfs/nn/snn/edits</value>
+</property>
+```
 
 ## Fsimage⽂件内容
 
@@ -232,22 +265,28 @@ $ cat /opt/lagou/servers/hadoop-2.9.2/edits.xml
 
 通常情况下，SecondaryNameNode每隔一小时执行一次。
 
-1、官方默认配置文件：hdfs-default.xml
+- 官方默认配置文件：hdfs-default.xml
+
+1、第一个参数：时间达到一个小时fsimage与edits就会进行合并
 ```
 <property>
   <name>dfs.namenode.checkpoint.period</name>
   <value>3600</value>
+  <description>时间达到一个小时fsimage与edits就会进行合并</description>
 </property>
 ```
 
-2、配置一分钟检查一次操作次数，当操作次数达到1百万时，SecondaryNameNode执行一次。
+2、第二个参数：hdfs操作达到1000000次也会进行合并
 ```
 <property>
   <name>dfs.namenode.checkpoint.txns</name>
   <value>1000000</value>
-<description>操作动作次数</description>
+<description>hdfs操作达到1000000次也会进行合并</description>
 </property>
+```
 
+3、第三个参数：每隔多长时间检查一次hdfs的操作次数
+```
 <property>
   <name>dfs.namenode.checkpoint.check.period</name>
   <value>60</value>
