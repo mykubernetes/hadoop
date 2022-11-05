@@ -56,7 +56,7 @@
 
 - 1、通常情况下，SecondaryNameNode每隔一小时执行一次。  
 
-### hdfs-default.xml
+**hdfs-default.xml**
 ```
   <property>  
     <name>dfs.namenode.checkpoint.period</name>  
@@ -79,7 +79,20 @@
   </property> 
 ```
 
-# 二、镜像文件和编辑日志文件  
+# 三、NN和2NN工作机制详解
+
+- Fsimage：NameNode内存中元数据序列化后形成的文件。
+
+- Edits：记录客户端更新元数据信息的每一步操作（可通过Edits运算出元数据）。
+
+- NameNode启动时，先滚动Edits并生成一个空的edits.inprogress，然后加载Edits和Fsimage到内存中，此时NameNode内存就持有最新的元数据信息。Client开始对NameNode发送元数据的增删改的请求，这些请求的操作首先会被记录到edits.inprogress中（查询元数据的操作不会被记录在Edits中，因为查询操作不会更改元数据信息），如果此时NameNode挂掉，重启后会从Edits中读取元数据的信息。然后，NameNode会在内存中执行元数据的增删改的操作。
+
+- 由于Edits中记录的操作会越来越多，Edits文件会越来越大，导致NameNode在启动加载Edits时会很慢，所以需要对Edits和Fsimage进行合并（所谓合并，就是将Edits和Fsimage加载到内存中，照着Edits中的操作一步步执行，最终形成新的Fsimage）。SecondaryNameNode的作用就是帮助NameNode进行Edits和Fsimage的合并工作。
+
+- SecondaryNameNode首先会询问NameNode是否需要CheckPoint（触发CheckPoint需要满足两个条件中的任意一个，定时时间到和Edits中数据写满了）。直接带回NameNode是否检查结果。SecondaryNameNode执行CheckPoint操作，首先会让NameNode滚动Edits并生成一个空的edits.inprogress，滚动Edits的目的是给Edits打个标记，以后所有新的操作都写入edits.inprogress，其他未合并的Edits和Fsimage会拷贝到SecondaryNameNode的本地，然后将拷贝的Edits和Fsimage加载到内存中进行合并，生成fsimage.chkpoint，然后将fsimage.chkpoint拷贝给NameNode，重命名为Fsimage后替换掉原来的Fsimage。NameNode在启动时就只需要加载之前未合并的Edits和Fsimage即可，因为合并过的Edits中的元数据信息已经被记录在Fsimage中。
+
+
+# 四、镜像文件和编辑日志文件  
 
 1）概念: namenode被格式化之后，将在/opt/module/hadoop-2.7.2/data/tmp/dfs/name/current目录中产生如下文件
 ```
@@ -128,7 +141,7 @@ cat /opt/module/hadoop-2.7.2/edits.xml
 ```
 将显示的xml文件内容拷贝到eclipse中创建的xml文件中，并格式化。  
 
-# 三、滚动编辑日志  
+# 五、滚动编辑日志  
 正常情况HDFS文件系统有更新操作时，就会滚动编辑日志。也可以用命令强制滚动编辑日志。
 
 1）滚动编辑日志（前提必须启动集群）  
@@ -140,7 +153,7 @@ hdfs dfsadmin -rollEdits
 Namenode启动时加载镜像文件和编辑日志  
 
 
-# 四、 namenode版本号  
+# 六、 namenode版本号  
 
 1）查看namenode版本号  
 在/opt/module/hadoop-2.7.2/data/tmp/dfs/name/current这个目录下查看VERSION
@@ -162,7 +175,7 @@ layoutVersion=-63
 
 
 
-# 五、SecondaryNameNode目录结构  
+# 七、SecondaryNameNode目录结构  
 
 Secondary NameNode用来监控HDFS状态的辅助后台程序，每隔一段时间获取HDFS元数据的快照。  
 在/opt/module/hadoop-2.7.2/data/tmp/dfs/namesecondary/current这个目录中查看SecondaryNameNode目录结构。  
@@ -241,7 +254,7 @@ rm -rf /opt/module/hadoop-2.7.2/data/tmp/dfs/namesecondary/in_use.lock
 ```
 
 
-# 六、 集群安全模式操作  
+# 八、 集群安全模式操作  
 
 1）概述  
   Namenode启动时，首先将映像文件（fsimage）载入内存，并执行编辑日志（edits）中的各项操作。一旦在内存中成功建立文件系统元数据的映像，则创建一个新的    fsimage文件和一个空的编辑日志。此时，namenode开始监听datanode请求。但是此刻，namenode运行在安全模式，即namenode的文件系统对于客户端来说是只读的。  
@@ -279,10 +292,13 @@ bin/hdfs dfs -put ~/hello.txt /root/hello.txt
 bin/hdfs dfsadmin -safemode leave  
 ```
 
-# 七、 Namenode多目录配置  
-	1）namenode的本地目录可以配置成多个，且每个目录存放内容相同，增加了可靠性。  
-	2）具体配置如下：  
-	hdfs-site.xml  
+# 九、 Namenode多目录配置  
+
+1）namenode的本地目录可以配置成多个，且每个目录存放内容相同，增加了可靠性。  
+
+2）具体配置如下：  
+
+**hdfs-site.xml**
 ```
 <property>
     	<name>dfs.namenode.name.dir</name>
