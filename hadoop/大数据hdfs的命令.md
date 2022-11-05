@@ -539,4 +539,4 @@ hdfs ec [generic options]
 恢复指定路径上的租约。该路径必须驻留在HDFS文件系统上。默认重试次数为1。
 
 参考：
-- https://www.cnblogs.com/shudazhaofeng/p/14332409.html
+- https://blog.51cto.com/u_9955199/3225646
