@@ -1,46 +1,77 @@
-# 一、NameNode工作机制  
-NameNode&Secondary NameNode工作机制
 
-![image](https://github.com/mykubernetes/hadoop/blob/master/image/nn.png)
+# 一. NN和2NN工作机制
 
-1）第一阶段：namenode启动  
-（1）第一次启动namenode格式化后，创建fsimage和edits文件。如果不是第一次启动，直接加载编辑日志和镜像文件到内存。  
-（2）客户端对元数据进行增删改的请求  
-（3）namenode记录操作日志，更新滚动日志。  
-（4）namenode在内存中对数据进行增删改查  
+**问题引出**： NameNode如何管理和存储元数据?
 
-2）第二阶段：Secondary NameNode工作  
-	（1）Secondary NameNode询问namenode是否需要checkpoint。直接带回namenode是否检查结果。  
-	（2）Secondary NameNode请求执行checkpoint。  
-	（3）namenode滚动正在写的edits日志  
-	（4）将滚动前的编辑日志和镜像文件拷贝到Secondary NameNode  
-	（5）Secondary NameNode加载编辑日志和镜像文件到内存，并合并。  
-	（6）生成新的镜像文件fsimage.chkpoint  
-	（7）拷贝fsimage.chkpoint到namenode  
-	（8）namenode将fsimage.chkpoint重新命名成fsimage  
+计算机中存储数据的两种方式：磁盘、内存
+- 元数据存储磁盘：存储磁盘⽆法⾯对客户端对元数据信息的随机访问，还有响应客户请求，必然是效率过低。但是安全性⾼
+- 元数据存储内存：元数据存放内存，可以高效的查询以及快速响应客户端的查询请求，数据保存在内存，如果断点，内存中的数据全部丢失。安全性低
 
-3）web端访问SecondaryNameNode  
-	（1）启动集群  
-	（2）浏览器中输入：http://node01:50090/status.html  
-	（3）查看SecondaryNameNode信息  
+**解决办法**： 内存+磁盘;NameNode内存+FsImage的⽂件(磁盘)
+
+**新问题**： 磁盘和内存中元数据如何划分?
+
+两个数据一模⼀样，还是两个数据合并到一起才是⼀份完整的数据呢?
+- 如果两份数据一模一样的话，客户端 Client 如果对元数据进行增删改操作，则需要时刻保证两份数据的一致性，导致效率变低
+- 如果两份数据合并后 ==> 完整数据的情况。NameNode 引入了 edits 文件（日志文件，只能追加写入），记录了client 的增删改操作，而不再让 NameNode 把数据 dump 出来形成 fsimage文件（让 NameNode 专注于处理客户端的请求）
+- edits文件：文件生成快，恢复慢；fsimage文件：文件生成慢，恢复快
+
+**新问题**： 谁来负责文件合并？
+
+如果长时间添加数据到Edits中，会导致该文件数据过大，效率降低，而且一旦断电，恢复元数据需要的时间过长。因此，需要定期进行FsImage和Edits的合并，但是谁来合并？
+
+- NameNode：NameNode本身任务重，再负责合并，势必效率过低，甚至会影响本身的任务
+- 因此，引入一个新的节点SecondaryNamenode，专门用于FsImage和Edits的合并。
+
+
+# 二、流程分析
+
+## 1）第一阶段：namenode启动  
+
+- 1、第一次启动NameNode格式化后，创建Fsimage和Edits文件。如果不是第一次启动，直接加载编辑日志和镜像文件到内存。
+- 2、客户端对元数据进行增删改的请求。
+- 3、NameNode记录操作日志，更新滚动日志（所谓滚动日志，即 把前一阶段的日志保存成一个日志文件，再新生成一个文件，新生成文件后缀带有 inprogress 字样）。
+- 4、NameNode在内存中对数据进行增删改。
+
+
+## 2）第二阶段：Secondary NameNode工作
+
+- 1、Secondary NameNode询问NameNode是否需要CheckPoint。直接带回NameNode是否检查结果。
+- 2、Secondary NameNode请求执行CheckPoint。
+- 3、NameNode滚动正在写的Edits日志。
+- 4、将滚动前的编辑日志和镜像文件拷贝到Secondary NameNode。
+- 5、Secondary NameNode加载编辑日志和镜像文件到内存，并合并。
+- 6、生成新的镜像文件fsimage.chkpoint。
+- 7、拷贝fsimage.chkpoint到NameNode。
+- 8、NameNode将fsimage.chkpoint重新命名成fsimage。
+
+## 3）web端访问SecondaryNameNode
+
+- 1、启动集群
+- 2、浏览器中输入：http://node01:50090/status.html
+- 3、查看SecondaryNameNode信息
  
 
-4）chkpoint检查时间参数设置  
-（1）通常情况下，SecondaryNameNode每隔一小时执行一次。  
-    hdfs-default.xml
+## 4）chkpoint检查时间参数设置
+
+- 1、通常情况下，SecondaryNameNode每隔一小时执行一次。  
+
+### hdfs-default.xml
 ```
   <property>  
     <name>dfs.namenode.checkpoint.period</name>  
     <value>3600</value>  
   </property>
 ```
-（2）一分钟检查一次操作次数，当操作次数达到1百万时，SecondaryNameNode执行一次。  
+
+- 2、一分钟检查一次操作次数，当操作次数达到1百万时，SecondaryNameNode执行一次。  
 ```
   <property>  
     <name>dfs.namenode.checkpoint.txns</name>  
     <value>1000000</value>  
   <description>操作动作次数</description>  
   </property>
+  
   <property>  
     <name>dfs.namenode.checkpoint.check.period</name>  
     <value>60</value>  
@@ -48,10 +79,9 @@ NameNode&Secondary NameNode工作机制
   </property> 
 ```
 
-
 # 二、镜像文件和编辑日志文件  
-1）概念  
-	namenode被格式化之后，将在/opt/module/hadoop-2.7.2/data/tmp/dfs/name/current目录中产生如下文件
+
+1）概念: namenode被格式化之后，将在/opt/module/hadoop-2.7.2/data/tmp/dfs/name/current目录中产生如下文件
 ```
 edits_0000000000000000000
 fsimage_0000000000000000000.md5
@@ -73,7 +103,7 @@ oev                  apply the offline edits viewer to an edits file
 
 （2）基本语法
 ```
-		hdfs oiv -p 文件类型 -i镜像文件 -o 转换后文件输出路径  
+hdfs oiv -p 文件类型 -i镜像文件 -o 转换后文件输出路径  
 ```
 
 （3）案例实操  
