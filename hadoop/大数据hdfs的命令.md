@@ -71,20 +71,49 @@ hadoop [--config confdir] [COMMAND] [GENERIC_OPTIONS] [COMMAND_OPTIONS]
 | COMMAND COMMAND_OPTIONS | 以下各节介绍了各种命令及其选项。这些命令已分组为“[用户命令](https://blog.csdn.net/zhanglong_4444/article/details/87696852#User_Commands)”和“[管理命令](https://blog.csdn.net/zhanglong_4444/article/details/87696852#Administration_Commands)”。 |
 
 
-## COMMAND 描述
+## 一、用户命令
+
+- 对hadoop集群的用户有用的命令。
+
+### classpath （类路径）
+
+```
+Usage: hdfs classpath [--glob |--jar <path> |-h |--help]
+```
+
+| 命令选项 | 描述 |
+| :--------- | :----- |
+| --glob | expand wildcards |
+| --jar path | 在jar命名路径中编写类路径作为清单 |
+| -h, --help | 打印 |
+
+打印获取 Hadoop jar 和所需库所需的类路径。如果在不带参数的情况下调用，则输出命令脚本设置的类路径，它可能在类路径条目中包含通配符。其他选项在通配符展开后打印类路径，或者将类路径写入 jar 文件的清单中。后者在不能使用通配符并且展开的类路径超过了所支持的最大命令行长度的环境中非常有用。
+
+
 
 ### dfs（使用率最高）
 - 在Hadoop支持的文件系统上运行filesystem命令，可以在[File System Shell Guide](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-common/FileSystemShell.html)中找到各种COMMAND_OPTIONS ，这个命令是日常中使用最多的命令之一。
 
 用法：`hdfs dfs [COMMAND [COMMAND_OPTIONS]]`
 
-
-
 ### envvars
 用法：`hdfs envvars`
 
 显示计算的Hadoop环境变量
 
+## fetchdt
+用法: `hdfs fetchdt <opts> <token_file_path>`
+
+| 命令选项  | 描述 |
+| :------- | :------- |
+| --webservice NN_Url | 连接NN的Url(从http或https开始) |
+| --renewer name | 权令牌续订者的名称 |
+| --cancel | 消授权令牌 |
+| --renew | 更新授权令牌。必须使用-renewer name选项获取委托令牌。 |
+| --print | 打印委托令牌 |
+| token_file_path | 用于存储令牌的文件路径。 |
+
+从 NameNode 获取委托令牌。更多信息见[fetchdt](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html#fetchdt)。
 
 ### fsck（使用率较高）
 用法：
@@ -98,22 +127,26 @@ hdfs fsck <path>
           [-blockId <blk_Id>]
 ```
   
-| 命令选项                       | 描述                                                     |
-| :----------------------------- | :------------------------------------------------------- |
-| path                           | 要检测的路径                                             |
-| -delete                        | 删除损坏的文件                                           |
-| -files                         | 打印出要检查的文件                                       |
-| -files -blocks                 | 打印出文件及对应的块报告                                 |
+| 命令选项                       | 描述                                                   |
+| :----------------------------- | :----------------------------------------------------- |
+| path                           | 要检测的路径                                            |
+| -delete                        | 删除损坏的文件                                          |
+| -files                         | 打印出要检查的文件                                      |
+| -files -blocks                 | 打印出文件及对应的块报告                                |
 | -files -blocks -locations      | 打印出文件的各个block及block在在的节点位置               |
-| -files -blocks -racks          | 打印出文件和文件的各个block及数据节点位置的网络拓扑      |
-| -files -blocks -replicaDetails | 打印出每个副本的详细信息                                 |
-| -includeSnapshots              | 如果给定路径指示快照目录或其下有快照目录，则包括快照数据 |
+| -files -blocks -racks          | 打印出文件和文件的各个block及数据节点位置的网络拓扑        |
+| -files -blocks -replicaDetails | 打印出每个副本的详细信息                                |
+| -files -blocks -upgradedomains | 打印每个块的升级域。                                    |
+| -includeSnapshots              | 如果给定路径指示快照目录或其下有快照目录，则包括快照数据   |
 | -list-corruptfileblocks        | 打印出所属的缺失块和文件列表                             |
-| -move                          | 将损坏的文件移至/ lost + found                           |
-| -openforwrite                  | 打印出用于写入的文件                                     |
-| -blockId                       | 打印出有关块的信息                                       |
-| -storagepolicies               | 打印出块的存储策略摘要                                   |
+| -move                          | 将损坏的文件移至/ lost + found                          |
+| -openforwrite                  | 打印出用于写入的文件                                    |
+| -showprogress                  |打印出输出点的点。默认为OFF（无进度）。                    |
+| -storagepolicies               |打印出块的存储策略摘要。                                  |
+| -maintenance                   |打印出维护状态节点详细信息。                              |
+| -blockId                       | 打印出有关块的信息                                      |
 
+运行HDFS文件系统检查实用程序。有关详细信息，请参阅[fsck](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html#fsck)。
 
 ### getconf
 用法：
@@ -131,19 +164,53 @@ hdfs fsck <path>
 | 命令选项       | 描述                                               |
 | :------------- | :------------------------------------------------- |
 | -namenodes     | 获取集群中的名称节点列表                           |
-| -journalNodes  | 获取群集中的日记节点列表                           |
 | -secondaryNameNodes	| 获取群集中的辅助名称节点列表                  |
 | -backupNodes | 获取群集中的备份节点列表。                           |
+| -journalNodes  | 获取群集中的日记节点列表                           |
 | -includeFile   | 获取包含文件路径，该路径定义可以加入群集的datanode   |
 | -excludeFile   | 获取排除文件路径，该路径定义需要停用的数据节点       |
 | -nnRpcAddresses | 获取namenode rpc地址                            |
 | -confKey [key] | 从配置中获取配置的参数值                           |
 
+从配置目录中获取配置信息，进行后处理。
+
+
+### groups
+
+用法：`hdfs groups [username ...]`
+
+返回给定一个或多个用户名的组信息。
+
+### httpfs
+
+用法：`hdfs httpfs`
+
+运行HttpFS服务器，HDFS HTTP网关。
+
 ### lsSnapshottableDir
 
 用法：`hdfs lsSnapshottableDir [-help]`
 
+| 命令选项                | 描述                                                         |
+| :---------------------- | :---------------------------------------------------------- |
+| -help                   | 打印帮助                                                     |
+
 获取快照目录列表。当它以超级用户身份运行时，它将返回所有快照目录。否则，它返回当前用户拥有的那些目录。
+
+
+### jmxget
+
+用法: `hdfs jmxget [-localVM ConnectorURL | -port port | -server mbeanserver | -service service]`
+
+| 命令选项                | 描述                                                         |
+| :---------------------- | :---------------------------------------------------------- |
+| -help                  | 打印帮助                                                       |
+| -localVM ConnectorURL   | 连接到同一台计算机上的VM                                       |
+| -port mbean server port  | 指定mbean服务器端口，如果缺少它将尝试连接到同一VM中的MBean Server |
+| -server                 | 指定mbean服务器（默认为localhost）                             |
+| `-service NameNode \| DataNode` | 指定jmx服务。默认情况下为NameNode。                     |
+
+服务的快照信息
 
 
 ### oev（修改参数慎用，查看参数可以使用）
@@ -165,6 +232,7 @@ Usage: hdfs oev [OPTIONS] -i INPUT_FILE -o OUTPUT_FILE
 | -p， --processor **arg** | 选择要对图像文件应用的处理器类型，当前支持的处理器是：二进制（Hadoop使用的本机二进制格式），xml（默认，XML格式），统计信息（打印有关编辑文件的统计信息） |
 | -v， --verbose         | 更详细的输出，打印输入和输出文件名，用于写入文件的处理器，也输出到屏幕。在大图像文件上，这将大大增加处理时间（默认为false）。 |
 
+Hadoop离线编辑查看器。有关详细信息，请参阅[脱机编辑查看器指南](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsEditsViewer.html)。
 
 ### oiv（修改参数慎用，查看参数可以使用）
 
@@ -174,7 +242,7 @@ Usage: hdfs oev [OPTIONS] -i INPUT_FILE -o OUTPUT_FILE
 
 | 命令选项                       | 描述                                                         |
 | :----------------------------- | :----------------------------------------------------------- |
-| -i \| --inputFile **input file** | 指定要处理的输入fsimage文件（或XML文件，如果使用ReverseXML处理器）。 |
+| `-i \| --inputFile input file` | 指定要处理的输入fsimage文件（或XML文件，如果使用ReverseXML处理器）。 |
 
 可选的命令行参数：
 
@@ -182,12 +250,53 @@ Usage: hdfs oev [OPTIONS] -i INPUT_FILE -o OUTPUT_FILE
 | :------------------------------ | :----------------------------------------------------------- |
 | -o， --outputFile **output file** | 如果指定的输出处理器生成一个，请指定输出文件名。如果指定的文件已存在，则会以静默方式覆盖该文件。（默认情况下输出到stdout）如果输入文件是XML文件，它还会创建`<outputFile>.md5`。 |
 | -p，--processor **processor**     | 指定要对图像文件应用的图像处理器。目前有效的选项是Web（默认），XML，Delimited，FileDistribution和ReverseXML。 |
+| -addr address                     | 指定要侦听的地址（主机：端口）。（localhost：默认为5978）。此选项与Web处理器一起使用。 |
+| -maxSize size                     | 指定要以字节为单位分析的文件大小的范围[0，maxSize]（默认为128GB）。此选项与FileDistribution处理器一起使用。 |
+| -step size                        | 以字节为单位指定分发的粒度（默认为2MB）。此选项与FileDistribution处理器一起使用。 |
+| -format                          | 以人类可读的方式而不是多个字节格式化输出结果。（默认为false）。此选项与FileDistribution处理器一起使用。 |
+| -delimiter arg                   | 定界字符串以与分隔处理器一起使用。 |
+| -t， - temp temporary dir	      | 使用临时目录缓存中间结果以生成分隔输出。如果未设置，则分隔处理器在输出文本之前在内存中构造命名空间。 |
+| -h， - help                     | 显示工具使用情况和帮助信息并退出。 |
+
+Hadoop离线图像查看器，用于Hadoop 2.4或更高版本中的图像文件。有关详细信息，请参阅[脱机图像查看器](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsImageViewer.html)
+
+
+### oiv_legacy
+
+用法：`hdfs oiv_legacy [OPTIONS] -i INPUT_FILE -o OUTPUT_FILE`
+
+| 命令选项                        | 描述                                                         |
+| :------------------------------ | :----------------------------------------------------------- |
+| -i， - inputFile input file | 指定要处理的输入fsimage文件。 |
+| -o， - outputFile output file | 如果指定的输出处理器生成一个，请指定输出文件名。如果指定的文件已存在，则会以静默方式覆盖该文件。 |
+
+可选的命令行参数：
+
+| 命令选项                        | 描述                                                         |
+| :------------------------------ | :----------------------------------------------------------- |
+| -p \| --processorprocessor | 指定要对图像文件应用的图像处理器。有效选项包括Ls（默认），XML，分隔符，缩进，FileDistribution和NameDistribution。 |
+| -maxSize size | 指定要以字节为单位分析的文件大小的范围[0，maxSize]（默认为128GB）。此选项与FileDistribution处理器一起使用。 |
+| -step size | 以字节为单位指定分发的粒度（默认为2MB）。此选项与FileDistribution处理器一起使用。 |
+| -format | 以人类可读的方式而不是多个字节格式化输出结果。（默认为false）。此选项与FileDistribution处理器一起使用。 |
+| -skipBlocks | 不要枚举文件中的单个块。这可以节省具有非常大的文件的命名空间上的处理时间和outfile文件空间。Ls处理器读取块以正确确定文件大小并忽略此选项。 |
+| -printToScreen | 将处理器的输出管道输出到控制台以及指定的文件。在极大的命名空间上，这可能会使处理时间增加一个数量级。 |
+| -delimiter arg | 与分隔处理器一起使用时，将默认选项卡分隔符替换为arg指定的字符串。 |
+| -h \| --help | 显示工具使用情况和帮助信息并退出。 |
+
+适用于旧版Hadoop的Hadoop离线图像查看器。有关详细信息，请参阅[oiv_legacy命令](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsImageViewer.html#oiv_legacy_Command)。
 
 ### snapshotDiff
 
 用法：`hdfs snapshotDiff <path> <fromSnapshot> <toSnapshot>`
 
 确定HDFS快照之间的差异。有关更多信息，请参阅[HDFS快照文档](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsSnapshots.html#Get_Snapshots_Difference_Report)。
+
+## version
+
+用法: `hdfs version`
+
+打印版本。
+
 
 ## 管理命令(较为常用)
 
@@ -217,8 +326,42 @@ hdfs balancer
 | `-blockpools <comma-separated list of blockpool ids>`         | 平衡器仅在此列表中包含的块池上运行                           |
 | `-idleiterations <iterations>`                                | 退出前的最大空闲迭代次数。这会覆盖默认的空闲状态（5）。      |
 | `-runDuringUpgrade`                                           | 是否在正在进行的HDFS升级期间运行平衡器，不建议这样做，因为它不会影响过度使用的机器上的已用空间。 |
+| -h \| - help                                                  | 显示工具使用情况和帮助信息并退出。                          |
 
-运行集群平衡实用程序，可以使用stop-balancer.sh 来停止。
+运行集群平衡实用程序。管理员只需按Ctrl-C即可停止重新平衡过程。有关详细信息，请参阅[Balancer](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html#Balancer)。
+
+请注意，blockpool策略比datanode策略更严格。
+
+除了上述命令选项外，还引入了一个固定功能，从2.7.0开始，以防止某些副本被平衡器/移动器移动。默认情况下，此固定功能处于禁用状态，可通过配置属性“dfs.datanode.block-pinning.enabled”启用。启用时，此功能仅影响写入create（）调用中指定的favored节点的块。对于HBase regionserver等应用程序，我们希望维护数据局部性时，此功能非常有用。
+
+### cacheadmin
+
+用法：
+```
+hdfs cacheadmin [-addDirective -path <path> -pool <pool-name> [-force] [-replication <replication>] [-ttl <time-to-live>]]
+hdfs cacheadmin [-modifyDirective -id <id> [-path <path>] [-force] [-replication <replication>] [-pool <pool-name>] [-ttl <time-to-live>]]
+hdfs cacheadmin [-listDirectives [-stats] [-path <path>] [-pool <pool>] [-id <id>]]
+hdfs cacheadmin [-removeDirective <id>]
+hdfs cacheadmin [-removeDirectives -path <path>]
+hdfs cacheadmin [-addPool <name> [-owner <owner>] [-group <group>] [-mode <mode>] [-limit <limit>] [-maxTtl <maxTtl>]]
+hdfs cacheadmin [-modifyPool <name> [-owner <owner>] [-group <group>] [-mode <mode>] [-limit <limit>] [-maxTtl <maxTtl>]]
+hdfs cacheadmin [-removePool <name>]
+hdfs cacheadmin [-listPools [-stats] [<name>]]
+hdfs cacheadmin [-help <command-name>]
+```
+
+有关更多信息，请参阅[HDFS缓存管理文档](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/CentralizedCacheManagement.html#cacheadmin_command-line_interface)。
+
+### crypto
+
+用法：
+```
+hdfs crypto -createZone -keyName <keyName> -path <path>
+hdfs crypto -listZones
+hdfs crypto -provisionTrash -path <path>
+hdfs crypto -help <command-name>
+```
+有关更多信息，请参阅[HDFS透明加密文档](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/TransparentEncryption.html#crypto_command-line_interface)。
 
 ### 数据节点升级命令
 
@@ -230,6 +373,7 @@ hdfs balancer
 | -rollback                | 将datanode回滚到以前的版本。这应该在停止datanode并分发旧的hadoop版本后使用。 |
 | -rollingupgrade rollback | 回滚滚动升级操作。                                           |
 
+运行HDFS datanode。
 
 ### dfsadmin（重要）
 用法：
@@ -315,7 +459,7 @@ hdfs dfsadmin [-help [cmd]]
 
 用法：`hdfs dfsrouter`
 
-运行DFS路由器。见路由器的更多信息。
+运行DFS路由器。见[路由器](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs-rbf/HDFSRouterFederation.html#Router)的更多信息。
 
 ### dfsrouteradmin
 用法：
@@ -410,18 +554,23 @@ hdfs ec [generic options]
     hdfs haadmin -help <command>
 ```
 
-| 命令选项             | 描述                                                    |      |
-| :------------------- | :------------------------------------------------------ | ---- |
-| -checkHealth         | 检查给定NameNode的运行状况                              |      |
-| -failover            | 在两个NameNode之间启动故障转移                          |      |
-| -getServiceState     | 确定给定的NameNode是Active还是Standby                   |      |
-| -getAllServiceState  | 返回所有NameNode的状态                                  |      |
-| -transitionToActive  | 将给定NameNode的状态转换为Active（警告：不执行防护）    |      |
-| -transitionToStandby | 将给定NameNode的状态转换为Standby（警告：没有完成防护） |      |
-| -help [cmd]          | 显示给定命令或所有命令的帮助（如果未指定）。            |      |
+| 命令选项             | 描述                                                    |
+| :------------------- | :------------------------------------------------------ |
+| -checkHealth         | 检查给定NameNode的运行状况                              |
+| -failover            | 在两个NameNode之间启动故障转移                          |
+| -getServiceState     | 确定给定的NameNode是Active还是Standby                   |
+| -getAllServiceState  | 返回所有NameNode的状态                                  |
+| -transitionToActive  | 将给定NameNode的状态转换为Active（警告：不执行防护）    |
+| -transitionToStandby | 将给定NameNode的状态转换为Standby（警告：没有完成防护） |
+| -help [cmd]          | 显示给定命令或所有命令的帮助（如果未指定）。            |
 
 有关此命令的更多信息，请参阅带有[NFS的HDFS HA](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithNFS.html#Administrative_commands)或[带有QJM的HDFS HA](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html#Administrative_commands)。
 
+### journalnode
+
+用法：`hdfs journalnode`
+
+此comamnd启动一个日志节点，用于与[QJM一起](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html#Administrative_commands)使用[HDFS HA](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html#Administrative_commands)。
 
 ### mover
 
@@ -472,7 +621,29 @@ hdfs ec [generic options]
 
 运行namenode。有关升级和回滚的更多信息，请参阅[升级回滚](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html#Upgrade_and_Rollback)。
 
+### nfs3
 
+用法：`hdfs nfs3`
+
+此comamnd启动NFS3网关以与[HDFS NFS3服务一起使用](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsNfsGateway.html#Start_and_stop_NFS_gateway_service)。
+
+### 端口映射
+
+用法：`hdfs portmap`
+
+此comamnd启动RPC [端口映射](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsNfsGateway.html#Start_and_stop_NFS_gateway_service)以与[HDFS NFS3服务一起使用](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsNfsGateway.html#Start_and_stop_NFS_gateway_service)。
+
+### secondarynamenode
+
+用法：`hdfs secondarynamenode [-checkpoint [force]] | [-format] | [-geteditsize]`
+
+| 命令选项  | 描述                                                         |
+| :-------- | :----------------------------------------------------------- |
+| -checkpoint [force] | 如果EditLog size> = fs.checkpoint.size，则检查SecondaryNameNode。如果使用force，则检查点与EditLog大小无关。 |
+| -format | 启动期间格式化本地存储。 |
+| -geteditsize | 打印NameNode上未取消选中的事务的数量。 |
+
+运行HDFS辅助名称节点。有关详细信息，请参阅[Secondary Namenode](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html#Secondary_NameNode)。
 
 ### storagepolicies
 用法：
@@ -520,8 +691,8 @@ hdfs ec [generic options]
 
 | 命令选项                    | 描述                                                       |
 | :-------------------------- | :--------------------------------------------------------- |
-| -block **block-file**         | 数据节点的本地文件系统上的块文件的绝对路径。               |
-| -out **output-metadata-file** | 输出元数据文件的绝对路径，用于存储块文件的校验和计算结果。 |
+| -block block-file         | 数据节点的本地文件系统上的块文件的绝对路径。               |
+| -out output-metadata-file | 输出元数据文件的绝对路径，用于存储块文件的校验和计算结果。 |
 
 从块文件计算HDFS元数据。如果指定了块文件，我们将从块文件计算校验和，并将其保存到指定的输出元数据文件中。
 
