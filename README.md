@@ -15,3 +15,6 @@ https://blog.csdn.net/qq_27242695/category_11289414.html
 spark SQL  
 https://spark.apache.org/docs/latest/api/sql/  
 https://www.cnblogs.com/meanshift/p/16063750.html
+
+flink SQL  
+https://nightlies.apache.org/flink/flink-docs-release-1.12/dev/table/functions/systemFunctions.html
