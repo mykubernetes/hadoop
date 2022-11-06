@@ -298,7 +298,7 @@ Hadoop离线图像查看器，用于Hadoop 2.4或更高版本中的图像文件�
 打印版本。
 
 
-## 管理命令(较为常用)
+## 二、管理命令(较为常用)
 
 - 对hadoop集群的管理员有用的命令,
 
@@ -670,7 +670,7 @@ hdfs ec [generic options]
 
 此comamnd启动Zookeeper故障转移控制器进程，以便与[带有QJM的HDFS HA一起使用](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html#Administrative_commands)。
 
-## 调试命令
+## 三、调试命令
 
 帮助管理员调试HDFS问题的有用命令。这些命令仅适用于高级用户。
 
