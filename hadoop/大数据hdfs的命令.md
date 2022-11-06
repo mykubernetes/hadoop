@@ -711,3 +711,4 @@ hdfs ec [generic options]
 
 参考：
 - https://blog.51cto.com/u_9955199/3225646
+- https://zhangboyi.blog.csdn.net/?type=blog
