@@ -17,4 +17,4 @@ https://spark.apache.org/docs/latest/api/sql/
 https://www.cnblogs.com/meanshift/p/16063750.html
 
 flink SQL  
-https://nightlies.apache.org/flink/flink-docs-release-1.12/dev/table/functions/systemFunctions.html
+https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/dev/table/functions/systemfunctions/
