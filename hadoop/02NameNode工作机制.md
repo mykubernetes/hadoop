@@ -54,39 +54,29 @@
 
 ## 4）chkpoint检查时间参数设置
 
-- 1、通常情况下，SecondaryNameNode每隔一小时执行一次。  
-
-**hdfs-default.xml**
+`Checkpoint` 的触发条件取决于两个参数，可在 `NameNode / SNN` 的 `core-site.xml` 中配置
 ```xml
-  <property>  
-    <name>dfs.namenode.checkpoint.period</name>  
-    <value>3600</value>  
-  </property>
-```
-
-- 2、一分钟检查一次操作次数，当操作次数达到1百万时，SecondaryNameNode执行一次。  
-```xml
-  <property>  
-    <name>dfs.namenode.checkpoint.txns</name>  
-    <value>1000000</value>  
-  <description>操作动作次数</description>  
-  </property>
-  
-  <property>  
-    <name>dfs.namenode.checkpoint.check.period</name>  
-    <value>60</value>  
-  <description> 1分钟检查一次操作次数</description>  
-  </property> 
-```
-
-如果当`fs.checkpoint.period`配置的时间还没有到期，我们也可以通过判断当前的edits大小来触发一次合并的操作，可以通过下面配置
-```xml
+<!-- 两次 checkpoint 的时间间隔，默认3600秒，即1小时 -->
 <property>
-  <name>fs.checkpoint.size</name>
-  <value>67108864</value>
-  <description>The size of the current edit log (in bytes) that triggers
-       a periodic checkpoint even if the fs.checkpoint.period hasn't expired.
-  </description>
+    <name>dfs.namenode.checkpoint.period</name>
+    <value>3600s</value>
+</property>
+<!-- 新生成的 EditLog 中积累的事务数量达到了阈值，默认1000000次。优先级高于上述参数 -->
+<property>
+    <name>dfs.namenode.checkpoint.txns</name>
+    <value>1000000</value>
+</property>
+
+<!-- 每隔多久检查一次 HDFS 未记录到检查点的事务数，默认60秒 -->
+<property>
+    <name>dfs.namenode.checkpoint.check.period</name>
+    <value>60s</value>
+</property>
+
+<!-- 一次记录文件的大小，默认64MB -->
+<property>
+    <name>fs.checkpoint.size</name>
+    <value>67108864</value>
 </property>
 ```
 
