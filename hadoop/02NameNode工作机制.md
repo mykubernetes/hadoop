@@ -57,7 +57,7 @@
 - 1、通常情况下，SecondaryNameNode每隔一小时执行一次。  
 
 **hdfs-default.xml**
-```
+```xml
   <property>  
     <name>dfs.namenode.checkpoint.period</name>  
     <value>3600</value>  
@@ -65,7 +65,7 @@
 ```
 
 - 2、一分钟检查一次操作次数，当操作次数达到1百万时，SecondaryNameNode执行一次。  
-```
+```xml
   <property>  
     <name>dfs.namenode.checkpoint.txns</name>  
     <value>1000000</value>  
@@ -77,6 +77,17 @@
     <value>60</value>  
   <description> 1分钟检查一次操作次数</description>  
   </property> 
+```
+
+如果当`fs.checkpoint.period`配置的时间还没有到期，我们也可以通过判断当前的edits大小来触发一次合并的操作，可以通过下面配置
+```xml
+<property>
+  <name>fs.checkpoint.size</name>
+  <value>67108864</value>
+  <description>The size of the current edit log (in bytes) that triggers
+       a periodic checkpoint even if the fs.checkpoint.period hasn't expired.
+  </description>
+</property>
 ```
 
 # 三、NN和2NN工作机制详解
