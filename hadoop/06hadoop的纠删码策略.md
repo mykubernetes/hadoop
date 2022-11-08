@@ -1,4 +1,39 @@
-# 目前hadoop-3.1 共支持5 种纠删码策略，分别是：
+# 1、纠删码原理
+ 
+HDFS默认情况下，一个文件有3个副本，这样提高了数据的可靠性，但也带来了2倍的冗余开销。Hadoop3.x引入了纠删码，采用计算的方式，可以节省约50％左右的存储空间。
+
+
+## 1.2、纠删码操作相关的命令
+```
+[atguigu@hadoop102 hadoop-3.1.3]$ hdfs ec
+Usage: bin/hdfs ec [COMMAND]
+          [-listPolicies]
+          [-addPolicies -policyFile <file>]
+          [-getPolicy -path <path>]
+          [-removePolicy -policy <policy>]
+          [-setPolicy -path <path> [-policy <policy>] [-replicate]]
+          [-unsetPolicy -path <path>]
+          [-listCodecs]
+          [-enablePolicy -policy <policy>]
+          [-disablePolicy -policy <policy>]
+          [-help <command-name>].
+ ```
+ 
+## 1.3、查看当前支持的纠删码策略
+```
+[atguigu@hadoop102 hadoop-3.1.3] hdfs ec -listPolicies
+
+Erasure Coding Policies:
+ErasureCodingPolicy=[Name=RS-10-4-1024k, Schema=[ECSchema=[Codec=rs, numDataUnits=10, numParityUnits=4]], CellSize=1048576, Id=5], State=DISABLED
+ErasureCodingPolicy=[Name=RS-3-2-1024k, Schema=[ECSchema=[Codec=rs, numDataUnits=3, numParityUnits=2]], CellSize=1048576, Id=2], State=DISABLED
+ErasureCodingPolicy=[Name=RS-6-3-1024k, Schema=[ECSchema=[Codec=rs, numDataUnits=6, numParityUnits=3]], CellSize=1048576, Id=1], State=ENABLED
+ErasureCodingPolicy=[Name=RS-LEGACY-6-3-1024k, Schema=[ECSchema=[Codec=rs-legacy, numDataUnits=6, numParityUnits=3]], CellSize=1048576, Id=3], State=DISABLED
+ErasureCodingPolicy=[Name=XOR-2-1-1024k, Schema=[ECSchema=[Codec=xor, numDataUnits=2, numParityUnits=1]], CellSize=1048576, Id=4], State=DISABLED
+```
+
+## 1.4、纠删码策略解释:
+
+### 目前hadoop-3.1 共支持5 种纠删码策略，分别是：
 
 - RS-10-4-1024k：
 ```
@@ -33,6 +68,36 @@
 ```
 以RS-6-3-1024k 为例，6 个数据单元+3 个校验单元，可以容忍任意的3 个单元丢失，冗余的数据是50%。而采用副本方式，3 个副本，冗余200%，却还不能容忍任意的3 个单元丢失。（因为有可能副本刚好都在那3个节点上）因此，RS 编码在相同冗余度的情况下，会大大提升数据的可用性，而在相同可用性的情况下，会大大节省冗余空间
 ```
+
+# 2、纠删码案例实操 
+
+纠删码策略是给具体一个路径设置。所有往此路径下存储的文件，都会执行此策略。
+
+默认只开启对RS-6-3-1024k策略的支持，如要使用别的策略需要提前启用。
+
+1）需求：将/input目录设置为RS-3-2-1024k策略
+
+2）具体步骤
+
+（1）开启对RS-3-2-1024k策略的支持
+```
+$  hdfs ec -enablePolicy  -policy RS-3-2-1024k
+Erasure coding policy RS-3-2-1024k is enabled
+```
+
+（2）在HDFS创建目录，并设置RS-3-2-1024k策略
+```
+$ hdfs dfs -mkdir /input
+$ hdfs ec -setPolicy -path /input -policy RS-3-2-1024k
+```
+
+（3）上传文件，并查看文件编码后的存储情况
+```
+$ hdfs dfs -put web.log /input
+```
+注：你所上传的文件需要大于2M才能看出效果。（低于2M，只有一个数据单元和两个校验单元）
+
+（4）查看存储路径的数据单元和校验单元，并作破坏实验
 
 
 # 增添自定义纠删码策略示例：
