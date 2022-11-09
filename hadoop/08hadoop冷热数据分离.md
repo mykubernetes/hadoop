@@ -13,14 +13,14 @@
 
 ## 2）储存策略
 
-| 策略ID | 策略名称 | 副本分布 |
-|--------|---------|---------|
-| 15 | Lazy_Persist | RAM_DISK:1, DISK: n-1 |
-| 12 | All_SSD | SSD :n |
-| 10 | One_SSD | SSD:1, DISK: n-1 |
-| 7 | Hot(default) | DISK: n |
-| 6 | Warm | DISK:1, ARCHIVE: n-1 |
-| 2 | Cold | ARCHIVE: n |
+| 策略ID | 策略名称 | 副本分布 | 描述 |
+|--------|---------|---------|------|
+| 15 | Lazy_Persist | RAM_DISK:1, DISK: n-1 | 一个副本保存在RAM_DISK中，其余副本保存在磁盘中。 |
+| 12 | All_SSD | SSD :n | 所有副本都保存在SSD中。 |
+| 10 | One_SSD | SSD:1, DISK: n-1 | 一个副本保存在SSD中，其余副本保存在磁盘中。 |
+| 7 | Hot(default) | DISK: n | 所有副本保存在磁盘中，这也是默认的存储策略。 |
+| 6 | Warm | DISK:1, ARCHIVE: n-1 | 一个副本保存在磁盘上，其余副本保存在归档存储上。 |
+| 2 | Cold | ARCHIVE: n | 所有副本都保存在归档存储上。 |
 
 # Shell操作#
 
