@@ -955,3 +955,7 @@ ls: DestHost:destPort master01:8020 , LocalHost:localPort master01/192.xx.xx:0. 
 然后执行kdestroy,重新kinit .
 
 参考文章 :[Hadoop集成kerberos后,报错:AccessControlException: Client cannot authenticate via:[TOKEN, KERBEROS]](https://zhangboyi.blog.csdn.net/article/details/115287040)
+
+参考：
+- http://www.senlt.cn/article/149237253.html
+- https://cloud.tencent.com/developer/article/2089176
