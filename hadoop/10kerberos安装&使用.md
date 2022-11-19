@@ -160,7 +160,7 @@ org.apache.hadoop.security.AccessControlException: Client cannot authenticate vi
 
 其中EXAMPLE.COM 是对应的域，如果你的不同请修改  
 然后命令要求设置数据库master的密码，要求输入两次，输入 krb5kdc(自行定义) 即可 .  
-这样得到 数据库master账户： K/M@EXAMPLE.COM* , 密码： krb5kdc(自行定义)  
+这样得到 数据库master账户： `K/M@EXAMPLE.COM*` , 密码： krb5kdc(自行定义)  
 
 重新初始化数据库
 ```
@@ -198,17 +198,17 @@ listprincs
 # 退出操作
 quit
 ```
+
 ```
 名词解释: principal
-可以当作是用户的意思 一个principal由3个部分组成，如下:
+可以当作是用户的意思一个principal由3个部分组成，如下:
 nn/master01@EXAMPLE.COM
-也就是 account/instance@realm
-其中account 表示账户名 或者服务类型
+也就是account/instance@realm
+其中account表示账户名或者服务类型
 instance表示实例，一般为主机名表示 属于这个主机名下的某个账户
 realm 就是域 如 EXAMPLE.COM
 ```
-nn/master01@EXAMPLE.COM 就表示
-nn 这个账户 只能在master01机器登录 EXAMPLE.COM 这个域
+`nn/master01@EXAMPLE.COM`就表示nn这个账户只能在master01机器登录`EXAMPLE.COM`这个域
 
 ## 2.7. 启动KDC服务器
 ```
@@ -266,7 +266,7 @@ yum -y install krb5-libs krb5-workstation
 
 ## 3.3. 测试登录admin
 
-执行 kinit krbtest/admin@EXAMPLE.COM 输入密码  
+执行 `kinit krbtest/admin@EXAMPLE.COM`输入密码  
 正确的结果就是没有任何反应  
 然后输入 klist  
 正确应该可以得到如下输出:
@@ -330,7 +330,7 @@ kadmin.local:
 
 ## 4.4. 创建凭据 [addprinc]
 
-- addprinc -randkey test/master01@EXAMPLE.COM
+- `addprinc -randkey test/master01@EXAMPLE.COM`
 ```
 [root@master01 krb5kdc]# kadmin.local
 Authenticating as principal root/admin@EXAMPLE.COM with password.
@@ -364,7 +364,7 @@ kadmin.local:
 
 ## 4.5. 删除凭据 [delprinc]
 
-- delprinc test/master01@EXAMPLE.COM
+- `delprinc test/master01@EXAMPLE.COM`
 ```
 kadmin.local:  delprinc test/master01@EXAMPLE.COM
 Are you sure you want to delete the principal "test/master01@EXAMPLE.COM"? (yes/no): yes
@@ -386,7 +386,7 @@ kadmin.local:
 
 ### 4.6.1. 使用ktadd 导出
 
-- ktadd -k /opt/keytab/root.keytab root/admin@EXAMPLE.COM
+- `ktadd -k /opt/keytab/root.keytab root/admin@EXAMPLE.COM`
 ```
 kadmin.local: ktadd -k /opt/keytab/root.keytab root/admin@EXAMPLE.COM
 Entry for principal root/admin@EXAMPLE.COM with kvno 2, encryption type aes256-cts-hmac-sha1-96 added to keytab WRFILE:/opt/keytab/root.keytab.
@@ -402,7 +402,7 @@ kadmin.local:
 
 ### 4.6.2. 使用xst 导出
 
-- xst -k /opt/keytab/root.keytab root/admin@EXAMPLE.COM
+- `xst -k /opt/keytab/root.keytab root/admin@EXAMPLE.COM`
 ```
 kadmin.local:  xst -k  /opt/keytab/root.keytab root/admin@EXAMPLE.COM
 Entry for principal root/admin@EXAMPLE.COM with kvno 4, encryption type aes256-cts-hmac-sha1-96 added to keytab WRFILE:/opt/keytab/root.keytab.
@@ -434,7 +434,7 @@ KVNO Timestamp           Principal
 
 ## 4.7 . 导出多个用户的keytab文件
 
-- xst -norandkey -k /opt/keytab/root.keytab root/admin@EXAMPLE.COM krbtest/admin@EXAMPLE.COM
+- `xst -norandkey -k /opt/keytab/root.keytab root/admin@EXAMPLE.COM krbtest/admin@EXAMPLE.COM`
 ```
 kadmin.local:
 kadmin.local:  xst -norandkey -k /opt/keytab/root.keytab root/admin@EXAMPLE.COM krbtest/admin@EXAMPLE.COM
@@ -483,7 +483,7 @@ KVNO Timestamp           Principal
 
 ## 4.8. 获取凭据信息[getprinc]
 
-- getprinc root/admin@EXAMPLE.COM
+- `getprinc root/admin@EXAMPLE.COM`
 ```
 [root@master01 krb5kdc]# kadmin.local
 Authenticating as principal root/admin@EXAMPLE.COM with password.
@@ -514,7 +514,6 @@ kadmin.local:
 ```
 
 ## 4.9. 退出 [quit]
-
 ```
 [root@master01 krb5kdc]# kadmin.local
 Authenticating as principal root/admin@EXAMPLE.COM with password.
@@ -593,7 +592,7 @@ ktutil:  q
 
 ## 5.5.根据keytab认证用户 [kinit]
 
-- kinit -kt /opt/keytab/root.keytab root/admin@EXAMPLE.COM
+- `kinit -kt /opt/keytab/root.keytab root/admin@EXAMPLE.COM`
 ```
 [root@master01 krb5kdc]# kinit -kt /opt/keytab/root.keytab  root/admin@EXAMPLE.COM
 [root@master01 krb5kdc]# klist
