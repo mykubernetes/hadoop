@@ -267,3 +267,6 @@ df.select($"id", callUDF("simpleUDF", $"value"))
 | lead(e: Column, offset: Int, defaultValue: Any) | returns the value that is offset rows after the current row |
 | ntile(n: Int) | returns the ntile group id (from 1 to n inclusive) in an ordered window partition. |
 | unboundedFollowing() | returns the special frame boundary that represents the last row in the window partition. |
+
+参考：
+- https://cloud.tencent.com/developer/article/1767723
