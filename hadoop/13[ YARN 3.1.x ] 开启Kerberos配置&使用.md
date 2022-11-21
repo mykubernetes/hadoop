@@ -17,7 +17,7 @@
 
 为了节约时间,我就统一使用root用户进行安装.
 
-因为就一个master01节点, 所以凭证信息统一使用 yarn/master01@HENGHE.COM
+因为就一个master01节点, 所以凭证信息统一使用`yarn/master01@HENGHE.COM`
 
 - 参考的服务&凭证如下:
 
@@ -87,7 +87,7 @@ useradd mapred -g hadoop -p mapred
 
 ## 2.2. 配置YARN相关的Kerberos账户
 
-Hadoop需要Kerberos来进行认证，以启动服务来说，在后面配置 hadoop 的时候我们会给对应服务指定一个Kerberos的账户，比如 ResourceManager运行在master01机器上，我们可能将 ResourceManager指定给了 rm/master01@HENGHE.COM 这个账户， 那么 想要启动 ResourceManager 就必须认证这个账户才可以。
+`Hadoop`需要`Kerberos`来进行认证，以启动服务来说，在后面配置`hadoop`的时候我们会给对应服务指定一个Kerberos的账户，比如`ResourceManager`运行在master01机器上，我们可能将 `ResourceManager`指定给了`rm/master01@HENGHE.COM`这个账户， 那么 想要启动`ResourceManager`就必须认证这个账户才可以。
 
 ### 2.2.1. 创建keytab存放目录
 
@@ -129,7 +129,7 @@ chmod 400 yarn.keytab
 
 ### 2.2.4. 编译源码构建Linux-Container-executor
 
-Kerberos需要使用基于cgroup工作的一个名为Linux-container-executer的容器来运行YARN任务，这个容器需要我们自己编译源码来构建出来如果编译不出来可以在网络上找找, 编译步骤就不详细说明了.
+`Kerberos`需要使用基于`cgroup`工作的一个名为`Linux-container-executer`的容器来运行YARN任务，这个容器需要我们自己编译源码来构建出来如果编译不出来可以在网络上找找, 编译步骤就不详细说明了.
 
 - 要安装 protobuf-2.5.0 (截止到hadoop的3.2.1版本,必须使用protobuf-2.5.0版本,否则报错.)
 ```
