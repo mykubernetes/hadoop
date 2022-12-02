@@ -322,8 +322,7 @@
 
 val b = a.aggregate(5)(_+_,_+_) // 不分区
 val c = a.par.aggregate(5)(_+_,_+_) // 分区
-1
-2
+
  
 
 apply
@@ -336,9 +335,7 @@ apply
     val a = List(1, 2, 3, 4)
     val b = a.apply(1) // a.apply(i) 同 a(i)
     println(b) // 2
-1
-2
-3
+
  
 
 canEqual
@@ -351,9 +348,7 @@ canEqual
     val a = List(1, 2, 3, 4)
     val b = Array('a', 'b', 'c')
     println(a.canEqual(b)) // true
-1
-2
-3
+
  
 
 charAt
@@ -365,8 +360,7 @@ charAt
 
     val chars = Array('a', 'b', 'c')
     println(chars.charAt(0)) // a
-1
-2
+
  
 
 clone
@@ -379,9 +373,7 @@ clone
     val a = Array(1, 2, 3, 4)
     val b = a.clone()
     println(b.mkString(",")) // 1,2,3,4
-1
-2
-3
+
  
 
 collect
@@ -398,13 +390,7 @@ collect
     val a = Array('a', 'b', 'c')
     val b = a.collect(fun)
     println(b.mkString(",")) // A,b,c
-1
-2
-3
-4
-5
-6
-7
+
  
 
 collectFirst
@@ -420,16 +406,11 @@ collectFirst
     val a = Array(1, 'a', "b")
     val b = arr.collectFirst(fun)
     println(b) // Some(100)
-1
-2
-3
-4
-5
-6
+
 另一种写法：
 
     b = arr.collectFirst({ case x: Int => x * 100 })
-1
+
  
 
 combinations
@@ -447,14 +428,7 @@ combinations
      * a,c
      * b,c
      */
-1
-2
-3
-4
-5
-6
-7
-8
+
  
 
 contains
@@ -466,8 +440,7 @@ contains
 
     val a = List(1, 2, 3, 4)
     println(a.contains(1)) // true
-1
-2
+
  
 
 containsSlice
@@ -480,9 +453,7 @@ containsSlice
     val a = List(1, 2, 3, 4)
     val b = List(2, 3)
     println(a.containsSlice(b)) // true
-1
-2
-3
+
  
 
 copyToArray(xs)
@@ -496,10 +467,7 @@ copyToArray(xs)
     val b: Array[Int] = new Array(5)
     a.copyToArray(b)
     println(b.mkString(",")) // 1,2,3,0,0
-1
-2
-3
-4
+
  
 
 copyToArray(xs, start)
@@ -513,10 +481,7 @@ copyToArray(xs, start)
     val b: Array[Int] = new Array(5)
     a.copyToArray(b, 1)
     println(b.mkString(",")) // 0,1,2,3,0
-1
-2
-3
-4
+
  
 
 copyToArray(xs, start, len)
@@ -530,10 +495,7 @@ copyToArray(xs, start, len)
     val b: Array[Int] = new Array(5)
     a.copyToArray(b, 1, 2)
     println(b.mkString(",")) // 0,1,2,0,0
-1
-2
-3
-4
+
  
 
 copyToBuffer
@@ -547,10 +509,7 @@ copyToBuffer
     val b: ArrayBuffer[Int] = ArrayBuffer()
     a.copyToBuffer(b)
     println(b.mkString(",")) // 1,2,3,4
-1
-2
-3
-4
+
  
 
 corresponds
@@ -563,9 +522,7 @@ corresponds
     val a = Array(1, 2, 3, 4)
     val b = Array(5, 6, 7, 8)
     println(a.corresponds(b)(_ < _)) // true
-1
-2
-3
+
  
 
 count
@@ -577,8 +534,7 @@ count
 
     val a = Array(1, 2, 3, 4)
     println(a.count(x => x > 2)) // 2
-1
-2
+
  
 
 diff
@@ -592,10 +548,7 @@ diff
     val b = Array(3, 4, 5, 6)
     val c = a.diff(b)
     println(c.mkString(",")) // 1,2
-1
-2
-3
-4
+
  
 
 distinct
