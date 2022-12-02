@@ -167,3 +167,6 @@ $ jps
 ``` load data local inpath '文件路径' into table; ```  
 *** 从HDFS系统导入  #无local  
 ``` load data inpath '文件路径' into table; ```  
+
+参考：
+- https://blog.csdn.net/sinat_41567654/article/details/124379541
