@@ -44,27 +44,49 @@ flush privileges;
 ** hive-site.xml   #修改的属性  
 ```
 	<property>
+	        <!-- jdbc连接的url -->
 		<name>javax.jdo.option.ConnectionURL</name>
 		<value>jdbc:mysql://node01:3306/metastore?createDatabaseIfNotExist=true</value>
 		<description>JDBC connect string for a JDBC metastore</description>
 	</property>
 
 	<property>
+	        <!-- jdbc连接的Driver -->
 		<name>javax.jdo.option.ConnectionDriverName</name>
 		<value>com.mysql.jdbc.Driver</value>
 		<description>Driver class name for a JDBC metastore</description>
 	</property>
 
 	<property>
+	        <!-- jdbc连接的username -->
 		<name>javax.jdo.option.ConnectionUserName</name>
 		<value>root</value>
 		<description>username to use against metastore database</description>
 	</property>
 
 	<property>
+	        <!-- jdbc连接的password -->
 		<name>javax.jdo.option.ConnectionPassword</name>
 		<value>123456</value>
 		<description>password to use against metastore database</description>
+	</property>
+	
+	<property>
+	        <!-- Hive元数据存储的版本验证 -->
+		<name>hive.metastore.schema.verification</name>
+		<value>false</value>
+	</property>
+	
+	<property>
+	        <!-- 元数据存储授权 -->
+		<name>hive.metastore.event.db.notification.api.auth</name>
+		<value>false</value>
+	</property>
+	
+	<property>
+	        <!-- Hive默认在HDFS的工作目录 -->
+		<name>hive.metastore.warehouse.dir</name>
+		<value>/user/hive/warehouse</value>
 	</property>
 ```  
 ** 创建日志目录  
