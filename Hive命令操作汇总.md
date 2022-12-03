@@ -3,7 +3,7 @@
 - mysql基础 https://nyimac.gitee.io/2020/08/11/MySQL%E5%9F%BA%E7%A1%80/
 - mysql高级（调优）https://blog.csdn.net/sinat_41567654/article/details/124409995
 
-# Hive基本数据类型
+# 一、Hive基本数据类型
 
 | Hive 数据类型 | Java 数据类型 | 长度 | 例子 |
 |--------------|---------------|-----|------|
@@ -26,7 +26,7 @@ Hive 的 String 类型相当于数据库的 varchar 类型，该类型是一个�
 | MAP | MAP 是一组键-值对元组集合，使用数组表示法可以 访问数据。 | map() 例如 `map<string, int>` |
 | ARRAY | 数组是一组具有相同类型和名称的变量的集合。 | Array() 例如 array |
 
-# Demo案例
+## Demo案例
 ```
 {
     "name": "songsong",
@@ -59,11 +59,18 @@ friends array<string>,
 children map<string, int>,
 address struct<street:string, city:string>
 )
-row format delimited fields terminated by ','
-collection items terminated by '_'
-map keys terminated by ':'
-lines terminated by '\n';
+row format delimited                    //行的格式定义
+fields terminated by ','                //列分隔符
+collection items terminated by '_'      //MAP STRUCE和ARRAY 的分隔符（数据分隔符号）
+map keys terminated by ':'              //map中的key于value的分隔符
+lines terminated by '\n';               //行分隔符
 ```
+字段解释：
+- row format delimited fields terminated by ','    //列分隔符
+- collection items terminated by '_'      //MAP STRUCE和ARRAY 的分隔符（数据分隔符号）
+- map keys terminated by ':'              //map中的key于value的分隔符
+- lines terminated by '\n';               //行分隔符
+
 
 加载本地数据
 ```
@@ -86,14 +93,17 @@ lili    18      beijing
 Time taken: 0.584 seconds, Fetched: 1 row(s)
 ```
 
-# 类型转换
+## 类型转换
 
-隐式类型转换类似java，比较特殊的有：
+1、隐式类型转换类似java，比较特殊的有：
 - 所有整数类型、 FLOAT 和 STRING 类型都可以隐式地转换成 DOUBLE
 - TINYINT、 SMALLINT、 INT 都可以转换为 FLOAT
 - BOOLEAN 类型不可以转换为任何其它的类型
 - CAST(‘1’ AS INT)将把字符串’1’ 转换成整数 1；如果强制类型转换失败，如执行CAST(‘X’ AS INT)，表达式返回空值 NULL
 
+2、可以使用cast操作显示进行数据类型转换
+
+- 列如cast('1' AS INT)将把字符串'1'转换成整数1；如果强制类型转换失败，如执行CAST('X' AS INT),表达式返回空值 NULL。
 ```
 hive (default)> select '1'+2, cast('1'as int) + 2;
 OK
@@ -102,7 +112,7 @@ _c0     _c1
 Time taken: 0.227 seconds, Fetched: 1 row(s)
 ```
 
-# DDL数据定义
+# 二、DDL数据定义
 
 基本语法
 ```
