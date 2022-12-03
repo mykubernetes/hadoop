@@ -1,5 +1,6 @@
 # 资料
 - 高手直接跳转 https://cwiki.apache.org/confluence/display/hive/languagemanual+windowingandanalytics
+- DQL: https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Select
 - mysql基础 https://nyimac.gitee.io/2020/08/11/MySQL%E5%9F%BA%E7%A1%80/
 - mysql高级（调优）https://blog.csdn.net/sinat_41567654/article/details/124409995
 
@@ -464,15 +465,20 @@ truncate table student;
 **注意**：Truncate 只能删除管理表， 不能删除外部表中数据
 
 # 四、DQL数据查询
+
+https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Select
+
+查询语句语法：
 ```
 SELECT [ALL | DISTINCT] select_expr, select_expr, ...
-FROM table_reference
-[WHERE where_condition]
-[GROUP BY col_list]
-[ORDER BY col_list]
-[CLUSTER BY col_list
-| [DISTRIBUTE BY col_list] [SORT BY col_list]
-[LIMIT number]
+  FROM table_reference
+  [WHERE where_condition]
+  [GROUP BY col_list]
+  [ORDER BY col_list]
+  [CLUSTER BY col_list
+    | [DISTRIBUTE BY col_list] [SORT BY col_list]
+  ]
+  [LIMIT number]
 ```
 和mysql的查询一致，包括分组，排序，连接操作等都类似
 
