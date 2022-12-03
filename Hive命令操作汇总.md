@@ -384,37 +384,37 @@ hive> import table student2 from '/user/hive/warehouse/export/student';
 
 ## 3.5、数据导出
 
-### 导出到本地
+### 3.5.1 导出到本地
 ```
 hive> insert overwrite local directory '/opt/module/hive/data/export/student'
 hive> select * from student;
 ```
 
-### 格式化导出到本地
+### 3.5.2 格式化导出到本地
 ```
 hive> insert overwrite local directory '/opt/module/hive/data/export/student1'
       ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 hive> select * from student;
 ```
 
-### 导出到 HDFS 上(没有 local)
+### 3.5.3 导出到 HDFS 上(没有 local)
 ```
 insert overwrite directory '/user/atguigu/student2'
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 select * from student;
 ```
 
-### hadoop命令导出
+### 3.5.4 hadoop命令导出
 ```
 (hive) dfs -get /user/hive/warehouse/student/student.txt /opt/module/data/export/student3.txt;
 ```
 
-### hive导出
+### 3.5.5 hive导出
 ```
 (shell) bin/hive -e 'select * from default.student;' > /opt/module/hive/data/export/student4.txt;
 ```
 
-### 导出到hdfs
+### 3.5.6 导出到hdfs
 ```
 (hive) export table default.student to '/user/hive/warehouse/export/student';
 ```
