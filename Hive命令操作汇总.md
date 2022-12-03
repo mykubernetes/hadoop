@@ -233,16 +233,16 @@ Hive 并非认为其完全拥有这份数据。删除该表并不会删除掉这
 
 ## 2.6.1 创建内部表
 ```
-create table if not exists student(
+hive (default)> create table if not exists student(
 id int, name string
 )
 row format delimited fields terminated by '\t'
 stored as textfile
 location '/user/hive/warehouse/student';
 
-create table if not exists student2 as select id, name from student;
+hive (default)> create table if not exists student2 as select id, name from student;
 
-desc formatted student2;
+hive (default)> desc formatted student2;
 
 hive (default)> dfs -mkdir /student;
 hive (default)> dfs -put /opt/module/datas/student.txt /student;
@@ -252,13 +252,13 @@ hive (default)> dfs -put /opt/module/datas/student.txt /student;
 
 - `external`关键字
 ```
-create external table if not exists dept(
+hive (default)> create external table if not exists dept(
 deptno int,
 dname string,
 loc int)
 row format delimited fields terminated by '\t';
 
-create external table if not exists emp(
+hive (default)> create external table if not exists emp(
 empno int,
 ename string,
 job string,
@@ -269,27 +269,37 @@ comm double,
 deptno int)
 row format delimited fields terminated by '\t';
 
-desc formatted dept;
+hive (default)> desc formatted dept;
 ```
 
 ## 2.6.3 内部表和外部表的转化
 ```
-alter table student2 set tblproperties('EXTERNAL'='TRUE');
+# 修改内部表 student2 为外部表
+hive (default)> alter table student2 set tblproperties('EXTERNAL'='TRUE');
 
-desc formatted student2;
+# 查询表的类型
+hive (default)> desc formatted student2;
 
-alter table student2 set tblproperties('EXTERNAL'='FALSE');
+# 修改外部表 student2 为内部表
+hive (default)> alter table student2 set tblproperties('EXTERNAL'='FALSE');
 
-desc formatted student2;
+# 查询表的类型
+hive (default)> desc formatted student2;
 ```
-注意： (‘EXTERNAL’=‘TRUE’)和(‘EXTERNAL’=‘FALSE’)为固定写法， 区分大小写
+**注意： ('EXTERNAL'='TRUE')和('EXTERNAL'='FALSE’)为固定写法， 区分大小写**
 
-## 2.7、重命名表
+
+## 2.7、建表时指定字段分隔符
+```
+hive (default)> create table test(id int,name string) row format delimited fields terminated by ',';
+```
+
+## 2.8、重命名表
 ```
 ALTER TABLE table_name RENAME TO new_table_name
 ```
 
-## 2.8、更新列
+## 2.9、更新列
 ```sql
 ALTER TABLE table_name CHANGE [COLUMN] col_old_name col_new_name
 column_type [COMMENT col_comment] [FIRST|AFTER column_name]
@@ -297,14 +307,14 @@ column_type [COMMENT col_comment] [FIRST|AFTER column_name]
 alter table dept change column deptdesc desc string;
 ```
 
-## 2.9、增加和替换列
+## 2.10、增加和替换列
 ```
 ALTER TABLE table_name ADD|REPLACE COLUMNS (col_name data_type [COMMENT col_comment], ...)
 
 alter table dept add columns(deptdesc string);
 ```
 
-## 2.10、删除表
+## 2.11、删除表
 ```
 drop table dept;
 ```
