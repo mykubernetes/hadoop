@@ -321,7 +321,7 @@ drop table dept;
 
 # 三、DML数据操作
 
-## 加载数据
+## 3.1、加载数据
 ```
 hive> load data [local] inpath '数据的 path' [overwrite] into table student [partition (partcol1=val1,…)];
 ```
@@ -332,101 +332,101 @@ hive> load data [local] inpath '数据的 path' [overwrite] into table student [
 - into table:表示加载到哪张表
 - student:表示具体的表
 
+### 3.1.1 创建表
 ```
-create table student(id string, name string) 
-row format
-delimited fields terminated by '\t';
-```
-
-load local文件
-```
-load data local inpath '/opt/module/hive/datas/student.txt' into table default.student;
+hive> create table student(id string, name string) 
+row format delimited fields terminated by '\t';
 ```
 
-load hdfs文件
+### 3.1.2 load local文件
 ```
-dfs -put /opt/module/hive/data/student.txt /user/atguigu/hive;
-load data inpath '/user/atguigu/hive/student.txt' into table default.student;
-```
-
-overwrite
-```
-load data inpath '/user/atguigu/hive/student.txt'overwrite into table default.student;
+hive> load data local inpath '/opt/module/hive/datas/student.txt' into table default.student;
 ```
 
-# 插入数据
+### 3.1.3 load hdfs文件
 ```
-create table student_par(id int, name string) row format delimited fields terminated by '\t';
+hive> dfs -put /opt/module/hive/data/student.txt /user/atguigu/hive;
+hive> load data inpath '/user/atguigu/hive/student.txt' into table default.student;
+```
 
-insert into table student_par values(1,'wangwu'),(2,'zhaoliu');
+### 3.1.4 overwrite
+```
+hive> load data inpath '/user/atguigu/hive/student.txt'overwrite into table default.student;
+```
 
-insert overwrite table student_par
-select id, name from student where month='201709';
+## 3.2、插入数据
+```
+hive> create table student_par(id int, name string) row format delimited fields terminated by '\t';
+
+hive> insert into table student_par values(1,'wangwu'),(2,'zhaoliu');
+
+hive> insert overwrite table student_par
+
+hive> select id, name from student where month='201709';
 //insert into： 以追加数据的方式插入到表或分区， 原有数据不会删除
 //insert overwrite： 会覆盖表中已存在的数据
 //注意： insert 不支持插入部分字段
 ```
 
-# 多表插入
+## 3.3、多表插入
 ```
-from student
+hive> from student
 insert overwrite table student partition(month='201707')
 select id, name where month='201709'
 insert overwrite table student partition(month='201706')
 select id, name where month='201709';
 ```
 
-# Import 数据到指定 Hive 表中
+## 3.4、Import 数据到指定 Hive 表中
 ```
-import table student2
-from '/user/hive/warehouse/export/student';
-```
-
-# 数据导出
-
-## 导出到本地
-```
-insert overwrite local directory '/opt/module/hive/data/export/student'
-select * from student;
+hive> import table student2 from '/user/hive/warehouse/export/student';
 ```
 
-## 格式化导出到本地
+## 3.5、数据导出
+
+### 导出到本地
 ```
-insert overwrite local directory '/opt/module/hive/data/export/student1'
-ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
-select * from student;
+hive> insert overwrite local directory '/opt/module/hive/data/export/student'
+hive> select * from student;
 ```
 
-## 导出到 HDFS 上(没有 local)
+### 格式化导出到本地
+```
+hive> insert overwrite local directory '/opt/module/hive/data/export/student1'
+      ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+hive> select * from student;
+```
+
+### 导出到 HDFS 上(没有 local)
 ```
 insert overwrite directory '/user/atguigu/student2'
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 select * from student;
 ```
 
-## hadoop命令导出
+### hadoop命令导出
 ```
 (hive) dfs -get /user/hive/warehouse/student/student.txt /opt/module/data/export/student3.txt;
 ```
 
-## hive导出
+### hive导出
 ```
 (shell) bin/hive -e 'select * from default.student;' > /opt/module/hive/data/export/student4.txt;
 ```
 
-## 导出到hdfs
+### 导出到hdfs
 ```
 (hive) export table default.student to '/user/hive/warehouse/export/student';
 ```
 
-## 清除表
+## 3.6、清除表
 
 Truncate 只能删除管理表， 不能删除外部表中数据
 ```
 truncate table student;
 ```
 
-# DQL数据查询
+# 四、DQL数据查询
 ```
 SELECT [ALL | DISTINCT] select_expr, select_expr, ...
 FROM table_reference
