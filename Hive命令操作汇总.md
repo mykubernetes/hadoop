@@ -114,7 +114,7 @@ Time taken: 0.227 seconds, Fetched: 1 row(s)
 
 # 二、DDL数据定义
 
-基本语法
+## 2.1、创建数据库
 ```
 CREATE DATABASE [IF NOT EXISTS] database_name
 [COMMENT database_comment]
@@ -122,38 +122,70 @@ CREATE DATABASE [IF NOT EXISTS] database_name
 [WITH DBPROPERTIES (property_name=property_value, ...)];
 ```
 
-例如，**`默认存储在hdfs上的路径是/user/hive/warehouse/*.db`**
+2.1.1 创建一个数据库，数据库在HDFS上的**`默认存储在hdfs上的路径是/user/hive/warehouse/*.db`**
 ```
-create database db_hive2 
+hive (default)> create database db_hive2 
 //默认存储路径是/user/hive/warehouse/*.db
 location '/db_hive2.db';
 ```
 
-其他操作，和mysql基本类似
+2.1.2 避免要创建的数据库已经存在错误，增加if not exists 判断。(标准写法)
 ```
-show databases;
-show databases like 'db_hive*';
-desc database db_hive;
-desc database extended db_hive;
+hive (default)> create database db_hive;
+FALILED: Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.DDLTask. Database db_hive already exists
 
-use db_hive; //切换数据库
+hive (default)> create database if not exists db_hive;
 ```
 
-# 修改数据库
+2.1.3 创建一个数据库，指定数据库在HDFS上存放的位置
 ```
-alter database db_hive
-set dbproperties('createtime'='20170830');
+hive (default)> create database db_hive2 location '/db_hive2.db';
 ```
 
-# 删除数据库
+## 2.2 查询数据库
+
+2.2.1 显示数据库
+```
+hive (default)> show databases;
+```
+
+2.2.2 过滤显示查询的数据库
+```
+hive (default)> show databases like 'db_hive*';
+```
+
+2.2.3 显示数据库详情
+```
+hive (default)> desc database db_hive;
+```
+
+2.2.4 显示数据库详细信息
+```
+hive (default)> desc database extended db_hive;
+```
+
+2.2.5 切换数据库
+```
+hive (default)> use db_hive; 
+```
+
+## 2.3、修改数据库
+```
+hive (default)> alter database db_hive set dbproperties('createtime'='20170830');
+
+hive (default)> desc database extended db_hive;
+```
+
+## 2.4、删除数据库
 ```
 drop database db_hive2;
 drop database if exists db_hive2;
-//数据库不为空强制删除
+
+# 数据库不为空强制删除
 drop database db_hive cascade;
 ```
 
-# 创建表
+## 2.5、创建表
 ```
 CREATE [EXTERNAL] TABLE [IF NOT EXISTS] table_name
 [(col_name data_type [COMMENT col_comment], ...)]
@@ -199,7 +231,7 @@ Hive 并非认为其完全拥有这份数据。删除该表并不会删除掉这
 
 用例：每天将收集到的网站日志定期流入 HDFS 文本文件。在外部表（原始日志表）的基础上做大量的统计分析，用到的中间表、结果表使用内部表存储，数据通过 SELECT+INSERT 进入内部表
 
-# 创建内部表
+## 创建内部表
 ```
 create table if not exists student(
 id int, name string
@@ -216,7 +248,7 @@ hive (default)> dfs -mkdir /student;
 hive (default)> dfs -put /opt/module/datas/student.txt /student;
 ```
 
-# 创建外部表
+## 创建外部表
 ```
 create external table if not exists dept(
 deptno int,
@@ -238,7 +270,7 @@ row format delimited fields terminated by '\t';
 desc formatted dept;
 ```
 
-# 内部表和外部表的转化
+## 内部表和外部表的转化
 ```
 alter table student2 set tblproperties('EXTERNAL'='TRUE');
 
@@ -250,12 +282,12 @@ desc formatted student2;
 ```
 注意： (‘EXTERNAL’=‘TRUE’)和(‘EXTERNAL’=‘FALSE’)为固定写法， 区分大小写
 
-# 重命名表
+## 重命名表
 ```
 ALTER TABLE table_name RENAME TO new_table_name
 ```
 
-# 更新列
+## 更新列
 ```sql
 ALTER TABLE table_name CHANGE [COLUMN] col_old_name col_new_name
 column_type [COMMENT col_comment] [FIRST|AFTER column_name]
@@ -263,19 +295,19 @@ column_type [COMMENT col_comment] [FIRST|AFTER column_name]
 alter table dept change column deptdesc desc string;
 ```
 
-增加和替换列
+## 增加和替换列
 ```
 ALTER TABLE table_name ADD|REPLACE COLUMNS (col_name data_type [COMMENT col_comment], ...)
 
 alter table dept add columns(deptdesc string);
 ```
 
-# 删除表
+## 删除表
 ```
 drop table dept;
 ```
 
-# DML数据操作
+# 三、DML数据操作
 
 ## 加载数据
 ```
