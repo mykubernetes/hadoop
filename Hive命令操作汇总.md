@@ -334,47 +334,50 @@ hive> load data [local] inpath '数据的 path' [overwrite] into table student [
 
 ### 3.1.1 创建表
 ```
-hive> create table student(id string, name string) 
+hive (default)> create table student(id string, name string) 
 row format delimited fields terminated by '\t';
 ```
 
 ### 3.1.2 load local文件
 ```
-hive> load data local inpath '/opt/module/hive/datas/student.txt' into table default.student;
+hive (default)> load data local inpath '/opt/module/hive/datas/student.txt' into table default.student;
 ```
 
 ### 3.1.3 load hdfs文件
 ```
-hive> dfs -put /opt/module/hive/data/student.txt /user/atguigu/hive;
-hive> load data inpath '/user/atguigu/hive/student.txt' into table default.student;
+hive (default)> dfs -put /opt/module/hive/data/student.txt /user/atguigu/hive;
+hive (default)> load data inpath '/user/atguigu/hive/student.txt' into table default.student;
 ```
 
 ### 3.1.4 overwrite
 ```
-hive> load data inpath '/user/atguigu/hive/student.txt'overwrite into table default.student;
+hive (default)> load data inpath '/user/atguigu/hive/student.txt'overwrite into table default.student;
 ```
 
 ## 3.2、插入数据
 ```
-hive> create table student_par(id int, name string) row format delimited fields terminated by '\t';
+创建一张表
+hive (default)> create table student_par(id int, name string) row format delimited fields terminated by '\t';
 
-hive> insert into table student_par values(1,'wangwu'),(2,'zhaoliu');
+基本插入数据
+hive (default)> insert into table student_par values(1,'wangwu'),(2,'zhaoliu');
 
-hive> insert overwrite table student_par
-
-hive> select id, name from student where month='201709';
-//insert into： 以追加数据的方式插入到表或分区， 原有数据不会删除
-//insert overwrite： 会覆盖表中已存在的数据
-//注意： insert 不支持插入部分字段
+基本插入模式（根据单张表查询结果）
+hive (default)> insert overwrite table student_par
+                select id, name from student where month='201709';
 ```
+- insert into： 以追加数据的方式插入到表或分区， 原有数据不会删除
+- insert overwrite： 会覆盖表中已存在的数据
+- 注意： insert 不支持插入部分字段
+
 
 ## 3.3、多表插入
 ```
-hive> from student
-insert overwrite table student partition(month='201707')
-select id, name where month='201709'
-insert overwrite table student partition(month='201706')
-select id, name where month='201709';
+hive (default)> from student
+                insert overwrite table student partition(month='201707')
+                select id, name where month='201709'
+                insert overwrite table student partition(month='201706')
+                select id, name where month='201709';
 ```
 
 ## 3.4、Import 数据到指定 Hive 表中
