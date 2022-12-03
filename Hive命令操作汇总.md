@@ -380,54 +380,88 @@ hive (default)> from student
                 select id, name where month='201709';
 ```
 
-## 3.4、Import 数据到指定 Hive 表中
+## 3.4 查询语句中创建表并加载数据（As Select）
+- 根据查询结果创建表（查询的结果会添加到新创建的表中）
 ```
-hive> import table student2 from '/user/hive/warehouse/export/student';
-```
-
-## 3.5、数据导出
-
-### 3.5.1 导出到本地
-```
-hive> insert overwrite local directory '/opt/module/hive/data/export/student'
-hive> select * from student;
+hive (default)> create table if not exists student2 as select id,name from student;
 ```
 
-### 3.5.2 格式化导出到本地
+## 3.5 创建表时通过location指定加载数据路径
+
+### 3.5.1 上传数据到hdfs上
 ```
-hive> insert overwrite local directory '/opt/module/hive/data/export/student1'
-      ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
-hive> select * from student;
+hive (default)> dfs -mkdir /student;
+hive (default)> dfs -put /opt/module/datas/student.txt /student;
 ```
 
-### 3.5.3 导出到 HDFS 上(没有 local)
+### 3.5.2 创建表，并指定hdfs上的位置
 ```
-insert overwrite directory '/user/atguigu/student2'
-ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
-select * from student;
-```
-
-### 3.5.4 hadoop命令导出
-```
-(hive) dfs -get /user/hive/warehouse/student/student.txt /opt/module/data/export/student3.txt;
+hive (default)> create external table if not exists student3(
+                id int, name string
+		)
+		row format delimited fields terminated by '\t'
+		location '/student';
 ```
 
-### 3.5.5 hive导出
+### 3.5.3 查询数据
+```
+hive (default)> select * from student3;
+```
+
+## 3.6、Import 数据到指定 Hive 表中
+
+```
+hive (default)> import table student2 from '/user/hive/warehouse/export/student';
+```
+**注意**：先使用export导出后，再将数据导入
+
+## 3.7、数据导出
+
+### Insert导出
+
+### 3.7.1 将查询的结果导出到本地
+```
+hive (default)> insert overwrite local directory '/opt/module/hive/data/export/student'
+hive (default)> select * from student;
+```
+
+### 3.7.2 将查询的结果格式化导出到本地
+```
+hive (default)> insert overwrite local directory '/opt/module/hive/data/export/student1'
+              > ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+hive (default)> select * from student;
+```
+
+### 3.7.3 将查询的结果导出到 HDFS 上(没有 local)
+```
+hive (default)> insert overwrite directory '/user/atguigu/student2'
+              > ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+hive (default)> select * from student;
+```
+
+### 3.7.4 hadoop命令导出到本地
+```
+hive (default)> dfs -get /user/hive/warehouse/student/student.txt /opt/module/data/export/student3.txt;
+```
+
+### 3.7.5 hive shell命令导出
+基本语法：（hive -f/-e 执行语句或者脚本 >file）
 ```
 (shell) bin/hive -e 'select * from default.student;' > /opt/module/hive/data/export/student4.txt;
 ```
 
-### 3.5.6 导出到hdfs
+### 3.7.6 Export导出到hdfs上
 ```
-(hive) export table default.student to '/user/hive/warehouse/export/student';
+hive (default)> export table default.student to '/user/hive/warehouse/export/student';
 ```
+export和import 主要用于Hadoop平台集群之间Hive表迁移。
 
-## 3.6、清除表
+## 3.8、清除表
 
-Truncate 只能删除管理表， 不能删除外部表中数据
 ```
 truncate table student;
 ```
+**注意**：Truncate 只能删除管理表， 不能删除外部表中数据
 
 # 四、DQL数据查询
 ```
