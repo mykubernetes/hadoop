@@ -912,24 +912,6 @@ select ename, deptno, sal from emp order by deptno, sal;
 **MR内部排序（Sort By）**
 
 - Sort By：每个Reducer内部进行排序，对全局结果集来说不是排序。
-
-```
---设置reduce个数
-set mapreduce.job.reduces=3;
- 
---查看设置reduce个数
-set mapreduce.job.reduces;
- 
---根据部门编号降序查看员工信息
-select empno,ename,sal,deptno from emp sort by empno desc;
- 
---按照部门编号降序排序
-select empno,ename,sal,deptno from emp sort by deptno desc;
-```
-
-**MR内部排序（Sort By）**
-
-- Sort By：每个Reducer内部进行排序，对全局结果集来说不是排序。
 ```
 --设置reduce个数
 set mapreduce.job.reduces=3;
