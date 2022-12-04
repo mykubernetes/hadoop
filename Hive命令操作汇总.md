@@ -721,13 +721,110 @@ select e.empno, e.ename, d.deptno from emp e right join dept d on e.deptno = d.d
 select e.empno, e.ename, d.deptno from emp e full join dept d on e.deptno = d.deptno;
 ```
 
+**取左表独有数据**
+```
+-- 查询员工信息，所在部门信息为NULL
+select
+  e.empno,
+  e.ename,
+  e.deptno，
+  d.dname
+from
+  emp e
+left join
+  dept d
+on e.deptno = d.deptno
+where d.deptno is null;
+
+
+select
+  e.empno,
+  e.ename,
+  e.deptno
+from
+  emp e
+where
+  e.deptno not in
+  (
+  select
+    deptno
+  from
+    dept
+  );
+```
+
+**取右表独有数据**
+```
+select
+  d.deptno，
+  d.dname
+from
+  emp e 
+right join
+  dept d
+on e.deptno = d.deptno
+where e.deptno is null;
+```
+
+**取左右两个表独有数据**
+```
+select
+  e.empno,
+  e.ename,
+  nvl(e.deptno,d.deptno),
+  d.deptno
+from
+  emp e
+full join
+  dept d
+on e.deptno = d.deptno
+where e.deptno is null or d.deptno is null;
+
+
+select
+  *
+from
+(
+select
+  e.empno,
+  e.ename,
+  e.deptno，
+  d.deptno,
+  d.dname
+from
+  emp e
+left join
+  dept d
+on e.deptno = d.deptno
+where d.deptno is null;
+union
+select
+  e.empno,
+  e.ename,
+  e.deptno，
+  d.deptno,
+  d.dname
+from
+  emp e
+full join
+  dept d
+on e.deptno = d.deptno
+where e.deptno is null or d.deptno is null
+) tmp ;
+```
+
+- union: 去重,如果需求需要去重，只能用union
+- union all: 不去重,如果需求不需要去重，用union all
+- 如果需要本身不存在重复数据，使用union,union all 效果相同，使用union all
 
 
 **多表连接**
 
+**注意**:连接n个表，至少需要n+1个连接条件，列如：连接三个表，至少需要两个连接条件
+
 数据准备
 ```
-[hadoop@datanode1 datas]$ vim location.txt
+$ vim location.txt
 1700    Beijing
 1800    London
 1900    Tokyo
@@ -749,15 +846,25 @@ load data local inpath '/opt/module/datas/location.txt' into table default.locat
 
 多表连接查询
 ```
-SELECT e.ename, d.deptno, l. loc_name
-FROM   emp e
-JOIN   dept d
-ON     d.deptno = e.deptno
-JOIN   location l
-ON     d.loc = l.loc;
+SELECT 
+  e.ename,
+  d.deptno,
+  l.loc_name
+FROM
+  emp e
+JOIN
+  dept d
+ON d.deptno = e.deptno
+JOIN
+  location l
+ON d.loc = l.loc;
 ```
+大多数情况下，Hive会对每对JOIN连接对象启动一个MapReduce任务。本例中会首先启动一个MapReduce job对表e和表d进行连接操作，然后会再启动一个MapReduce job将第一个MapReduce job的输出和表l;进行连接操作。Hive总是按照从左到右的顺序执行的。因此不是Hive总是按照从左到右的顺序执行的。
 
-**注意**:大多数情况下，Hive会对每对JOIN连接对象启动一个MapReduce任务。本例中会首先启动一个MapReduce job对表e和表d进行连接操作，然后会再启动一个MapReduce job将第一个MapReduce job的输出和表l;进行连接操作。Hive总是按照从左到右的顺序执行的。因此不是Hive总是按照从左到右的顺序执行的。
+**注意**:为什么不是d表个l先进行连接操作呢？这是因为Hive总是按照从左到右的顺序执行的。
+
+优化：当对3个或者更多表进行join连接时，如果每个on子句都能使用相同的连接键的化，那么之会产生一个MapReduce job。
+
 
 **笛卡尔积**
 
@@ -775,7 +882,9 @@ select e.empno, e.ename, d.deptno from emp e join dept d on e.deptno= d.deptno o
 ```
 
 ### 排序
-全局排序
+
+**全局排序**
+
 Order By：全局排序，一个Reducer
 
 1．使用 ORDER BY 子句排序
@@ -783,7 +892,7 @@ Order By：全局排序，一个Reducer
 - DESC（descend）: 降序
 
 
-ORDER BY 子句在SELECT语句的结尾
+2.ORDER BY 子句在SELECT语句的结尾
 ```
 --查询员工信息按工资升序排列
 hive (default)> select * from emp order by sal;
