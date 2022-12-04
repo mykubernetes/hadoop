@@ -622,8 +622,50 @@ select * from emp where sal RLIKE '[2]';
 | NOT | 逻辑否 |
 
 ```
+--查询薪水大于1000，部门是30
+select * from emp where sal>1000 and deptno=30;
+
+--查询薪水大于1000，或者部门是30
+select * from emp where sal>1000 or deptno=30;
+
+-- 查询除了20部门和30部门以外的员工信息
+select * from emp where deptno not in(30,20);
+```
+
+### 10、分组
+
+**Group By语句
+
+- GROUP BY语句通常会和聚合函数一起使用，按照一个或多个列队结果进行分组，然后对每个组执行聚合操作
+```
+--计算emp表每个部门的平均工资
+select t.deptno, avg(t.sal) avg_sal from emp group by t.deptno;
+
+--计算emp表每个部门中每个岗位的最高薪水
+select t.deptno, t.job, max(t.sal) max_sal from emp t group by t.deptno, t.job;
+
+--每个部门中每个岗位的最高薪水是哪个人
+select d.ename,a.deptno,a.job,a.sal
+from
+emp b join
+(select deptno,job,max(sal) sal from emp group by deptno,job ) a no d.deptno =a.deptno and d.sal = a.sal;
+
+
+--求每个部门的平均薪水大于2000的部门
+select deptno, avg(sal) avg_sal from emp group by deptno having  avg_sal > 2000;
+select deptno, avg_sal from (select deptno,avg(sal) avg_sal from emp group by deptno) t1 where avg_sal>2000; 
+```
+
+**Having语句**
+
+having于where不同
+- where后面不能写分组函数，而having后面可以使用分组函数
+- having只用于group by 分组统计语句
+
+```
 --求每个部门的平均工资
 select deptno, avg(sal) from emp group by deptno;
+
 --求每个部门的平均薪水大于2000的部门
 select deptno, avg(sal) avg_sal from emp group by deptno having  avg_sal > 2000;
 ```
