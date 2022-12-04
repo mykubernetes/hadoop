@@ -634,7 +634,7 @@ select * from emp where deptno not in(30,20);
 
 ### 10、分组
 
-**Group By语句
+**Group By语句**
 
 - GROUP BY语句通常会和聚合函数一起使用，按照一个或多个列队结果进行分组，然后对每个组执行聚合操作
 ```
