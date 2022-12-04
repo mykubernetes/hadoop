@@ -480,7 +480,154 @@ SELECT [ALL | DISTINCT] select_expr, select_expr, ...
   ]
   [LIMIT number]
 ```
-和mysql的查询一致，包括分组，排序，连接操作等都类似
+
+## 基本查询
+```
+select  …  from
+```
+
+### 1、全表查询
+```
+select * from emp;
+```
+
+### 2、条件查询
+```
+select empno, ename from emp;
+```
+注意:
+- SQL 语言大小写不敏感。
+- SQL 可以写在一行或者多行
+- 关键字不能被缩写也不能分行
+- 各子句一般要分行写。
+- 使用缩进提高语句的可读性。
+
+### 3、列别名
+
+- 重命名一个列
+- 便于计算
+- 紧跟列名，也可以在列名和别名之间加入关键字‘AS’
+
+```
+--询名称和部门
+hive > select ename AS name, deptno dn from emp;
+```
+
+### 4、算术运算符
+
+| 运算符 | 描述 |
+|-------|-----|
+| A+B | A和B 相加 |
+| A-B | A减去B |
+| `A*B` | A和B 相乘 |
+| A/B | A除以B |
+| A%B | A对B取余 |
+| A&B | A和B按位取与 |
+| A\B | A和B按位取或 |
+| A^B | A和B按位取异或 |
+| ~A | 按位取反 |
+
+```
+--薪水加100后的信息
+select ename,sal +100 from emp;
+```
+
+### 5、常用函数
+```
+--求总行数（count）
+select count(*) cnt from emp;
+ 
+--求工资的最大值（max）
+select max(sal) max_sal from emp;
+ 
+--求工资的最小值（min）
+select min(sal) min_sal from emp;
+ 
+--求工资的总和（sum）
+select sum(sal) sum_sal from emp;
+ 
+--求工资的平均值（avg）
+select sum(sal) sum_sal from emp;
+ 
+--Limit语句
+select * from emp limit 5;
+```
+
+### 6、Where语句
+
+- 1、使用WHERE子句，将不满足条件的行过滤掉
+- 2、WHERE子句紧随FROM子句
+
+```
+--查询出薪水大于1000的所有员工
+select * from emp where sal >1000;
+```
+
+### 7、比较运算符
+
+| 操作符 | 支持的数据类型 | 描述 |
+|-------|---------------|------|
+| A=B | 基本数据类型 | 如果A等于B则返回TRUE，反之返回FALSE |
+| A<=>B | 基本数据类型 | 如果A和B都为NULL，则返回TRUE，其他的和等号（=）操作符的结果一致，如果任一为NULL则结果为NULL |
+| A<>B, A!=B | 基本数据类型 | A或者B为NULL则返回NULL；如果A不等于B，则返回TRUE，反之返回FALSE |
+| A<B | 基本数据类型 | A或者B为NULL，则返回NULL；如果A小于B，则返回TRUE，反之返回FALSE |
+| A<=B | 基本数据类型 | A或者B为NULL，则返回NULL；如果A小于等于B，则返回TRUE，反之返回FALSE |
+| A>B | 基本数据类型 | A或者B为NULL，则返回NULL；如果A大于B，则返回TRUE，反之返回FALSE |
+| A>=B | 基本数据类型 | A或者B为NULL，则返回NULL；如果A大于等于B，则返回TRUE，反之返回FALSE |
+| A [NOT] BETWEEN B AND C | 基本数据类型 | 如果A，B或者C任一为NULL，则结果为NULL。如果A的值大于等于B而且小于或等于C，则结果为TRUE，反之为FALSE。如果使用NOT关键字则可达到相反的效果。 |
+| A IS NULL | 所有数据类型 | 如果A等于NULL，则返回TRUE，反之返回FALSE |
+| A IS NOT NULL | 所有数据类型 | 如果A不等于NULL，则返回TRUE，反之返回FALSE |
+| IN(数值1, 数值2) | 所有数据类型 | 使用IN运算显示列表中的值 |
+| A [NOT] LIKE B | STRING 类型 | B是一个SQL下的简单正则表达式，如果A与其匹配的话，则返回TRUE；反之返回FALSE。B的表达式说明如下：‘x%’表示A必须以字母‘x’开头，‘%x’表示A必须以字母’x’结尾，而‘%x%’表示A包含有字母’x’,可以位于开头，结尾或者字符串中间。如果使用NOT关键字则可达到相反的效果。 |
+| A RLIKE B, A REGEXP B | STRING 类型 | B是一个正则表达式，如果A与其匹配，则返回TRUE；反之返回FALSE。匹配使用的是JDK中的正则表达式接口实现的，因为正则也依据其中的规则。例如，正则表达式必须和整个字符串A相匹配，而不是只需与其字符串匹配。 |
+
+```
+--查询出薪水等于5000的所有员工
+select * from emp where sal =5000;
+ 
+--查询工资在5000到10000的员工信息
+ select * from emp where sal  between 500 and 10000;
+  
+ --查询comm为空的所有员工信
+ select * from emp where comm is null;
+  
+ --查询工资是1500或5000的员工信息
+select * from emp where sal in(1500,5000);
+select * from emp where sal=1500 or sal= 5000;
+```
+
+### 8、Like和RLike
+
+- 使用LIKE运算选择类似的值
+- 选择条件可以包含字符或数字:% 代表零个或多个字符(任意个字符)。_ 代表一个字符。
+- RLIKE子句是Hive中这个功能的一个扩展，其可以通过Java的正则表达式这个更强大的语言来指定匹配条件。
+
+```
+-- 查找以2开头薪水的员工信息
+ select * from emp where sal LIKE '2%';
+-- 查找第二个数值为2的薪水的员工信息
+select * from emp where sal LIKE '_2%';
+-- 查找薪水中含有2的员工信息
+select * from emp where sal RLIKE '[2]';
+```
+
+### 逻辑运算符
+
+| 操作符 | 含义 |
+|-------|------|
+| AND | 逻辑并 |
+| OR | 逻辑或 |
+| NOT | 逻辑否 |
+
+```
+--求每个部门的平均工资
+select deptno, avg(sal) from emp group by deptno;
+--求每个部门的平均薪水大于2000的部门
+select deptno, avg(sal) avg_sal from emp group by deptno having  avg_sal > 2000;
+```
+
+
+
 
 ## Like 和 RLike
 
