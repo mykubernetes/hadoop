@@ -679,10 +679,26 @@ select deptno, avg(sal) avg_sal from emp group by deptno having  avg_sal > 2000;
 ```
 --根据员工表和部门表中的部门编号相等，查询员工编号、员工名称和部门名称；
  select e.empno, e.ename, d.deptno, d.dname from emp e join dept d on e.deptno = d.deptno;
+
 --合并员工表和部门表
  select e.empno, e.ename, d.deptno from emp e join dept d on e.deptno = d.deptno;
 ```
-表的别名:（1）使用别名可以简化查询。（2）使用表名前缀可以提高执行效率。
+
+**表的别名:**
+- （1）使用别名可以简化查询。
+- （2）使用表名前缀可以提高执行效率。
+
+```
+--合并员工表和部门表
+select e.empno,e.ename,d.deptno from emp e join dept d no e.deptno = d.deptno;
+```
+
+**内连接**
+
+- 内连接：只有进行连接的两个表中都存在与连接条件相匹配的数据才会被保留下来
+```
+select e.epmno,e.ename,d.deptno from emp e join dept d no e.deptno = d.deptno;
+```
 
 **左外连接**
 
@@ -704,6 +720,9 @@ select e.empno, e.ename, d.deptno from emp e right join dept d on e.deptno = d.d
 ```
 select e.empno, e.ename, d.deptno from emp e full join dept d on e.deptno = d.deptno;
 ```
+
+
+
 **多表连接**
 
 数据准备
@@ -1734,4 +1753,4 @@ score
 
 参考：
 - https://blog.csdn.net/sinat_41567654/article/details/124413209
-
+- https://www.cnblogs.com/fmgao-technology/p/10412564.html#_label1_12
