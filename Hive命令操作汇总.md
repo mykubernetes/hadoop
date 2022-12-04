@@ -599,7 +599,9 @@ select * from emp where sal=1500 or sal= 5000;
 ### 8、Like和RLike
 
 - 使用LIKE运算选择类似的值
-- 选择条件可以包含字符或数字:% 代表零个或多个字符(任意个字符)。_ 代表一个字符。
+- 选择条件可以包含字符或数字:
+  - % 代表零个或多个字符(任意个字符)。
+  - _ 代表一个字符。
 - RLIKE子句是Hive中这个功能的一个扩展，其可以通过Java的正则表达式这个更强大的语言来指定匹配条件。
 
 ```
@@ -611,7 +613,7 @@ select * from emp where sal LIKE '_2%';
 select * from emp where sal RLIKE '[2]';
 ```
 
-### 逻辑运算符
+### 9、逻辑运算符
 
 | 操作符 | 含义 |
 |-------|------|
@@ -626,46 +628,135 @@ select deptno, avg(sal) from emp group by deptno;
 select deptno, avg(sal) avg_sal from emp group by deptno having  avg_sal > 2000;
 ```
 
+### 10、Join语句
 
+**等值Join**
 
+注意:Hive支持通常的SQL JOIN语句，但只支持等值连接，不支持非等值连接。
 
-## Like 和 RLike
-
-RLIKE 子句是 Hive 中这个功能的一个扩展，其可以通过 Java 的正则表达式匹配
 ```
-//% 代表零个或多个字符(任意个字符)。_ 代表一个字符。
-select * from emp where ename LIKE 'A%';
-select * from emp where ename LIKE '_A%';
-select * from emp where ename RLIKE '[A]';  
+--根据员工表和部门表中的部门编号相等，查询员工编号、员工名称和部门名称；
+ select e.empno, e.ename, d.deptno, d.dname from emp e join dept d on e.deptno = d.deptno;
+--合并员工表和部门表
+ select e.empno, e.ename, d.deptno from emp e join dept d on e.deptno = d.deptno;
+```
+表的别名:（1）使用别名可以简化查询。（2）使用表名前缀可以提高执行效率。
+
+**左外连接**
+
+- 左外连接：JOIN操作符左边表中符合WHERE子句的所有记录将会被返回。
+```
+select e.empno, e.ename, d.deptno from emp e left join dept d on e.deptno = d.deptno;
 ```
 
-分区（Distribute By）
+**右外连接**
 
-需要控制某个特定行应该到哪个 reducer， 通常是为了进行后续的聚集操作。 distribute by 子句可以做这件事。 distribute by 类似 MR 中 partition（自定义分区）
-
-注意：对于 distribute by 测试，一定要分配多 reduce 进行处理，否则无法看到 distributeby 的效果
+- 右外连接：JOIN操作符右边表中符合WHERE子句的所有记录将会被返回。
 ```
+select e.empno, e.ename, d.deptno from emp e right join dept d on e.deptno = d.deptno;
+```
+
+**满外连接**
+
+- 满外连接：将会返回所有表中符合WHERE语句条件的所有记录。如果任一表的指定字段没有符合条件的值的话，那么就使用NULL值替代。
+```
+select e.empno, e.ename, d.deptno from emp e full join dept d on e.deptno = d.deptno;
+```
+**多表连接**
+
+数据准备
+```
+[hadoop@datanode1 datas]$ vim location.txt
+1700    Beijing
+1800    London
+1900    Tokyo
+```
+
+创建位置表
+```
+create table if not exists default.location(
+loc int,
+loc_name string
+)
+row format delimited fields terminated by '\t';
+```
+
+导入数据
+```
+load data local inpath '/opt/module/datas/location.txt' into table default.location;
+```
+
+多表连接查询
+```
+SELECT e.ename, d.deptno, l. loc_name
+FROM   emp e
+JOIN   dept d
+ON     d.deptno = e.deptno
+JOIN   location l
+ON     d.loc = l.loc;
+```
+
+**注意**:大多数情况下，Hive会对每对JOIN连接对象启动一个MapReduce任务。本例中会首先启动一个MapReduce job对表e和表d进行连接操作，然后会再启动一个MapReduce job将第一个MapReduce job的输出和表l;进行连接操作。Hive总是按照从左到右的顺序执行的。因此不是Hive总是按照从左到右的顺序执行的。
+
+**笛卡尔积**
+
+笛卡尔集会在下面条件下产生:
+- 省略连接条件
+- 连接条件无效
+- 所有表中的所有行互相连接
+
+```
+--案例实操
+ select empno, dname from emp, dept;
+  
+ --连接谓词中不支持or
+select e.empno, e.ename, d.deptno from emp e join dept d on e.deptno= d.deptno or e.ename=d.ename; ## 错误的
+```
+
+### 排序
+全局排序
+Order By：全局排序，一个Reducer
+
+1．使用 ORDER BY 子句排序
+- ASC（ascend）: 升序（默认）
+- DESC（descend）: 降序
+
+
+ORDER BY 子句在SELECT语句的结尾
+```
+--查询员工信息按工资升序排列
+hive (default)> select * from emp order by sal;
+--查询员工信息按工资降序排列
+select * from emp order by sal desc;
+```
+
+按照别名排序
+```
+--按照员工薪水的2倍排序
+select ename, sal*2 twosal from emp order by twosal;
+--按照部门和工资升序排序
+select ename, deptno, sal from emp order by deptno, sal;
+```
+
+MR内部排序（Sort By）
+Sort By：每个Reducer内部进行排序，对全局结果集来说不是排序。
+
+```
+--设置reduce个数
 set mapreduce.job.reduces=3;
-
-insert overwrite local directory '/opt/module/hive/apache-hive-3.1.2-bin/datas/distribute-result' 
-select * from emp 
-distribute by deptno 
-sort by empno desc;
+ 
+--查看设置reduce个数
+set mapreduce.job.reduces;
+ 
+--根据部门编号降序查看员工信息
+select empno,ename,sal,deptno from emp sort by empno desc;
+ 
+--按照部门编号降序排序
+select empno,ename,sal,deptno from emp sort by deptno desc;
 ```
 
-- distribute by 的分区规则是根据分区字段的 hash 码与 reduce 的个数进行模除后，余数相同的分到一个区。
-- Hive 要求 DISTRIBUTE BY 语句要写在 SORT BY 语句之前
 
-## Cluster By
 
-当 distribute by 和 sorts by 字段相同时，可以使用 cluster by 方式。
-
-cluster by 除了**具有 distribute by 的功能外还兼具 sort by 的功能**。但是排序只能是升序排序， 不能指定排序规则为 ASC 或者 DESC。
-```
-//等价
-select * from emp cluster by deptno;
-select * from emp distribute by deptno sort by deptno;
-```
 
 # 分区表和分桶表
 
