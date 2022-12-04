@@ -670,7 +670,7 @@ select deptno, avg(sal) from emp group by deptno;
 select deptno, avg(sal) avg_sal from emp group by deptno having  avg_sal > 2000;
 ```
 
-### 10、Join语句
+### 11、Join语句
 
 **等值Join**
 
@@ -881,11 +881,11 @@ ON d.loc = l.loc;
 select e.empno, e.ename, d.deptno from emp e join dept d on e.deptno= d.deptno or e.ename=d.ename; ## 错误的
 ```
 
-### 排序
+### 12、排序
 
 **全局排序**
 
-Order By：全局排序，一个Reducer
+- Order By：全局排序，一个Reducer
 
 1．使用 ORDER BY 子句排序
 - ASC（ascend）: 升序（默认）
@@ -896,6 +896,7 @@ Order By：全局排序，一个Reducer
 ```
 --查询员工信息按工资升序排列
 hive (default)> select * from emp order by sal;
+
 --查询员工信息按工资降序排列
 select * from emp order by sal desc;
 ```
@@ -908,8 +909,9 @@ select ename, sal*2 twosal from emp order by twosal;
 select ename, deptno, sal from emp order by deptno, sal;
 ```
 
-MR内部排序（Sort By）
-Sort By：每个Reducer内部进行排序，对全局结果集来说不是排序。
+**MR内部排序（Sort By）**
+
+- Sort By：每个Reducer内部进行排序，对全局结果集来说不是排序。
 
 ```
 --设置reduce个数
@@ -925,8 +927,45 @@ select empno,ename,sal,deptno from emp sort by empno desc;
 select empno,ename,sal,deptno from emp sort by deptno desc;
 ```
 
+**MR内部排序（Sort By）**
 
+- Sort By：每个Reducer内部进行排序，对全局结果集来说不是排序。
+```
+--设置reduce个数
+set mapreduce.job.reduces=3;
+ 
+--查看设置reduce个数
+set mapreduce.job.reduces;
+ 
+--根据部门编号降序查看员工信息
+select empno,ename,sal,deptno from emp sort by empno desc;
+ 
+--按照部门编号降序排序
+select empno,ename,sal,deptno from emp sort by deptno desc;
+```
 
+**分区排序 （Distribute By）**
+
+- Distribute By：类似MR中partition，进行分区，结合sort by使用。
+
+**注意**：Hive要求DISTRIBUTE BY语句要写在SORT BY语句之前。对于distribute by进行测试，一定要分配多reduce进行处理，否则无法看到distribute by的效果。
+
+案例实操：
+```
+--需求：先按照部门编号分区，再按照员工编号降序排序。
+ set mapreduce.job.reduces=3;
+ select * from emp distribute by deptno sort by empno desc;
+```
+
+**Cluster By**
+
+- 当distribute by和sorts by字段相同时，可以使用cluster by方式。
+
+cluster by除了具有distribute by的功能外还兼具sort by的功能。但是排序只能是倒序排序，不能指定排序规则为ASC或者DESC。
+```
+select * from emp cluster by deptno;
+select * from emp distribute by deptno sort by deptno;
+```
 
 # 分区表和分桶表
 
