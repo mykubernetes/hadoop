@@ -125,10 +125,9 @@ CREATE DATABASE [IF NOT EXISTS] database_name
 
 2.1.1 创建一个数据库，数据库在HDFS上的**`默认存储在hdfs上的路径是/user/hive/warehouse/*.db`**
 ```
-hive (default)> create database db_hive2 
-//默认存储路径是/user/hive/warehouse/*.db
-location '/db_hive2.db';
+hive (default)> create database db_hive2 location '/db_hive2.db';
 ```
+- 默认存储路径是/user/hive/warehouse/*.db
 
 2.1.2 避免要创建的数据库已经存在错误，增加if not exists 判断。(标准写法)
 ```
@@ -148,11 +147,21 @@ hive (default)> create database db_hive2 location '/db_hive2.db';
 2.2.1 显示数据库
 ```
 hive (default)> show databases;
+OK
+database_name
+default
+dyhtest
+Time taken: 0.022 seconds, Fetched: 2 row(s)
 ```
 
 2.2.2 过滤显示查询的数据库
 ```
 hive (default)> show databases like 'db_hive*';
+OK
+database_name
+db_hive
+db_hive_1
+Time taken: 0.034 seconds, Fetched: 2 row(s)
 ```
 
 2.2.3 显示数据库详情
