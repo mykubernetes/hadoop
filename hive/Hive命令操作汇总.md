@@ -958,15 +958,15 @@ select * from emp cluster by deptno;
 select * from emp distribute by deptno sort by deptno;
 ```
 
-# 分区表和分桶表
+## 13、分区表和分桶表
 
-## 分区表
+### 13.1.1 分区表
 
 分区表实际上就是对应一个 HDFS 文件系统上的独立的文件夹，该文件夹下是该分区所有的数据文件。 Hive 中的分区就是分目录，把一个大的数据集根据业务需要分割成小的数据集。在查询时通过 WHERE 子句中的表达式选择查询所需要的指定的分区，这样的查询效率会提高很多
 
-## 创建分区表
+### 13.1.2 创建分区表
 
-分区字段不能是表中已经存在的数据，可以将分区字段看作表的伪列
+1、分区字段不能是表中已经存在的数据，可以将分区字段看作表的伪列
 ```
 create table dept_partition(
 deptno int, 
@@ -976,9 +976,8 @@ loc string
 partitioned by (day string)
 row format delimited fields terminated by '\t';
 ```
-加载数据到指定分区中
 
-注意：分区表加载数据时，必须指定分区
+2、加载数据到指定分区中
 ```
 hive (default)> load data local inpath
 '/opt/module/hive/apache-hive-3.1.2-bin/datas/dept_20200401.log' into table dept_partition
@@ -990,36 +989,38 @@ hive (default)> load data local inpath
 '/opt/module/hive/apache-hive-3.1.2-bin/datas/dept_20200403.log' into table dept_partition
 partition(day='20200403');
 ```
+注意：分区表加载数据时，必须指定分区
 
-
-## 增加分区
+### 13.1.3 增加分区
 ```
 //创建单个分区
 hive (default)> alter table dept_partition add partition(day='20200404');
+
 //同时创建多个分区
 hive (default)> alter table dept_partition add partition(day='20200405') partition(day='20200406');
 ```
 
-## 删除分区
+### 13.1.4 删除分区
 ```
 //删除单个分区
 hive (default)> alter table dept_partition drop partition
 (day='20200406');
+
 //同时删除多个分区
 hive (default)> alter table dept_partition drop partition (day='20200404'), partition(day='20200405');
 ```
 
-## 查看分区
+### 13.1.5 查看分区
 ```
 show partitions dept_partition;
 ```
 
-## 查看分区表结构
+### 13.1.6 查看分区表结构
 ```
 desc formatted dept_partition;
 ```
 
-## 二级分区
+### 13.2 二级分区
 ```
 hive (default)> create table dept_partition2(
 deptno int, dname string, loc string
@@ -1028,22 +1029,18 @@ partitioned by (day string, hour string)
 row format delimited fields terminated by '\t';
 ```
 
-加载数据
+### 13.2.1 加载数据
 ```
-load data local inpath
-'/opt/module/hive/apache-hive-3.1.2-bin/datas//dept_20200401.log' into table
-dept_partition2 partition(day='20200401', hour='12');
+load data local inpath '/opt/module/hive/apache-hive-3.1.2-bin/datas//dept_20200401.log' into table dept_partition2 partition(day='20200401', hour='12');
 ```
 
 
-## 上传数据到分区目录并关联的三种方式
+### 13.2.2 上传数据到分区目录并关联的三种方式
 
 ### （1）上传数据后修复
 ```
-hive (default)> dfs -mkdir -p
-/user/hive/warehouse/mydb.db/dept_partition2/day=20200401/hour=13;
-hive (default)> dfs -put /opt/module/datas/dept_20200401.log
-/user/hive/warehouse/mydb.db/dept_partition2/day=20200401/hour=13;
+hive (default)> dfs -mkdir -p /user/hive/warehouse/mydb.db/dept_partition2/day=20200401/hour=13;
+hive (default)> dfs -put /opt/module/datas/dept_20200401.log /user/hive/warehouse/mydb.db/dept_partition2/day=20200401/hour=13;
 ```
 
 此时并不能查询，需要修复
@@ -1058,10 +1055,8 @@ select * from dept_partition2 where day='20200401' and hour='13';
 
 ### （2）上传数据后添加分区
 ```
-hive (default)> dfs -mkdir -p
-/user/hive/warehouse/mydb.db/dept_partition2/day=20200401/hour=14;
-hive (default)> dfs -put /opt/module/hive/datas/dept_20200401.log
-/user/hive/warehouse/mydb.db/dept_partition2/day=20200401/hour=14;
+hive (default)> dfs -mkdir -p /user/hive/warehouse/mydb.db/dept_partition2/day=20200401/hour=14;
+hive (default)> dfs -put /opt/module/hive/datas/dept_20200401.log /user/hive/warehouse/mydb.db/dept_partition2/day=20200401/hour=14;
 ```
 
 添加分区
@@ -1071,8 +1066,7 @@ hive (default)> alter table dept_partition2 add partition(day='201709',hour='14'
 
 ### （3）创建文件夹后 load 数据到分区
 ```
-hive (default)> dfs -mkdir -p
-/user/hive/warehouse/mydb.db/dept_partition2/day=20200401/hour=15;
+hive (default)> dfs -mkdir -p /user/hive/warehouse/mydb.db/dept_partition2/day=20200401/hour=15;
 ```
 
 上传数据
@@ -1082,7 +1076,7 @@ hive (default)> load data local inpath
 dept_partition2 partition(day='20200401',hour='15');
 ```
 
-# 动态分区
+### 13.3 动态分区
 
 对分区表 Insert 数据时候， 数据库自动会根据分区字段的值， 将数据插入到相应的分区中， Hive 中也提供了类似的机制， 即动态分区(Dynamic Partition)
 
@@ -1090,14 +1084,10 @@ dept_partition2 partition(day='20200401',hour='15');
 
 注意：可能会报错，resourcemanager会随机挑选一台机器load数据，需要确保本地文件存在，如果不存在则报错
 ```
-hive (default)> load data local inpath
-'/opt/module/hive/apache-hive-3.1.2-bin/datas//dept_20200401.log' into table
-dept_partition;
+hive (default)> load data local inpath '/opt/module/hive/apache-hive-3.1.2-bin/datas/dept_20200401.log' into table dept_partition;
 ```
 
-
-
-# 参数配置
+### 参数配置
 
 动态分区开启，默认为true
 ```
@@ -1129,7 +1119,7 @@ hive.exec.max.created.files=100000
 hive.error.on.empty.partition=false  
 ```
 
-## demo
+### demo
 
 问题：插入数据数不指定分区如何自动匹配分区字段？
 
@@ -1154,7 +1144,7 @@ hive (default)> show partitions dept_partition;
 ```
 
 
-# 分桶表
+### 分桶表
 
 分区提供一个隔离数据和优化查询的便利方式。不过，并非所有的数据集都可形成合理的分区。 对于一张表或者分区， Hive 可以进一步组织成桶，也就是更为细粒度的数据范围划分。
 
@@ -1183,7 +1173,7 @@ hive (default)> load data inpath '/data/student.data' into table stu_buck;
 
 根据结果可知： Hive 的分桶采用对分桶字段的值进行哈希，然后除以桶的个数求余的方式决定该条记录存放在哪个桶当中
 
-# 抽样查询
+### 抽样查询
 
 对于非常大的数据集，有时用户需要使用的是一个具有代表性的查询结果而不是全部结果
 ```
@@ -1193,6 +1183,7 @@ hive (default)> select * from stu_buck tablesample(bucket 1 out of 4 on id);
 注意： x 的值必须小于等于 y 的值
 
 # 函数
+
 ## 查看函数说明
 ```
 hive> show functions;
