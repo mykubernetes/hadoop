@@ -69,6 +69,21 @@ COMMAND GROUPS:
   Commands: add_rsgroup, balance_rsgroup, get_rsgroup, get_server_rsgroup, get_table_rsgroup, list_rsgroups, move_namespaces_rsgroup, move_servers_namespaces_rsgroup, move_servers_rsgroup, move_servers_tables_rsgroup, move_tables_rsgroup, remove_rsgroup, remove_servers_rsgroup, rename_rsgroup
 ```
 
+# 一般操作
+
+1、查询服务器状态：
+```
+hbase(main):080:0* status
+1 active master, 0 backup masters, 2 servers, 0 dead, 1.5000 average load
+Took 0.0149 seconds
+```
+
+2、查询hbase版本
+```
+hbase(main):082:0* version
+2.3.4, rafd5e4fc3cd259257229df3422f2857ed35da4cc, Thu Jan 14 21:32:25 UTC 2021
+Took 0.0031 seconds
+```
 
 # 数据相关
 ```
@@ -1025,3 +1040,6 @@ COLUMN                                           CELL
  f:c2                                            timestamp=1587984555307, value=Get到了吗？好意思不帮我分享嘛~哈哈~
 1 row(s) in 0.0070 seconds
 ```
+
+参考：
+- https://blog.51cto.com/u_13753753/5787073
