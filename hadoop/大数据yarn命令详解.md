@@ -63,6 +63,32 @@ COMMAND COMMAND_OPTIONS #以下各节介绍了各种命令及其选项
 -status <ApplicationId>     #打印应用程序的状态。
 ```
 
+示例1：
+```
+$ ./yarn application -list -appStates ACCEPTED
+15/08/10 11:48:43 INFO client.RMProxy: Connecting to ResourceManager at hadoop1/10.0.1.41:8032
+Total number of applications (application-types: [] and states: [ACCEPTED]):1
+Application-Id	                Application-Name Application-Type User	 Queue	 State	  Final-State Progress Tracking-URL
+application_1438998625140_1703	MAC_STATUS	 MAPREDUCE	  hduser default ACCEPTED UNDEFINED   0%       N/A
+```
+
+示例2:
+```
+$ ./yarn application -list
+15/08/10 11:43:01 INFO client.RMProxy: Connecting to ResourceManager at hadoop1/10.0.1.41:8032
+Total number of applications (application-types: [] and states: [SUBMITTED, ACCEPTED, RUNNING]):1
+Application-Id	               Application-Name	Application-Type  User   Queue   State    Final-State   Progress Tracking-URL
+application_1438998625140_1701 MAC_STATUS	MAPREDUCE	  hduser default ACCEPTED UNDEFINED	0%	 N/A
+```
+
+示例3：
+```
+$ ./yarn application -kill application_1438998625140_1705
+15/08/10 11:57:41 INFO client.RMProxy: Connecting to ResourceManager at hadoop1/10.0.1.41:8032
+Killing application application_1438998625140_1705
+15/08/10 11:57:42 INFO impl.YarnClientImpl: Killed application application_1438998625140_1705
+``` 
+
 2、applicationattempt
 
 - 使用语法：`yarn applicationattempt [options]` #打印应用程序尝试的报告
@@ -72,9 +98,38 @@ COMMAND COMMAND_OPTIONS #以下各节介绍了各种命令及其选项
 -status <Application Attempt Id>    #打印应用程序尝试的状态。
 ```
 
+示例1：
+```
+$ yarn applicationattempt -list application_1437364567082_0106
+15/08/10 20:58:28 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
+Total number of application attempts :1
+ApplicationAttempt-Id	                 State    AM-Container-Id	                       Tracking-URL
+appattempt_1437364567082_0106_000001   RUNNING	container_1437364567082_0106_01_000001 http://hadoopcluster79:8088/proxy/application_1437364567082_0106/
+```
+
+示例2：
+```
+$ yarn applicationattempt -status appattempt_1437364567082_0106_000001
+15/08/10 21:01:41 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
+Application Attempt Report : 
+	ApplicationAttempt-Id : appattempt_1437364567082_0106_000001
+	State : FINISHED
+	AMContainer : container_1437364567082_0106_01_000001
+	Tracking-URL : http://hadoopcluster79:8088/proxy/application_1437364567082_0106/jobhistory/job/job_1437364567082_0106
+	RPC Port : 51911
+	AM Host : hadoopcluster80
+	Diagnostics :
+```
+
 3、classpath
 
 - 使用语法：`yarn classpath` #打印需要得到Hadoop的jar和所需要的lib包路径
+
+示例
+```
+$ yarn classpath
+/home/hadoop/apache/hadoop-2.4.1/etc/hadoop:/home/hadoop/apache/hadoop-2.4.1/etc/hadoop:/home/hadoop/apache/hadoop-2.4.1/etc/hadoop:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/common/lib/*:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/common/*:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/hdfs:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/hdfs/lib/*:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/hdfs/*:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/yarn/lib/*:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/yarn/*:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/mapreduce/lib/*:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/mapreduce/*:/home/hadoop/apache/hadoop-2.4.1/contrib/capacity-scheduler/*.jar:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/yarn/*:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/yarn/lib/*
+```
 
 4、container
 
@@ -83,6 +138,53 @@ COMMAND COMMAND_OPTIONS #以下各节介绍了各种命令及其选项
 -help                            #帮助
 -list <Application Attempt Id>   #应用程序尝试的Containers列表
 -status <ContainerId>            #打印Container的状态
+```
+
+示例1：
+```
+[hadoop@hadoopcluster78 bin]$ yarn container -list appattempt_1437364567082_0106_01 
+15/08/10 20:45:45 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
+Total number of containers :25
+                  Container-Id	          Start Time	         Finish Time	               State	                Host	                            LOG-URL
+container_1437364567082_0106_01_000028	       1439210458659	                   0	             RUNNING	hadoopcluster83:37140	//hadoopcluster83:8042/node/containerlogs/container_1437364567082_0106_01_000028/hadoop
+container_1437364567082_0106_01_000016	       1439210314436	                   0	             RUNNING	hadoopcluster84:43818	//hadoopcluster84:8042/node/containerlogs/container_1437364567082_0106_01_000016/hadoop
+container_1437364567082_0106_01_000019	       1439210338598	                   0	             RUNNING	hadoopcluster83:37140	//hadoopcluster83:8042/node/containerlogs/container_1437364567082_0106_01_000019/hadoop
+container_1437364567082_0106_01_000004	       1439210314130	                   0	             RUNNING	hadoopcluster82:48622	//hadoopcluster82:8042/node/containerlogs/container_1437364567082_0106_01_000004/hadoop
+container_1437364567082_0106_01_000008	       1439210314130	                   0	             RUNNING	hadoopcluster82:48622	//hadoopcluster82:8042/node/containerlogs/container_1437364567082_0106_01_000008/hadoop
+container_1437364567082_0106_01_000031	       1439210718604	                   0	             RUNNING	hadoopcluster83:37140	//hadoopcluster83:8042/node/containerlogs/container_1437364567082_0106_01_000031/hadoop
+container_1437364567082_0106_01_000020	       1439210339601	                   0	             RUNNING	hadoopcluster83:37140	//hadoopcluster83:8042/node/containerlogs/container_1437364567082_0106_01_000020/hadoop
+container_1437364567082_0106_01_000005	       1439210314130	                   0	             RUNNING	hadoopcluster82:48622	//hadoopcluster82:8042/node/containerlogs/container_1437364567082_0106_01_000005/hadoop
+container_1437364567082_0106_01_000013	       1439210314435	                   0	             RUNNING	hadoopcluster84:43818	//hadoopcluster84:8042/node/containerlogs/container_1437364567082_0106_01_000013/hadoop
+container_1437364567082_0106_01_000022	       1439210368679	                   0	             RUNNING	hadoopcluster84:43818	//hadoopcluster84:8042/node/containerlogs/container_1437364567082_0106_01_000022/hadoop
+container_1437364567082_0106_01_000021	       1439210353626	                   0	             RUNNING	hadoopcluster83:37140	//hadoopcluster83:8042/node/containerlogs/container_1437364567082_0106_01_000021/hadoop
+container_1437364567082_0106_01_000014	       1439210314435	                   0	             RUNNING	hadoopcluster84:43818	//hadoopcluster84:8042/node/containerlogs/container_1437364567082_0106_01_000014/hadoop
+container_1437364567082_0106_01_000029	       1439210473726	                   0	             RUNNING	hadoopcluster80:42366	//hadoopcluster80:8042/node/containerlogs/container_1437364567082_0106_01_000029/hadoop
+container_1437364567082_0106_01_000006	       1439210314130	                   0	             RUNNING	hadoopcluster82:48622	//hadoopcluster82:8042/node/containerlogs/container_1437364567082_0106_01_000006/hadoop
+container_1437364567082_0106_01_000003	       1439210314129	                   0	             RUNNING	hadoopcluster82:48622	//hadoopcluster82:8042/node/containerlogs/container_1437364567082_0106_01_000003/hadoop
+container_1437364567082_0106_01_000015	       1439210314436	                   0	             RUNNING	hadoopcluster84:43818	//hadoopcluster84:8042/node/containerlogs/container_1437364567082_0106_01_000015/hadoop
+container_1437364567082_0106_01_000009	       1439210314130	                   0	             RUNNING	hadoopcluster82:48622	//hadoopcluster82:8042/node/containerlogs/container_1437364567082_0106_01_000009/hadoop
+container_1437364567082_0106_01_000030	       1439210708467	                   0	             RUNNING	hadoopcluster83:37140	//hadoopcluster83:8042/node/containerlogs/container_1437364567082_0106_01_000030/hadoop
+container_1437364567082_0106_01_000012	       1439210314435	                   0	             RUNNING	hadoopcluster84:43818	//hadoopcluster84:8042/node/containerlogs/container_1437364567082_0106_01_000012/hadoop
+container_1437364567082_0106_01_000027	       1439210444354	                   0	             RUNNING	hadoopcluster84:43818	//hadoopcluster84:8042/node/containerlogs/container_1437364567082_0106_01_000027/hadoop
+container_1437364567082_0106_01_000026	       1439210428514	                   0	             RUNNING	hadoopcluster83:37140	//hadoopcluster83:8042/node/containerlogs/container_1437364567082_0106_01_000026/hadoop
+container_1437364567082_0106_01_000017	       1439210314436	                   0	             RUNNING	hadoopcluster84:43818	//hadoopcluster84:8042/node/containerlogs/container_1437364567082_0106_01_000017/hadoop
+container_1437364567082_0106_01_000001	       1439210306902	                   0	             RUNNING	hadoopcluster80:42366	//hadoopcluster80:8042/node/containerlogs/container_1437364567082_0106_01_000001/hadoop
+container_1437364567082_0106_01_000002	       1439210314129	                   0	             RUNNING	hadoopcluster82:48622	//hadoopcluster82:8042/node/containerlogs/container_1437364567082_0106_01_000002/hadoop
+container_1437364567082_0106_01_000025	       1439210414171	                   0	             RUNNING	hadoopcluster83:37140	//hadoopcluster83:8042/node/containerlogs/container_1437364567082_0106_01_000025/hadoop
+```
+
+示例2：
+```
+[hadoop@hadoopcluster78 bin]$ yarn container -status container_1437364567082_0105_01_000020 
+15/08/10 20:28:00 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
+Container Report : 
+	Container-Id : container_1437364567082_0105_01_000020
+	Start-Time : 1439208779842
+	Finish-Time : 0
+	State : RUNNING
+	LOG-URL : //hadoopcluster83:8042/node/containerlogs/container_1437364567082_0105_01_000020/hadoop
+	Host : hadoopcluster83:37140
+	Diagnostics : null
 ```
 
 5、jar
@@ -100,6 +202,37 @@ COMMAND COMMAND_OPTIONS #以下各节介绍了各种命令及其选项
 -nodeAddress <NodeAddress>         #节点地址的格式：nodename:port （端口是配置文件中:yarn.nodemanager.webapp.address参数指定）
 ```
 
+示例：
+```
+$ yarn logs -applicationId application_1437364567082_0104  -appOwner hadoop
+15/08/10 17:59:19 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
+
+
+Container: container_1437364567082_0104_01_000003 on hadoopcluster82_48622
+============================================================================
+LogType: stderr
+LogLength: 0
+Log Contents:
+
+LogType: stdout
+LogLength: 0
+Log Contents:
+
+LogType: syslog
+LogLength: 3673
+Log Contents:
+2015-08-10 17:24:01,565 WARN [main] org.apache.hadoop.conf.Configuration: job.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.retry.interval;  Ignoring.
+2015-08-10 17:24:01,580 WARN [main] org.apache.hadoop.conf.Configuration: job.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.attempts;  Ignoring.
+。。。。。。此处省略N万个字符
+
+
+// 下面的命令，根据APP的全部者查看LOG日志，由于application_1437364567082_0104任务我是用hadoop用户启动的，因此打印的是以下信息：
+$ yarn logs -applicationId application_1437364567082_0104  -appOwner root
+15/08/10 17:59:25 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
+Logs not available at /tmp/logs/root/logs/application_1437364567082_0104
+Log aggregation has not completed or is not enabled.
+```
+
 7、node
 - 使用语法：`yarn node [options]` #打印节点报告
 ```
@@ -107,6 +240,48 @@ COMMAND COMMAND_OPTIONS #以下各节介绍了各种命令及其选项
 -list             #列出所有RUNNING状态的节点。支持-states选项过滤指定的状态，节点的状态包含：NEW，RUNNING，UNHEALTHY，DECOMMISSIONED，LOST，REBOOTED。支持--all显示所有的节点。
 -states <States> #和-list配合使用，用逗号分隔节点状态，只显示这些状态的节点信息。
 -status <NodeId> #打印指定节点的状态。
+```
+
+示例1：
+```
+[hadoop@hadoopcluster78 bin]$ ./yarn node -list -all
+15/08/10 17:34:17 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
+Total Nodes:4
+         Node-Id	     Node-State	Node-Http-Address	Number-of-Running-Containers
+hadoopcluster82:48622	        RUNNING	hadoopcluster82:8042	                           0
+hadoopcluster84:43818	        RUNNING	hadoopcluster84:8042	                           0
+hadoopcluster83:37140	        RUNNING	hadoopcluster83:8042	                           0
+hadoopcluster80:42366	        RUNNING	hadoopcluster80:8042	                           0
+```
+
+示例2：
+```
+[hadoop@hadoopcluster78 bin]$ ./yarn node -list -states RUNNING
+15/08/10 17:39:55 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
+Total Nodes:4
+         Node-Id	     Node-State	Node-Http-Address	Number-of-Running-Containers
+hadoopcluster82:48622	        RUNNING	hadoopcluster82:8042	                           0
+hadoopcluster84:43818	        RUNNING	hadoopcluster84:8042	                           0
+hadoopcluster83:37140	        RUNNING	hadoopcluster83:8042	                           0
+hadoopcluster80:42366	        RUNNING	hadoopcluster80:8042	                           0
+```
+
+示例3：
+```
+[hadoop@hadoopcluster78 bin]$ ./yarn node -status hadoopcluster82:48622
+15/08/10 17:52:52 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
+Node Report : 
+	Node-Id : hadoopcluster82:48622
+	Rack : /default-rack
+	Node-State : RUNNING
+	Node-Http-Address : hadoopcluster82:8042
+	Last-Health-Update : 星期一 10/八月/15 05:52:09:601CST
+	Health-Report : 
+	Containers : 0
+	Memory-Used : 0MB
+	Memory-Capacity : 10240MB
+	CPU-Used : 0 vcores
+	CPU-Capacity : 8 vcores
 ```
 
 8、queue
@@ -125,6 +300,27 @@ COMMAND COMMAND_OPTIONS #以下各节介绍了各种命令及其选项
 ```
 -getlevel <host:httpport> <classname>            #打印运行在<host:port>的守护进程的日志级别。这个命令内部会连接http://<host:port>/logLevel?log=<name>
 -setlevel <host:httpport> <classname> <level>    #设置运行在<host:port>的守护进程的日志级别。这个命令内部会连接http://<host:port>/logLevel?log=<name>
+```
+
+示例1：
+```
+# hadoop daemonlog -getlevel hadoopcluster82:50075 org.apache.hadoop.hdfs.server.datanode.DataNode
+Connecting to http://hadoopcluster82:50075/logLevel?log=org.apache.hadoop.hdfs.server.datanode.DataNode
+Submitted Log Name: org.apache.hadoop.hdfs.server.datanode.DataNode
+Log Class: org.apache.commons.logging.impl.Log4JLogger
+Effective level: INFO
+
+# yarn daemonlog -getlevel hadoopcluster79:8088 org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppImpl
+Connecting to http://hadoopcluster79:8088/logLevel?log=org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppImpl
+Submitted Log Name: org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppImpl
+Log Class: org.apache.commons.logging.impl.Log4JLogger
+Effective level: INFO
+
+# yarn daemonlog -getlevel hadoopcluster78:19888 org.apache.hadoop.mapreduce.v2.hs.JobHistory
+Connecting to http://hadoopcluster78:19888/logLevel?log=org.apache.hadoop.mapreduce.v2.hs.JobHistory
+Submitted Log Name: org.apache.hadoop.mapreduce.v2.hs.JobHistory
+Log Class: org.apache.commons.logging.impl.Log4JLogger
+Effective level: INFO
 ```
 
 10、nodemanager
@@ -195,6 +391,20 @@ yarn rmadmin [-refreshQueues]
 16、timelineserver
 
 - 使用语法：`yarn timelineserver` #启动timelineserver
+
+17、version
+
+- 使用语法: `yarn version` # 打印hadoop的版本。
+
+```
+$ ./yarn version
+Hadoop 2.8.5
+Subversion https://git-wip-us.apache.org/repos/asf/hadoop.git -r 0b8464d75227fcee2c6e7f2410377b3d53d3d5f8
+Compiled by jdu on 2018-09-10T03:32Z
+Compiled with protoc 2.5.0
+From source with checksum 9942ca5c745417c14e318835f420733
+This command was run using /app/hadoop-2.8.5/share/hadoop/common/hadoop-common-2.8.5.jar
+```
 
 参考：
 - https://hadoop.apache.org/docs/r2.7.7/hadoop-yarn/hadoop-yarn-site/YarnCommands.html
@@ -332,3 +542,4 @@ Queue Name : default
 参考： 
 - https://zhuanlan.zhihu.com/p/517237014
 - https://hadoop.apache.org/docs/r3.3.4/hadoop-yarn/hadoop-yarn-site/YarnCommands.html
+- http://www.javashuo.com/article/p-klvnbfyh-hb.html
