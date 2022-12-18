@@ -568,6 +568,15 @@ export YARN_PID_DIR=${HADOOP_HOME}/pids
         <value>node02</value>
     </property>
     
+    <property>
+      <name>yarn.resourcemanager.webapp.address.rm1</name>
+      <value>node01:8088</value>
+    </property>
+    <property>
+      <name>yarn.resourcemanager.webapp.address.rm2</name>
+      <value>node02:8088</value>
+    </property>	
+	
     <!--指定yarn的老大 resoucemanager的地址-->
         <name>yarn.resourcemanager.hostname</name>
         <value>node01</value>               
