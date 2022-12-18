@@ -145,7 +145,7 @@ $ yarn classpath
 [hadoop@hadoopcluster78 bin]$ yarn container -list appattempt_1437364567082_0106_01 
 15/08/10 20:45:45 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
 Total number of containers :25
-                  Container-Id	          Start Time	         Finish Time	               State	                Host	                            LOG-URL
+Container-Id                                   Start Time                         Finish Time        State      Host                                               LOG-URL
 container_1437364567082_0106_01_000028	       1439210458659	                   0	             RUNNING	hadoopcluster83:37140	//hadoopcluster83:8042/node/containerlogs/container_1437364567082_0106_01_000028/hadoop
 container_1437364567082_0106_01_000016	       1439210314436	                   0	             RUNNING	hadoopcluster84:43818	//hadoopcluster84:8042/node/containerlogs/container_1437364567082_0106_01_000016/hadoop
 container_1437364567082_0106_01_000019	       1439210338598	                   0	             RUNNING	hadoopcluster83:37140	//hadoopcluster83:8042/node/containerlogs/container_1437364567082_0106_01_000019/hadoop
