@@ -41,6 +41,15 @@ GENERIC_OPTIONS         #多个命令支持的一组通用选项
 COMMAND COMMAND_OPTIONS #以下各节介绍了各种命令及其选项
 ```
 
+| GENERIC_OPTIONS | Description |
+|-----------------|-------------|
+| -archives `<comma separated list of archives>` | 用逗号分隔计算中未归档的文件。 仅仅针对JOB。
+| -conf `<configuration file>` | 制定应用程序的配置文件。
+| -D `<property>=<value>` | 使用给定的属性值。
+| -files `<comma separated list of files>` | 用逗号分隔的文件,拷贝到Map reduce机器，仅仅针对JOB
+| -jt `<local>` or `<resourcemanager:port>` | 指定一个ResourceManager. 仅仅针对JOB。
+| -libjars `<comma seperated list of jars>` | 将用逗号分隔的jar路径包含到classpath中去，仅仅针对JOB。
+
 # 命令详解
 
 1、application
