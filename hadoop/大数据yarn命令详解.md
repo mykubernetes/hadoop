@@ -267,7 +267,8 @@ yarn container -status container_1612577921195_0001_01_000001
 
 5.1、yarn node 查看节点状态
 ```
-# yarn node -list -all
+# yarn node -list
+
 # yarn node -list -all
 2021-10-20 10:15:02,236 INFO client.RMProxy: Connecting to ResourceManager at hadoop102/192.168.10.102:8032
 Total Nodes:3
