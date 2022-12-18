@@ -81,7 +81,8 @@ job4 分3+1.5(差5-4.5=0.5)
 结束(分到没有空闲资源就结束了)
 
 # 四、实际生产
-```
+
+```xml
 <configuration>
   <property>
     <name>yarn.scheduler.capacity.maximum-applications</name>
