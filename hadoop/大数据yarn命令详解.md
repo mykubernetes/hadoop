@@ -308,14 +308,16 @@ Queue Name : default
 | 命令                              | 命令解释                                                     |
 | --------------------------------- | ------------------------------------------------------------ |
 | yarn node --list                  | 查看各个node上的任务数                                       |
-| yarn application                  | 列出所有的application信息                                    |
+| yarn application --list           | 列出所有的application信息                                    |
 | yarn application -kill id         | 杀死一个application，需要指定一个application ID              |
 | yarn node -status  NodeId        | 查看nodemanager节点的具体信息                                |
-| yarn logs `<application id>`        | 查看任务日志信息                                             |
+| yarn logs applicationId `<application id>`        | 查看任务日志信息                            |
+| yarn logs -applicationId `<application id>` -containerId `<container id>`  | 查看某个容器的日志                        |
 | yarn application -list -appStates | 状态过滤（all，new，new_saving，submitted，accepted，running，finished，failed，killed） |
 | yarn container -list              | 查看容器                                                     |
 | yarn rmadmin                      | 更新配置，加载队列配置（yarn rmadmin -refreshQueues）        |
-| yarn queue -status                | 查看队列，打印队列信息                                       |
+| yarn queue -status [default]      | 查看队列，打印队列信息                                       |
+| yarn rmadmin -refreshQueues       | 更新队列配置                                                 |
 
 参考： 
 - https://zhuanlan.zhihu.com/p/517237014
