@@ -179,7 +179,7 @@ $ yarn classpath
 
 示例1：
 ```
-[hadoop@hadoopcluster78 bin]$ yarn container -list appattempt_1437364567082_0106_01 
+$ yarn container -list appattempt_1437364567082_0106_01 
 15/08/10 20:45:45 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
 Total number of containers :25
 Container-Id                                   Start Time                         Finish Time        State      Host                    LOG-URL
@@ -212,7 +212,7 @@ container_1437364567082_0106_01_000025	       1439210414171	                   0
 
 示例2：
 ```
-[hadoop@hadoopcluster78 bin]$ yarn container -status container_1437364567082_0105_01_000020 
+$ yarn container -status container_1437364567082_0105_01_000020 
 15/08/10 20:28:00 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
 Container Report : 
 	Container-Id : container_1437364567082_0105_01_000020
@@ -286,31 +286,31 @@ $ yarn logs -applicationId application_1437364567082_0104 -containerId container
 
 示例1：
 ```
-[hadoop@hadoopcluster78 bin]$ ./yarn node -list -all
+$ ./yarn node -list -all
 15/08/10 17:34:17 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
 Total Nodes:4
-         Node-Id	     Node-State	Node-Http-Address	Number-of-Running-Containers
-hadoopcluster82:48622	        RUNNING	hadoopcluster82:8042	                           0
-hadoopcluster84:43818	        RUNNING	hadoopcluster84:8042	                           0
-hadoopcluster83:37140	        RUNNING	hadoopcluster83:8042	                           0
-hadoopcluster80:42366	        RUNNING	hadoopcluster80:8042	                           0
+              Node-Id           Node-State     Node-Http-Address        Number-of-Running-Containers
+hadoopcluster82:48622	        RUNNING     hadoopcluster82:8042	                           0
+hadoopcluster84:43818	        RUNNING     hadoopcluster84:8042	                           0
+hadoopcluster83:37140	        RUNNING     hadoopcluster83:8042	                           0
+hadoopcluster80:42366	        RUNNING     hadoopcluster80:8042	                           0
 ```
 
 示例2：
 ```
-[hadoop@hadoopcluster78 bin]$ ./yarn node -list -states RUNNING
+$ ./yarn node -list -states RUNNING
 15/08/10 17:39:55 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
 Total Nodes:4
-         Node-Id	     Node-State	Node-Http-Address	Number-of-Running-Containers
+              Node-Id        Node-State	   Node-Http-Address	Number-of-Running-Containers
 hadoopcluster82:48622	        RUNNING	hadoopcluster82:8042	                           0
-hadoopcluster84:43818	        RUNNING	hadoopcluster84:8042	                           0
+hadoopcluster84:43818	        RUNNING hadoopcluster84:8042	                           0
 hadoopcluster83:37140	        RUNNING	hadoopcluster83:8042	                           0
 hadoopcluster80:42366	        RUNNING	hadoopcluster80:8042	                           0
 ```
 
 示例3：
 ```
-[hadoop@hadoopcluster78 bin]$ ./yarn node -status hadoopcluster82:48622
+$ ./yarn node -status hadoopcluster82:48622
 15/08/10 17:52:52 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
 Node Report : 
 	Node-Id : hadoopcluster82:48622
@@ -332,6 +332,21 @@ Node Report :
 ```
 -help     #帮助
 -status  #<QueueName>    打印队列的状态
+```
+
+示例：
+```
+$ ./yarn queue -status default
+Queue Information : 
+Queue Name : default
+	State : RUNNING
+	Capacity : 100.0%
+	Current Capacity : 39.6%
+	Maximum Capacity : 100.0%
+	Default Node Label expression : <DEFAULT_PARTITION>
+	Accessible Node Labels : *
+	Preemption : disabled
+	Intra-queue Preemption : disabled
 ```
 
 9、daemonlog
