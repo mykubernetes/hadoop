@@ -239,7 +239,7 @@ Container Report :
 -nodeAddress <NodeAddress>         #节点地址的格式：nodename:port （端口是配置文件中:yarn.nodemanager.webapp.address参数指定）
 ```
 
-示例：
+示例1：
 ```
 $ yarn logs -applicationId application_1437364567082_0104  -appOwner hadoop
 15/08/10 17:59:19 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
@@ -268,6 +268,11 @@ $ yarn logs -applicationId application_1437364567082_0104  -appOwner root
 15/08/10 17:59:25 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
 Logs not available at /tmp/logs/root/logs/application_1437364567082_0104
 Log aggregation has not completed or is not enabled.
+```
+
+示例2：查看container日志
+```
+$ yarn logs -applicationId application_1437364567082_0104 -containerId container_1437364567082_0106_01_000030
 ```
 
 7、node
