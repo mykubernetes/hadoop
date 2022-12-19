@@ -77,7 +77,7 @@ Most commands print help when invoked w/o parameters.
 ```
 
 6.`copyFromLocal`类似于put命令，和put命令不同的是，拷贝的源地址必须是本地文件地址
-- 用法：`hdfs dfs -copyFromLocal <localsrc> URI
+- 用法：`hdfs dfs -copyFromLocal <localsrc> URI`
 - -f  参数选项：当拷贝的目标文件存在时，进行覆盖
 
 ```
@@ -258,19 +258,6 @@ copyFromLocal: `/test.txt': File exists
 ```
 # hdfs dfs -getmerge -nl /src /opt/output.txt
 # hdfs dfs -getmerge -nl /src/file1.txt /src/file2.txt /output.txt
-```
-
-29.`test`判断文件信息
-- 用法：`hadoop fs -test -[defsz] URI`　　　　
-- -d 参数选项：如果路径是一个目录，返回0
-- -e 参数选项：如果路径已经存在，返回0
-- -f 参数选项：如果路径是一个文件，返回0
-- -s 参数选项：如果路径不是空，返回0
-- -z 参数选项：如果文件长度为0，返回0
-
-URI 参数选项：资源地址，可以是文件也可以是目录。
-```
-# hdfs dfs <em id="__mceDel">-test -e filename</em>
 ```
 
 # 三.getconf （重要）
