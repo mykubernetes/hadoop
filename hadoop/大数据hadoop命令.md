@@ -156,7 +156,7 @@ distributed copy的缩写（望文生义),主要用于集群内/集群之间 复
 -delete        #删除目标文件存在，但不存在source中的文件
 ```
 
-六、fs
+# 六、fs
 
 与hdfs dfs同用
 
