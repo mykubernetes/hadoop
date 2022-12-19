@@ -432,6 +432,7 @@ This command was run using /app/hadoop-2.8.5/share/hadoop/common/hadoop-common-2
 使用语法：
 - `yarn daemonlog -getlevel <host:httpport> <classname>`
 - `yarn daemonlog -setlevel <host:httpport> <classname> <level>`
+
 ```
 -getlevel <host:httpport> <classname>            #打印运行在<host:port>的守护进程的日志级别。这个命令内部会连接http://<host:port>/logLevel?log=<name>
 -setlevel <host:httpport> <classname> <level>    #设置运行在<host:port>的守护进程的日志级别。这个命令内部会连接http://<host:port>/logLevel?log=<name>
@@ -458,20 +459,64 @@ Log Class: org.apache.commons.logging.impl.Log4JLogger
 Effective level: INFO
 ```
 
+示例2：查看RMAppImpl的日志级别
+```
+yarn daemonlog -getlevel hadoop2:8088 org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppImpl 
+```
+
+示例3：设置RMAppImpl的日志级别
+```
+yarn daemonlog -setlevel hadoop2:8088 org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppImpl DEBUG
+```
+
 2、nodemanager
 
 - 使用语法：`yarn nodemanager` #启动nodemanager
+
+示例：启动某个节点的nodemanager
+```
+yarn nodemanager
+```
 
 3、proxyserver
 
 - 使用语法：`yarn proxyserver` #启动web proxy server
 
+示例：启动某个节点的proxyserver
+```
+yarn proxyserver
+```
+
+如果启动 `YARN ProxyServer` 服务，需要在`yarn-site.xml`文件中配置如下属性：
+```
+<property>
+	<name>yarn.web-proxy.address</name>
+	<value>hadoop3:8089</value>
+</property>
+```
+
 4、resourcemanager
 
 - 使用语法：`yarn resourcemanager [-format-state-store]` #启动ResourceManager
+
+示例1： 启动某个节点的resourcemanager
 ```
--format-state-store     # RMStateStore的格式. 如果过去的应用程序不再需要，则清理RMStateStore， RMStateStore仅仅在ResourceManager没有运行的时候，才运行RMStateStore
+yarn resourcemanager 
 ```
+
+示例2：格式化resourcemanager的RMStateStore
+```
+yarn resourcemanager -format-state-store
+```
+-  清除 RMStateStore，如果不再需要以前的应用程序，则将非常有用。只有在 ResourceManager 没有运行时才能使用此命令。
+
+
+示例3：删除RMStateStore中的Application
+```
+yarn resourcemanager -remove-application-from-state-store <appId> 
+```
+- 从 RMStateStore 删除该应用程序，只有在 ResourceManager 没有运行时才能使用此命令。
+
 
 5、rmadmin
 
@@ -511,11 +556,71 @@ yarn rmadmin [-refreshQueues]
 -help [cmd]                                         #显示指定命令的帮助，如果没有指定，则显示命令的帮助。
 ```
 
+示例1：重新加载mapred-queues配置文件
+- 重新加载队列的 ACL，状态和调度程序特定的属性，ResourceManager 将重新加载 mapred-queues 配置文件。
+```
+yarn rmadmin -refreshQueues
+```
+
+示例2：刷新ResourceManager的主机信息
+```
+yarn rmadmin -refreshNodes
+```
+
+示例3：在ResourceManager上刷新NodeManager的资源
+```
+yarn rmadmin -refreshNodesResources
+```
+
+示例4：刷新超级用户代理组映射
+```
+yarn rmadmin -refreshSuperUserGroupsConfiguration
+```
+
+示例5：刷新ACL以管理ResourceManager
+```
+yarn rmadmin -refreshAdminAcls
+```
+
+示例6：获取ResourceManager服务的Active/Standby状态
+
+获取所有RM状态
+```
+yarn rmadmin -getAllServiceState
+```
+
+获取rm1的状态
+```
+yarn rmadmin -getServiceState rm1
+```
+
+获取rm2的状态
+```
+yarn rmadmin -getServiceState rm2
+```
+
+示例7：ResourceManager服务执行健康检查
+- 请求 ResourceManager 服务执行健康检查，如果检查失败，RMAdmin 工具将使用非零退出码退出。
+```
+yarn rmadmin -checkHealth rm1
+yarn rmadmin -checkHealth rm2
+```
+
 6、scmadmin
 使用语法：`yarn scmadmin [options]` #运行共享缓存管理客户端
 ```
 -help              #查看帮助
 -runCleanerTask    #运行清理任务
+```
+
+示例：执行清理任务
+```
+yarn scmadmin -runCleanerTask
+```
+
+先启动 SCM 服务（SharedCacheManager服务）
+```
+yarn-daemon.sh start sharedcachemanager
 ```
 
 7、 sharedcachemanager
@@ -527,7 +632,11 @@ yarn rmadmin [-refreshQueues]
 
 - 使用语法：`yarn timelineserver` #启动timelineserver
 
-
+示例：启动TimelineServer服务
+- 启动完成以后，提供 WEB UI 端口号：8188，访问地址：http://hadoop2:8188
+```
+yarn-daemon.sh start timelineserver
+```
 
 参考：
 - https://hadoop.apache.org/docs/r2.7.7/hadoop-yarn/hadoop-yarn-site/YarnCommands.html
