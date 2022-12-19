@@ -128,7 +128,7 @@ Application Report :
 
 2、applicationattempt
 
-- 使用语法：`yarn applicationattempt [options]` #打印应用程序尝试的报告
+- 使用语法：`yarn applicationattempt [options]` #打印应用程序尝试运行的任务
 ```
 -help                    #帮助
 -list <ApplicationId>    #获取到应用程序尝试的列表，其返回值ApplicationAttempt-Id 等于 <Application Attempt Id>
