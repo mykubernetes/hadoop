@@ -481,6 +481,20 @@ hdfs dfsadmin -metasave /hbase
 ```
 - 我们获取某个目录的详细信息，允许成功后会有以下输出，并在“/var/log/hadoop-hdfs/”目录中创建一个文件，该文件名称和咱们这里输入的path名称一致，即“hbase”
 
+15>.-refreshNodes
+- 重新读取hosts和exclude文件，使新的节点或需要退出集群的节点能够被NameNode重新识别。这个命令在新增节点或注销节点时用到。
+```
+hdfs dfsadmin -refreshNodes
+```
+
+16.finalizeUpgrade
+- 终结HDFS的升级操作。DataNode删除前一个版本的工作目录，之后NameNode也这样做。
+
+17.upgradeProgress
+- status| details | force：请求当前系统的升级状态 | 升级状态的细节| 强制升级操作
+
+
+
 # 五.fsck （重要）
 
 ```
