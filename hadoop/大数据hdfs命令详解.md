@@ -38,7 +38,7 @@ Usage: hdfs [--config confdir] COMMAND
 Most commands print help when invoked w/o parameters.
 ```
 
-# 二.hdfs与dfs结合使用的案例
+# 二.dfs
 
 - 其实`hdfs`和`dfs`结合使用的话实际上调用的是`hadoop fs`这个命令。
 ```
