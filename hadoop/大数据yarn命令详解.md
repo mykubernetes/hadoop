@@ -67,7 +67,7 @@ COMMAND COMMAND_OPTIONS #以下各节介绍了各种命令及其选项
 -queue <Queue Name>             #与 movetoqueue 命令一起使用，指定移动到哪个 queue。
 ```
 
-示例1：
+示例1：查看类型为ACCEPTED的Application列表
 ```
 $ ./yarn application -list -appStates ACCEPTED
 15/08/10 11:48:43 INFO client.RMProxy: Connecting to ResourceManager at hadoop1/10.0.1.41:8032
@@ -76,7 +76,8 @@ Application-Id	                Application-Name Application-Type User	 Queue	 St
 application_1438998625140_1703	MAC_STATUS	 MAPREDUCE	  hduser default ACCEPTED UNDEFINED   0%       N/A
 ```
 
-示例2:
+示例2: 查看所有的Application
+- 仅显示状态为 SUBMITTED、ACCEPTED、RUNNING 应用。
 ```
 $ ./yarn application -list
 15/08/10 11:43:01 INFO client.RMProxy: Connecting to ResourceManager at hadoop1/10.0.1.41:8032
@@ -85,7 +86,7 @@ Application-Id	               Application-Name	Application-Type  User   Queue   
 application_1438998625140_1701 MAC_STATUS	MAPREDUCE	  hduser default ACCEPTED UNDEFINED	0%	 N/A
 ```
 
-示例3：
+示例3：杀死某一个Application
 ```
 $ ./yarn application -kill application_1438998625140_1705
 15/08/10 11:57:41 INFO client.RMProxy: Connecting to ResourceManager at hadoop1/10.0.1.41:8032
@@ -93,13 +94,13 @@ Killing application application_1438998625140_1705
 15/08/10 11:57:42 INFO impl.YarnClientImpl: Killed application application_1438998625140_1705
 ``` 
 
-示例4：
+示例4： 移动一个Application到default队列
 ```
-# 移动application 到其他队列
-$ ./yarn  application -movetoqueue application_1479736113445_2577 -queue other
+$ ./yarn application -movetoqueue application_1479736113445_2577 -queue default
 ```
+**注意**： 如果使用 FairScheduler 时，使用此命令移动应用程序从 A 队列到 B 队列时，出于公平考虑，它在 A 队列所分配的资源会在 B 队列中重新资源分配。如果加入被移动的应用程序的资源超出 B 队列的 maxRunningApps 或者 maxResources 限制，会导致移动失败。
 
-示例5：
+示例5：查看某一个Application的统计报告
 ```
 $ ./yarn application -status application_1670913878726_0009
 Application Report : 
@@ -126,6 +127,12 @@ Application Report :
 	AM container Node Label Expression : <DEFAULT_PARTITION>
 ```
 
+示例5： 修改一个Application的优先级
+```
+yarn application -updatePriority 0 -appId application_1573364048641_0006
+```
+**注**： 整数值越高则优先级越高
+
 2、applicationattempt
 
 - 使用语法：`yarn applicationattempt [options]` #打印应用程序尝试运行的任务
@@ -135,7 +142,7 @@ Application Report :
 -status <Application Attempt Id>    #打印应用程序尝试的状态。
 ```
 
-示例1：
+示例1：查看某个应用所有的attempt
 ```
 $ yarn applicationattempt -list application_1437364567082_0106
 15/08/10 20:58:28 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
@@ -144,7 +151,7 @@ ApplicationAttempt-Id	                 State    AM-Container-Id	                
 appattempt_1437364567082_0106_000001   RUNNING	container_1437364567082_0106_01_000001 http://hadoopcluster79:8088/proxy/application_1437364567082_0106/
 ```
 
-示例2：
+示例2：查看具体某一个applicationattemp的报告
 ```
 $ yarn applicationattempt -status appattempt_1437364567082_0106_000001
 15/08/10 21:01:41 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
@@ -158,11 +165,17 @@ Application Attempt Report :
 	Diagnostics :
 ```
 
+示例3：标记applicationattempt失败
+```
+yarn applicationattempt -fail appattempt_1573364048641_0004_000001
+```
+
+
 3、classpath
 
 - 使用语法：`yarn classpath` #打印需要得到Hadoop的jar和所需要的lib包路径
 
-示例
+示例：获取 yarn 的类路径
 ```
 $ yarn classpath
 /home/hadoop/apache/hadoop-2.4.1/etc/hadoop:/home/hadoop/apache/hadoop-2.4.1/etc/hadoop:/home/hadoop/apache/hadoop-2.4.1/etc/hadoop:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/common/lib/*:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/common/*:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/hdfs:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/hdfs/lib/*:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/hdfs/*:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/yarn/lib/*:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/yarn/*:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/mapreduce/lib/*:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/mapreduce/*:/home/hadoop/apache/hadoop-2.4.1/contrib/capacity-scheduler/*.jar:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/yarn/*:/home/hadoop/apache/hadoop-2.4.1/share/hadoop/yarn/lib/*
@@ -177,7 +190,7 @@ $ yarn classpath
 -status <ContainerId>            #打印Container的状态
 ```
 
-示例1：
+示例1：查看某一个applicationattempt下所有的container
 ```
 $ yarn container -list appattempt_1437364567082_0106_01 
 15/08/10 20:45:45 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
@@ -209,6 +222,7 @@ container_1437364567082_0106_01_000001	       1439210306902	                   0
 container_1437364567082_0106_01_000002	       1439210314129	                   0	             RUNNING	hadoopcluster82:48622	//hadoopcluster82:8042/node/containerlogs/container_1437364567082_0106_01_000002/hadoop
 container_1437364567082_0106_01_000025	       1439210414171	                   0	             RUNNING	hadoopcluster83:37140	//hadoopcluster83:8042/node/containerlogs/container_1437364567082_0106_01_000025/hadoop
 ```
+**注**： 应用在 YARN 时，才能够查看出 Contanier 容器信息。
 
 示例2：
 ```
@@ -239,7 +253,12 @@ Container Report :
 -nodeAddress <NodeAddress>         #节点地址的格式：nodename:port （端口是配置文件中:yarn.nodemanager.webapp.address参数指定）
 ```
 
-示例1：
+示例1： 查看应用程序所有的logs
+```
+yarn logs -applicationId application_1614179148030_0001
+```
+
+示例2：查看hadoop用户运行应用程序的logs
 ```
 $ yarn logs -applicationId application_1437364567082_0104  -appOwner hadoop
 15/08/10 17:59:19 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
@@ -270,7 +289,7 @@ Logs not available at /tmp/logs/root/logs/application_1437364567082_0104
 Log aggregation has not completed or is not enabled.
 ```
 
-示例2：查看container日志
+示例3：查看应用程序某个container运行所在节点的log
 ```
 $ yarn logs -applicationId application_1437364567082_0104 -containerId container_1437364567082_0106_01_000030
 ```
@@ -284,7 +303,7 @@ $ yarn logs -applicationId application_1437364567082_0104 -containerId container
 -status <NodeId> #打印指定节点的状态。
 ```
 
-示例1：
+示例1：查看yarn所有的节点
 ```
 $ ./yarn node -list -all
 15/08/10 17:34:17 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
@@ -296,7 +315,7 @@ hadoopcluster83:37140	        RUNNING     hadoopcluster83:8042	                 
 hadoopcluster80:42366	        RUNNING     hadoopcluster80:8042	                           0
 ```
 
-示例2：
+示例2：查看yarn所有正在运行的节点
 ```
 $ ./yarn node -list -states RUNNING
 15/08/10 17:39:55 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
@@ -308,7 +327,7 @@ hadoopcluster83:37140	        RUNNING	hadoopcluster83:8042	                     
 hadoopcluster80:42366	        RUNNING	hadoopcluster80:8042	                           0
 ```
 
-示例3：
+示例3：查看yarn某一个节点的报告
 ```
 $ ./yarn node -status hadoopcluster82:48622
 15/08/10 17:52:52 INFO client.RMProxy: Connecting to ResourceManager at hadoopcluster79/10.0.1.79:8032
@@ -324,6 +343,41 @@ Node Report :
 	Memory-Capacity : 10240MB
 	CPU-Used : 0 vcores
 	CPU-Capacity : 8 vcores
+```
+
+示例4：查看yarn所有节点的详情
+```
+$ ./yarn node -list -showDetails
+Total Nodes:4
+         Node-Id	     Node-State	Node-Http-Address	Number-of-Running-Containers
+    node03:45454	        RUNNING	      node03:8042	                          11
+Detailed Node Information :
+	Configured Resources : <memory:24576, vCores:8>
+	Allocated Resources : <memory:14336, vCores:11>
+	Resource Utilization by Node : PMem:14456 MB, VMem:14456 MB, VCores:0.72951365
+	Resource Utilization by Containers : PMem:0 MB, VMem:0 MB, VCores:0.0
+	Node-Labels : 
+    node05:45454	        RUNNING	      node05:8042	                           2
+Detailed Node Information :
+	Configured Resources : <memory:24576, vCores:8>
+	Allocated Resources : <memory:6144, vCores:2>
+	Resource Utilization by Node : PMem:14614 MB, VMem:14614 MB, VCores:1.1329557
+	Resource Utilization by Containers : PMem:0 MB, VMem:0 MB, VCores:0.0
+	Node-Labels : 
+    node01:45454	        RUNNING	      node01:8042	                           4
+Detailed Node Information :
+	Configured Resources : <memory:24576, vCores:8>
+	Allocated Resources : <memory:5632, vCores:4>
+	Resource Utilization by Node : PMem:18068 MB, VMem:18068 MB, VCores:1.5622919
+	Resource Utilization by Containers : PMem:0 MB, VMem:0 MB, VCores:0.0
+	Node-Labels : 
+    node04:45454	        RUNNING	      node04:8042	                           7
+Detailed Node Information :
+	Configured Resources : <memory:24576, vCores:8>
+	Allocated Resources : <memory:12800, vCores:7>
+	Resource Utilization by Node : PMem:14668 MB, VMem:14668 MB, VCores:1.005996
+	Resource Utilization by Containers : PMem:0 MB, VMem:0 MB, VCores:0.0
+	Node-Labels :
 ```
 
 8、queue
@@ -600,3 +654,4 @@ Queue Name : default
 - https://zhuanlan.zhihu.com/p/517237014
 - https://hadoop.apache.org/docs/r3.3.4/hadoop-yarn/hadoop-yarn-site/YarnCommands.html
 - http://www.javashuo.com/article/p-klvnbfyh-hb.html
+- https://blog.csdn.net/weixin_44758876/article/details/122872995
