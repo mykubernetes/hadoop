@@ -52,6 +52,9 @@ COMMAND COMMAND_OPTIONS #以下各节介绍了各种命令及其选项
 
 # 命令详解
 
+## 用户命令
+- 用户命令主要包括对`Application`、`ApplicationAttempt`、`Classpath`、`Container`、`Jar`、`Logs`、`Node`、`Queue`和`Version`的使用。
+
 1、application
 
 - 使用语法：`yarn application [options]` #打印报告，申请和杀死任务
@@ -242,6 +245,11 @@ Container Report :
 
 - 使用语法：`yarn jar <jar> [mainClass] args...` #运行jar文件，用户可以将写好的YARN代码打包成jar文件，用这个命令去运行它。
 
+示例: 使用 yarn jar 提交运行 MapReduce 应用
+```
+yarn jar share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.1.jar wordcount 
+```
+
 6、logs
 
 - 使用语法：`yarn logs -applicationId <application ID> [options]` #转存container的日志。
@@ -403,7 +411,23 @@ Queue Name : default
 	Intra-queue Preemption : disabled
 ```
 
-9、daemonlog
+9、version
+
+- 使用语法: `yarn version` # 打印hadoop的版本。
+```
+$ ./yarn version
+Hadoop 2.8.5
+Subversion https://git-wip-us.apache.org/repos/asf/hadoop.git -r 0b8464d75227fcee2c6e7f2410377b3d53d3d5f8
+Compiled by jdu on 2018-09-10T03:32Z
+Compiled with protoc 2.5.0
+From source with checksum 9942ca5c745417c14e318835f420733
+This command was run using /app/hadoop-2.8.5/share/hadoop/common/hadoop-common-2.8.5.jar
+```
+
+## 管理命令
+- 对于 Hadoop 集群的管理员使用的相关命令，主要包括`daemonlog`、`nodemanager`、`proxymanager`、`resourcemanager`、`rmadmin`、`scmadmin`、`sharedcachemanager`和`timelineserver`命令。
+
+1、daemonlog
 
 使用语法：
 - `yarn daemonlog -getlevel <host:httpport> <classname>`
@@ -434,22 +458,22 @@ Log Class: org.apache.commons.logging.impl.Log4JLogger
 Effective level: INFO
 ```
 
-10、nodemanager
+2、nodemanager
 
 - 使用语法：`yarn nodemanager` #启动nodemanager
 
-11、proxyserver
+3、proxyserver
 
 - 使用语法：`yarn proxyserver` #启动web proxy server
 
-12、resourcemanager
+4、resourcemanager
 
 - 使用语法：`yarn resourcemanager [-format-state-store]` #启动ResourceManager
 ```
 -format-state-store     # RMStateStore的格式. 如果过去的应用程序不再需要，则清理RMStateStore， RMStateStore仅仅在ResourceManager没有运行的时候，才运行RMStateStore
 ```
 
-13、rmadmin
+5、rmadmin
 
 - 使用语法： #运行Resourcemanager管理客户端
 ```
@@ -487,35 +511,23 @@ yarn rmadmin [-refreshQueues]
 -help [cmd]                                         #显示指定命令的帮助，如果没有指定，则显示命令的帮助。
 ```
 
-14、scmadmin
+6、scmadmin
 使用语法：`yarn scmadmin [options]` #运行共享缓存管理客户端
 ```
 -help              #查看帮助
 -runCleanerTask    #运行清理任务
 ```
 
-15、 sharedcachemanager
+7、 sharedcachemanager
 
 - 使用语法：`yarn sharedcachemanager` #启动共享缓存管理器
 
 
-16、timelineserver
+8、timelineserver
 
 - 使用语法：`yarn timelineserver` #启动timelineserver
 
-17、version
 
-- 使用语法: `yarn version` # 打印hadoop的版本。
-
-```
-$ ./yarn version
-Hadoop 2.8.5
-Subversion https://git-wip-us.apache.org/repos/asf/hadoop.git -r 0b8464d75227fcee2c6e7f2410377b3d53d3d5f8
-Compiled by jdu on 2018-09-10T03:32Z
-Compiled with protoc 2.5.0
-From source with checksum 9942ca5c745417c14e318835f420733
-This command was run using /app/hadoop-2.8.5/share/hadoop/common/hadoop-common-2.8.5.jar
-```
 
 参考：
 - https://hadoop.apache.org/docs/r2.7.7/hadoop-yarn/hadoop-yarn-site/YarnCommands.html
