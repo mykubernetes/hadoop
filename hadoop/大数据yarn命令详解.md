@@ -56,11 +56,15 @@ COMMAND COMMAND_OPTIONS #以下各节介绍了各种命令及其选项
 
 - 使用语法：`yarn application [options]` #打印报告，申请和杀死任务
 ```
--appStates <States>         #与-list一起使用，可根据输入的逗号分隔的应用程序状态列表来过滤应用程序。有效的应用程序状态可以是以下之一：ALL，NEW，NEW_SAVING，SUBMITTED，ACCEPTED，RUNNING，FINISHED，FAILED，KILLED
--appTypes <Types>           #与-list一起使用，可以根据输入的逗号分隔的应用程序类型列表来过滤应用程序。
 -list                       #列出RM中的应用程序。支持使用-appTypes来根据应用程序类型过滤应用程序，并支持使用-appStates来根据应用程序状态过滤应用程序。
--kill <ApplicationId>       #终止应用程序。
--status <ApplicationId>     #打印应用程序的状态。
+-appStates <States>         #与-list一起使用，可根据输入的逗号分隔的应用程序状态列表来过滤应用程序。有效的应用程序状态可以是以下之一：ALL，NEW，NEW_SAVING，SUBMITTED，ACCEPTED，RUNNING，FINISHED，FAILED，KILLED。
+-appTypes <Types>           #与-list一起使用，可以根据输入的逗号分隔的应用程序类型列表来过滤应用程序。
+
+-kill <ApplicationId>       #杀死一个 application，需要指定一个 Application ID。
+-status <ApplicationId>     #列出 某个application 的状态。
+
+-movetoqueue <Application ID>   #移动 application 到其他的 queue，不能单独使用。
+-queue <Queue Name>             #与 movetoqueue 命令一起使用，指定移动到哪个 queue。
 ```
 
 示例1：
@@ -88,6 +92,39 @@ $ ./yarn application -kill application_1438998625140_1705
 Killing application application_1438998625140_1705
 15/08/10 11:57:42 INFO impl.YarnClientImpl: Killed application application_1438998625140_1705
 ``` 
+
+示例4：
+```
+# 移动application 到其他队列
+$ ./yarn  application -movetoqueue application_1479736113445_2577 -queue other
+```
+
+示例5：
+```
+$ ./yarn application -status application_1670913878726_0009
+Application Report : 
+	Application-Id : application_1670913878726_0009
+	Application-Name : ecs_3979920284451840_online
+	Application-Type : Apache Flink
+	User : eoi
+	Queue : default
+	Application Priority : 0
+	Start-Time : 1670996233080
+	Finish-Time : 0
+	Progress : 100%
+	State : RUNNING
+	Final-State : UNDEFINED
+	Tracking-URL : http://node03:40321
+	RPC Port : 40321
+	AM Host : node03
+	Aggregate Resource Allocation : 1094361106 MB-seconds, 854989 vcore-seconds
+	Aggregate Resource Preempted : 0 MB-seconds, 0 vcore-seconds
+	Log Aggregation Status : NOT_START
+	Diagnostics : Attempt recovered after RM restart
+	Unmanaged Application : false
+	Application Node Label Expression : <Not set>
+	AM container Node Label Expression : <DEFAULT_PARTITION>
+```
 
 2、applicationattempt
 
