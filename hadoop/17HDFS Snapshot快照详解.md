@@ -200,12 +200,10 @@ M          .
 +          ./2.txt
 M          ./1.txt
 ```
-- + The file/directory has been created.
-- - The file/directory has been deleted.
-- M The file/directory has been modified.
-- R The file/directory has been renamed.
-
-
+- `+` The file/directory has been created.
+- `-` The file/directory has been deleted.
+- `M` The file/directory has been modified.
+- `R` The file/directory has been renamed.
 
 6、删除快照
 ```
