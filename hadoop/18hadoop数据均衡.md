@@ -46,6 +46,17 @@ threshold 默认设置：10，参数取值范围：0-100，参数含义：判断
 迭代次数，默认为 5
 ```
 
+参数调整：
+- dfs.datanode.balance.bandwidthPerSec = 31457280 ，指定DataNode用于balancer的带宽为30MB，这个示情况而定，如果交换机性能好点的，完全可以设定为50MB，单位是Byte，如果机器的网卡和交换机的带宽有限，可以适当降低该速度，默认是1048576(1MB)，hdfs dfsadmin-setBalancerBandwidth 52428800可以通过命令设置
+- -threshold：默认设置为10，参数取值范围0-100，参数含义：判断集群是否平衡的目标参数，每一个 datanode 存储使用率和集群总存储使用率的差值都应该小于这个阀值 ，理论上，该参数设置的越小，整个集群就越平衡，但是在线上环境中，hadoop集群在进行balance时，还在并发的进行数据的写入和删除，所以有可能无法到达设定的平衡参数值
+- dfs.datanode.balance.max.concurrent.moves = 50，指定DataNode上同时用于balance待移动block的最大线程个数
+- dfs.balancer.moverThreads：用于执行block移动的线程池大小，默认1000
+- dfs.balancer.max-size-to-move：每次balance进行迭代的过程最大移动数据量，默认10737418240(10GB)
+- dfs.balancer.getBlocks.size：获取block的数量，默认2147483648(2GB)
+- dfs.balancer.getBlocks.minblock-size：用来平衡的最小block大小，默认10485760（10MB）
+- dfs.datanode.max.transfer.threads：建议为16384)，指定用于在DataNode间传输block数据的最大线程数。
+
+
 1.2 设置balance带宽
 ```
 ./hdfs dfsadmin -getBalancerBandwidth node01:50020
@@ -59,7 +70,7 @@ hdfs dfsadmin -setBalancerBandwidth 104857600
 
 1.3 查询当前的集群数据节点
 ```
-./hdfs dfsadmin -printTopology
+hdfs dfsadmin -printTopology
 Rack: /default-rack
    192.168.102.69:50010 (node01)
    192.168.102.72:50010 (node04)
@@ -68,12 +79,24 @@ Rack: /default-rack
 
 1.4 使用命令平衡集群数据节点,指定节点均衡
 ```
-./hdfs balancer -threshold 5.0 -policy DataNode -include node01,node04,node05
+hdfs balancer -threshold 5.0 -policy DataNode -include node01,node04,node05
 ```
 
-均衡所有节点
 ```
-./hdfs balancer -threshold 5.0 
+# 启动数据平衡，默认阈值为 10%
+hdfs balancer
+
+# 默认相差值为10% 带宽速率为10M/s，过程信息会直接打印在客户端 ctrl+c即可中止
+hdfs balancer -Ddfs.balancer.block-move.timeout=600000 
+
+#可以手动设置相差值 一般相差值越小 需要平衡的时间就越长，//设置为20% 这个参数本身就是百分比 不用带%
+hdfs balancer -threshold 20
+
+#如果怕影响业务可以动态设置一下带宽再执行上述命令，1M/s
+hdfs dfsadmin -setBalancerBandwidth 1048576
+
+#或者直接带参运行，带宽为1M/s
+hdfs balancer -Ddfs.datanode.balance.bandwidthPerSec=1048576 -Ddfs.balancer.block-move.timeout=600000
 ```
 
 1.5 也可以使用hadoop自带的脚本执行平衡命令
