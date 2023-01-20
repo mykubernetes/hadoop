@@ -62,13 +62,65 @@ Rack: /default-rack
    192.168.31.115:50010 (node05)
 ```
 
-使用命令平衡集群数据节点
+1.3 使用命令平衡集群数据节点
 ```
 ./hdfs balancer -threshold 5.0 -policy DataNode -include node01,node04,node05
 ```
 
+1.4 也可以使用hadoop自带的脚本执行平衡命令
+```
+# vim start-balancer.sh
+#!/usr/bin/env bash
+
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+bin=`dirname "${BASH_SOURCE-$0}"`
+bin=`cd "$bin"; pwd`
+
+DEFAULT_LIBEXEC_DIR="$bin"/../libexec
+HADOOP_LIBEXEC_DIR=${HADOOP_LIBEXEC_DIR:-$DEFAULT_LIBEXEC_DIR}
+. $HADOOP_LIBEXEC_DIR/hdfs-config.sh
+
+# Start balancer daemon.
+
+"$HADOOP_PREFIX"/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script "$bin"/hdfs start balancer $@
+```
+
+执行平衡命令
+```
+start-balancer.sh -threshold 10
+```
+
+停止数据均衡命令
+```
+stop-balancer.sh
+```
+- 正常情况下不用执行stop命令，程序会自动停止。均衡结束后需要将服务关掉，否则占用资源
+
+在hdfs-site.xml文件中可以设置数据均衡占用的网络带宽限制
+```
+<property>
+<name>dfs.balance.bandwidthPerSec</name>
+<value>1048576</value>
+<description> Specifies the maximum bandwidth that each datanode can utilize for the balancing purpose in term of the number of bytes per second. </description>
+</property>
+```
+
 参考：
-- https://www.pudn.com/news/627636d99221806f9d1833af.html#1100Ms_78
+- https://hadoop.apache.org/docs/r2.7.3/hadoop-project-dist/hadoop-hdfs/HDFSCommands.html#balancer
 
 # 二、Hadoop单个节点的磁盘均衡
 
