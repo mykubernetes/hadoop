@@ -1,3 +1,77 @@
+# 一、手动执行平衡
+
+1.1 获取命令帮助
+```
+ ./hdfs balancer --help
+Usage: hdfs balancer
+	[-policy <policy>]	the balancing policy: datanode or blockpool
+	[-threshold <threshold>]	Percentage of disk capacity
+	[-exclude [-f <hosts-file> | <comma-separated list of hosts>]]	Excludes the specified datanodes.
+	[-include [-f <hosts-file> | <comma-separated list of hosts>]]	Includes only the specified datanodes.
+	[-source [-f <hosts-file> | <comma-separated list of hosts>]]	Pick only the specified datanodes as source nodes.
+	[-blockpools <comma-separated list of blockpool ids>]	The balancer will only run on blockpools included in this list.
+	[-idleiterations <idleiterations>]	Number of consecutive idle iterations (-1 for Infinite) before exit.
+	[-runDuringUpgrade]	Whether to run the balancer during an ongoing HDFS upgrade.This is usually not desired since it will not affect used space on over-utilized machines.
+
+Generic options supported are
+-conf <configuration file>     specify an application configuration file
+-D <property=value>            use value for given property
+-fs <file:///|hdfs://namenode:port> specify default filesystem URL to use, overrides 'fs.defaultFS' property from configurations.
+-jt <local|resourcemanager:port>    specify a ResourceManager
+-files <comma separated list of files>    specify comma separated files to be copied to the map reduce cluster
+-libjars <comma separated list of jars>    specify comma separated jar files to include in the classpath.
+-archives <comma separated list of archives>    specify comma separated archives to be unarchived on the compute machines.
+
+The general command line syntax is
+command [genericOptions] [commandOptions]
+```
+
+```
+-threshold 5
+集群平衡的条件，datanode间磁盘使用率差异的阈值，区间选择：0~100; Threshold参数为集群是否处于均衡状态设置了一个预期目标.
+threshold 默认设置：10，参数取值范围：0-100，参数含义：判断集群是否平衡的目标参数，每一个 datanode 存储使用率和集群总存储使用率的差值都应该小于这个阀值 ，
+理论上，该参数设置的越小，整个集群就越平衡，但是在线上环境中，hadoop集群在进行balance时，还在并发的进行数据的写入和删除，所以有可能无法到达设定的平衡参数值。
+这个命令中-threshold 参数后面跟的是HDFS达到平衡状态的磁盘使用率偏差值。如果机器与机器之间磁盘使用率偏差小于10%，那么我们就认为HDFS集群已经达到了平衡的状态。
+
+-policy datanode
+默认为datanode，datanode级别的平衡策略
+
+-exclude -f /tmp/ip1.txt
+默认为空，指定该部分ip不参与balance， -f：指定输入为文件
+
+-include -f /tmp/ip2.txt
+默认为空，只允许该部分ip参与balance，-f：指定输入为文件
+
+-idleiterations 5
+迭代次数，默认为 5
+```
+
+```
+#参数说明：设置balance工具在运行中所能占用的带宽，需反复调试设置为合理值, 过大反而会造成MapReduce流程运行缓慢
+#CDH集群上默认值为10M, 案例中设置为1G
+hdfs dfsadmin -setBalancerBandwidth 104857600  
+```
+
+
+1.2 查询当前的集群数据节点
+```
+./hdfs dfsadmin -printTopology
+Rack: /default-rack
+   192.168.102.69:50010 (node01)
+   192.168.102.72:50010 (node04)
+   192.168.31.115:50010 (node05)
+```
+
+使用命令平衡集群数据节点
+```
+./hdfs balancer -threshold 5.0 -policy DataNode -include node01,node04,node05
+```
+
+参考：
+- https://www.pudn.com/news/627636d99221806f9d1833af.html#1100Ms_78
+
+# 二、Hadoop单个节点的磁盘均衡
+
 hadoop如果一个节点内有新增磁盘或者数据出现在磁盘上不均衡时，需要做磁盘均衡，就是将其他已经写入数据的磁盘均衡到新增加的磁盘上去，大概分为以下三个步骤，计划，执行，查询：
 
 ```
