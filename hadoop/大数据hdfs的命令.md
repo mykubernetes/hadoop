@@ -281,6 +281,25 @@ hadoop : clustergroup  //hadoop属于clustergroup组
 
 服务的快照信息
 
+```
+$ hdfs jmxget -service NameNode
+init: server=localhost;port=;service=NameNode;localVMUrl=null
+
+Domains:
+	Domain = JMImplementation
+	Domain = com.sun.management
+	Domain = java.lang
+	Domain = java.nio
+	Domain = java.util.logging
+
+MBeanServer default domain = DefaultDomain
+
+MBean count = 22
+
+Query MBeanServer MBeans:
+List of all the available keys:
+15/08/18 16:26:37 INFO util.ExitUtil: Exiting with status 0
+```
 
 ### oev（修改参数慎用，查看参数可以使用）
 ```
@@ -400,6 +419,13 @@ hdfs balancer
 运行集群平衡实用程序。管理员只需按Ctrl-C即可停止重新平衡过程。有关详细信息，请参阅[Balancer](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html#Balancer)。
 
 请注意，blockpool策略比datanode策略更严格。
+
+- cacheadmin
+使用： `hdfs cacheadmin -addDirective -path <path> -pool <pool-name> [-force] [-replication <replication>] [-ttl <time-to-live>]`
+
+- datanode
+使用： `hdfs datanode [-regular | -rollback | -rollingupgrace rollback]`
+
 
 除了上述命令选项外，还引入了一个固定功能，从2.7.0开始，以防止某些副本被平衡器/移动器移动。默认情况下，此固定功能处于禁用状态，可通过配置属性“dfs.datanode.block-pinning.enabled”启用。启用时，此功能仅影响写入create（）调用中指定的favored节点的块。对于HBase regionserver等应用程序，我们希望维护数据局部性时，此功能非常有用。
 
@@ -523,6 +549,15 @@ hdfs dfsadmin [-help [cmd]]
 | `-help [cmd]`                                                  | 显示给定命令或所有命令的帮助（如果未指定）。                 |
 
 运行HDFS dfsadmin客户端。
+
+```
+$ hdfs dfsadmin -printTopology
+Rack: /default-rack
+   10.0.1.80:50010 (hadoopcluster80)
+   10.0.1.82:50010 (hadoopcluster82)
+   10.0.1.83:50010 (hadoopcluster83)
+   10.0.1.84:50010 (hadoopcluster84)
+```
 
 ### dfsrouter
 
