@@ -454,7 +454,7 @@ hdfs diskbalancer -plan cdh192-22
 hdfs diskbalancer -execute  /system/diskbalancer/2022-Nov-17-10-21-45/cdh192-22.plan.json
 ```
 
-3.查看计划
+## 3.查看计划
 ```
 hdfs diskbalancer -query cdh192-22
 ```
@@ -488,26 +488,59 @@ tmpfs                    252G     0  252G   0% /sys/fs/cgroup
 tmpfs                     51G     0   51G   0% /run/user/1000
 ```
 
-hdfs-site.xml 修改datanode写入策略，该配置默认是轮训，我们要改为以剩余空间考虑写入某块磁盘
+## Hadoop DataNode多目录磁盘配置
+
+- 配置hdfs-site.xml
+
+在配置文件中$HADOOP_HOME/etc/hadoop/hdfs-site.xml添加如下配置
 ```
+<!-- dfs.namenode.name.dir是保存FsImage镜像的目录，作用是存放hadoop的名称节点namenode里的metadata-->
+<property>
+  <name>dfs.namenode.name.dir</name>
+  <value>file:/opt/bigdata/hadoop/hadoop-3.3.4/data/namenode</value>
+</property>
+<!-- 存放HDFS文件系统数据文件的目录（存储Block），作用是存放hadoop的数据节点datanode里的多个数据块。 -->
+<property>
+    <name>dfs.datanode.data.dir</name>
+    <value>/data1,/data2,/data3,/data4</value>
+</property>
+
+<!-- 设置数据存储策略，默认为轮询，现在的情况显然应该用“选择空间多的磁盘存”模式 -->
 <property>
     <name>dfs.datanode.fsdataset.volume.choosing.policy</name>
     <value>org.apache.hadoop.hdfs.server.datanode.fsdataset.AvailableSpaceVolumeChoosingPolicy</value>
 </property>
-```
-以下参数是配置各个磁盘的均衡阈值的，默认为10G。  
-在此节点的所有数据存储的目录中，找一个占用最大的，找一个占用最小的。  
-如果在两者之差在10G的范围内，那么块分配的方式是轮询。如下为英文原文。  
 
-This setting controls how much DN volumes are allowed to differ in terms of bytes of free disk space before they are considered imbalanced. If the free space of all the volumes are within this range of each other, the volumes will be considered balanced and block assignments will be done on a pure round robin basis.
-```
+<!-- 默认值0.75。它的含义是数据块存储到可用空间多的卷上的概率，由此可见，这个值如果取0.5以下，对该策略而言是毫无意义的，一般就采用默认值。-->
 <property>
-    <name>dfs.datanode.available-space-volume-choosing-policy.balanced-space-threshold </name>
-    <value>10737418240</value>
+    <name>dfs.datanode.available-space-volume-choosing-policy.balanced-space-preference-fraction</name>
+    <value>0.75f</value>
+</property>
+
+<!-- 配置各个磁盘的均衡阈值的，默认为10G（10737418240），在此节点的所有数据存储的目录中，找一个占用最大的，找一个占用最小的，如果在两者之差在10G的范围内，那么块分配的方式是轮询。 -->
+<property>
+  <name>dfs.datanode.available-space-volume-choosing-policy.balanced-space-threshold</name>         
+  <value>10737418240</value>
 </property>
 ```
-通过调整以上2个参数，应该就可以达到我们期望的效果了。  
-即当每个目录的剩余空间的最大值和最小值差距在10G以内时，使用轮询写入，否则优先写入空间比较大的目录。  
+
+## 配置详解
+
+- 1、 dfs.datanode.data.dir HDFS数据应该存储Block的地方。可以是逗号分隔的目录列表（典型的，每个目录在不同的磁盘）。这些目录被轮流使用，一个块存储在这个目录，下一个块存储在下一个目录，依次循环。每个块在同一个机器上仅存储一份。不存在的目录被忽略。必须创建文件夹，否则被视为不存在。
+- 2、`dfs.datanode.fsdataset.volume.choosing.policy` 当我们往`HDFS`上写入新的数据块，`DataNode`将会使用`volume`选择策略来为这个块选择存储的地方。通过参数 `dfs.datanode.fsdataset.volume.choosing.policy` 来设置，这个参数目前支持两种磁盘选择策略
+  - `round-robin`：循环(round-robin)策略将新块均匀分布在可用磁盘上。配置：`org.apache.hadoop.hdfs.server.datanode.fsdataset.RoundRobinVolumeChoosingPolicy`；实现类：RoundRobinVolumeChoosingPolicy.java
+  - `available space`：可用空间优先方式,根据磁盘空间剩余量来选择磁盘存储数据块。配置：`org.apache.hadoop.hdfs.server.datanode.fsdataset.AvailableSpaceVolumeChoosingPolicy`；实现类：AvailableSpaceVolumeChoosingPolicy.java
+
+  这两种方式的优缺点：
+    - 采用轮询卷存储方式虽然能保证每块盘都能得到使用，但是在长期运行的集群中由于数据删除和磁盘热插拔等原因，可能造成磁盘空间的不均。
+    - 所以最好将磁盘选择策略配置成第二种，根据磁盘空间剩余量来选择磁盘存储数据块，这样能保证节点磁盘数据量平衡IO压力被分散。
+
+- 3、`dfs.datanode.available-space-volume-choosing-policy.balanced-space-preference-fraction`它的含义是数据块存储到可用空间多的卷上的概率，仅在`dfs.datanode.fsdataset.volume.choosing.policy`设置为 `org.apache.hadoop.hdfs.server.datanode.fsdataset.AvailableSpaceVolumeChoosingPolicy` 时使用。此设置控制将多少百分比的新块分配发送到可用磁盘空间比其他卷更多的卷。此设置应在 `0.0` - `1.0` 的范围内，但在实践中为 `0.5` - `1.0`，因为没有理由希望具有较少可用磁盘空间的卷接收更多块分配。
+- 4、`dfs.datanode.available-space-volume-choosing-policy.balanced-space-threshold`配置各个磁盘的均衡阈值的，默认为`10G（10737418240）`，在此节点的所有数据存储的目录中，找一个占用最大的，找一个占用最小的，如果在两者之差在10G的范围内，那么块分配的方式是轮询。
+  - 所有的 volumes 磁盘可用空间差距没有超过10G，那么这些磁盘得到的最大可用空间和最小可用空间差值就会很小，这时候就会使用轮询磁盘选择策略来存放副本。
+  - 如果 volumes 磁盘可用空间相差大于10G，那么可用空间策略会将 volumes 配置中的磁盘按照一定的规则分为highAvailableVolumes 和 lowAvailableVolumes。
+
+
 
 参考：
 - https://hadoop.apache.org/docs/r3.0.0/hadoop-project-dist/hadoop-hdfs/HDFSDiskbalancer.html
