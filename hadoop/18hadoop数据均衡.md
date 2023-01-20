@@ -511,3 +511,4 @@ This setting controls how much DN volumes are allowed to differ in terms of byte
 
 参考：
 - https://hadoop.apache.org/docs/r3.0.0/hadoop-project-dist/hadoop-hdfs/HDFSDiskbalancer.html
+- https://blog.csdn.net/qq_35745940/article/details/126439759
