@@ -99,6 +99,13 @@ hdfs dfsadmin -setBalancerBandwidth 1048576
 hdfs balancer -Ddfs.datanode.balance.bandwidthPerSec=1048576 -Ddfs.balancer.block-move.timeout=600000
 ```
 
+```
+nohup hdfs balancer \ 
+-D "dfs.balancer.movedWinWidth=300000000" \  
+-D "dfs.datanode.balance.bandwidthPerSec=2000m" \ 
+-threshold 5 > my-hadoop-balancer-v2021u1109.log &
+```
+
 1.5 也可以使用hadoop自带的脚本执行平衡命令
 ```
 # vim start-balancer.sh
