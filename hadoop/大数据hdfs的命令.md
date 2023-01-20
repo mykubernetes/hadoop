@@ -149,6 +149,26 @@ hdfs fsck <path>
 运行HDFS文件系统检查实用程序。有关详细信息，请参阅[fsck](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html#fsck)。
 
 ```
+.........................................Status: HEALTHY
+ Total size:	24912786198 B                           #代表根目录下文件总大小
+ Total dirs:	2016                                    #根目录下总共有多少目录
+ Total files:	3741                                    #代表检测的目录下总共有多少文件
+ Total symlinks:		0                       #代表检测下目录下有多少个符号链接
+ Total blocks (validated):	3678 (avg. block size 6773460 B)  #代表检测的目录下有多少的block是有效的
+ Minimally replicated blocks:	3678 (100.0 %)          #代表拷贝的最小block块数
+ Over-replicated blocks:	0 (0.0 %)               #代表当前副本数大于指定副本数的block数量
+ Under-replicated blocks:	0 (0.0 %)               #代表当前副本数小于指定副本数的block数量
+ Mis-replicated blocks:		0 (0.0 %)               #代表丢失的block数量
+ Default replication factor:	2                       #代表默认的副本数（自身一份，默认拷贝一份）
+ Average block replication:	2.0                     #代表块平均的副本数
+ Corrupt blocks:		0                       #代表坏的block数，这个值不为0，说明当前集群有不可恢复的块，即数据丢失
+ Missing replicas:		0 (0.0 %)               #代表丢失的副本数
+ Number of data-nodes:		3                       #代表有多少个Datanode节点
+ Number of racks:		1                       #代表有多少个机架
+FSCK ended at Fri Jan 20 17:26:42 CST 2023 in 262 milliseconds
+```
+
+```
 $ hdfs fsck /test/fish -files -blocks
 Connecting to namenode via http://hadoopcluster78:50070
 FSCK started by hadoop (auth:SIMPLE) from /10.0.1.78 for path /test/fish at Fri Aug 14 12:01:50 CST 2015
@@ -419,13 +439,6 @@ hdfs balancer
 运行集群平衡实用程序。管理员只需按Ctrl-C即可停止重新平衡过程。有关详细信息，请参阅[Balancer](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html#Balancer)。
 
 请注意，blockpool策略比datanode策略更严格。
-
-- cacheadmin
-使用： `hdfs cacheadmin -addDirective -path <path> -pool <pool-name> [-force] [-replication <replication>] [-ttl <time-to-live>]`
-
-- datanode
-使用： `hdfs datanode [-regular | -rollback | -rollingupgrace rollback]`
-
 
 除了上述命令选项外，还引入了一个固定功能，从2.7.0开始，以防止某些副本被平衡器/移动器移动。默认情况下，此固定功能处于禁用状态，可通过配置属性“dfs.datanode.block-pinning.enabled”启用。启用时，此功能仅影响写入create（）调用中指定的favored节点的块。对于HBase regionserver等应用程序，我们希望维护数据局部性时，此功能非常有用。
 
