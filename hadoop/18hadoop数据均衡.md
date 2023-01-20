@@ -447,3 +447,6 @@ This setting controls how much DN volumes are allowed to differ in terms of byte
 ```
 通过调整以上2个参数，应该就可以达到我们期望的效果了。  
 即当每个目录的剩余空间的最大值和最小值差距在10G以内时，使用轮询写入，否则优先写入空间比较大的目录。  
+
+参考：
+- https://hadoop.apache.org/docs/r3.0.0/hadoop-project-dist/hadoop-hdfs/HDFSDiskbalancer.html
