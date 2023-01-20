@@ -46,14 +46,18 @@ threshold 默认设置：10，参数取值范围：0-100，参数含义：判断
 迭代次数，默认为 5
 ```
 
+1.2 设置balance带宽
 ```
-#参数说明：设置balance工具在运行中所能占用的带宽，需反复调试设置为合理值, 过大反而会造成MapReduce流程运行缓慢
-#CDH集群上默认值为10M, 案例中设置为1G
+./hdfs dfsadmin -getBalancerBandwidth node01:50020
+Balancer bandwidth is 10485760 bytes per second.
+```
+
+设置balance工具在运行中所能占用的带宽，需反复调试设置为合理值, 过大反而会造成MapReduce流程运行缓慢
+```
 hdfs dfsadmin -setBalancerBandwidth 104857600  
 ```
 
-
-1.2 查询当前的集群数据节点
+1.3 查询当前的集群数据节点
 ```
 ./hdfs dfsadmin -printTopology
 Rack: /default-rack
@@ -62,12 +66,17 @@ Rack: /default-rack
    192.168.31.115:50010 (node05)
 ```
 
-1.3 使用命令平衡集群数据节点
+1.4 使用命令平衡集群数据节点,指定节点均衡
 ```
 ./hdfs balancer -threshold 5.0 -policy DataNode -include node01,node04,node05
 ```
 
-1.4 也可以使用hadoop自带的脚本执行平衡命令
+均衡所有节点
+```
+./hdfs balancer -threshold 5.0 
+```
+
+1.5 也可以使用hadoop自带的脚本执行平衡命令
 ```
 # vim start-balancer.sh
 #!/usr/bin/env bash
