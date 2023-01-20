@@ -531,8 +531,8 @@ hdfs dfsadmin [-help [cmd]]
 | `-rollEdits`                                                   | 在active 的 NameNode上滚动 editlog                           |
 | `-restoreFailedStorage true \| false \| check`                 | 此选项将打开/关闭自动尝试以还原失败的存储副本。如果故障存储再次可用，系统将尝试在检查点期间恢复编辑和/或fsimage。'check'选项将返回当前设置。 |
 | `-refreshNodes`                                                | 重新读取主机并读取排除文件（exclude file）以更新允许连接到Namenode的数据节点集以及应该退役或重新调试的数据节点集。 |
-| `-setQuota <quota> <dirname> ... <dirname>`                    | 有关详细信息，请参阅[HDFS配额指南](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsQuotaAdminGuide.html#Administrative_Commands)。 |
-| `-clrQuota <dirname> ... <dirname>`                            | 有关详细信息，请参阅[HDFS配额指南](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsQuotaAdminGuide.html#Administrative_Commands)。 |
+| `-setQuota <quota> <dirname> ... <dirname>`                    | 设置目录的quota信息，请参阅[HDFS配额指南](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsQuotaAdminGuide.html#Administrative_Commands)。 |
+| `-clrQuota <dirname> ... <dirname>`                            | 清空目录的quota信息，请参阅[HDFS配额指南](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsQuotaAdminGuide.html#Administrative_Commands)。 |
 | `-setSpaceQuota <quota> [-storageType <storagetype>] <dirname> ... <dirname>` | 有关详细信息，请参阅[HDFS配额指南](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsQuotaAdminGuide.html#Administrative_Commands)。 |
 | `-clrSpaceQuota [ -storageType<storagetype>] <dirname> ... <dirname>` | 有关详细信息，请参阅[HDFS配额指南](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsQuotaAdminGuide.html#Administrative_Commands)。 |
 | `-finalizeUpgrade`                                             | 完成HDFS的升级，Datanodes删除其先前版本的工作目录，然后Namenode执行相同操作，该命令执行后表示升级已经完成。 |
