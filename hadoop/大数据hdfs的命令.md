@@ -141,24 +141,70 @@ hdfs fsck <path>
 | -list-corruptfileblocks        | 打印出所属的缺失块和文件列表                             |
 | -move                          | 将损坏的文件移至/ lost + found                          |
 | -openforwrite                  | 打印出用于写入的文件                                    |
-| -showprogress                  |打印出输出点的点。默认为OFF（无进度）。                    |
-| -storagepolicies               |打印出块的存储策略摘要。                                  |
-| -maintenance                   |打印出维护状态节点详细信息。                              |
+| -showprogress                  | 打印出输出点的点。默认为OFF（无进度）。                    |
+| -storagepolicies               | 打印出块的存储策略摘要。                                  |
+| -maintenance                   | 打印出维护状态节点详细信息。                              |
 | -blockId                       | 打印出有关块的信息                                      |
 
 运行HDFS文件系统检查实用程序。有关详细信息，请参阅[fsck](https://hadoop.apache.org/docs/r3.2.0/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html#fsck)。
 
+```
+$ hdfs fsck /test/fish -files -blocks
+Connecting to namenode via http://hadoopcluster78:50070
+FSCK started by hadoop (auth:SIMPLE) from /10.0.1.78 for path /test/fish at Fri Aug 14 12:01:50 CST 2015
+/test/fish <dir>
+/test/fish/box_log_20150721.txt 2018468864 bytes, 16 block(s):  OK
+0. BP-701099497-10.0.1.78-1430101367576:blk_1073749326_8927 len=134217728 repl=3
+1. BP-701099497-10.0.1.78-1430101367576:blk_1073749327_8928 len=134217728 repl=3
+2. BP-701099497-10.0.1.78-1430101367576:blk_1073749328_8929 len=134217728 repl=3
+3. BP-701099497-10.0.1.78-1430101367576:blk_1073749329_8930 len=134217728 repl=3
+4. BP-701099497-10.0.1.78-1430101367576:blk_1073749330_8931 len=134217728 repl=3
+5. BP-701099497-10.0.1.78-1430101367576:blk_1073749331_8932 len=134217728 repl=3
+6. BP-701099497-10.0.1.78-1430101367576:blk_1073749332_8933 len=134217728 repl=3
+7. BP-701099497-10.0.1.78-1430101367576:blk_1073749333_8934 len=134217728 repl=3
+8. BP-701099497-10.0.1.78-1430101367576:blk_1073749334_8935 len=134217728 repl=3
+9. BP-701099497-10.0.1.78-1430101367576:blk_1073749335_8936 len=134217728 repl=3
+10. BP-701099497-10.0.1.78-1430101367576:blk_1073749336_8937 len=134217728 repl=3
+11. BP-701099497-10.0.1.78-1430101367576:blk_1073749337_8938 len=134217728 repl=3
+12. BP-701099497-10.0.1.78-1430101367576:blk_1073749338_8939 len=134217728 repl=3
+13. BP-701099497-10.0.1.78-1430101367576:blk_1073749339_8940 len=134217728 repl=3
+14. BP-701099497-10.0.1.78-1430101367576:blk_1073749340_8941 len=134217728 repl=3
+15. BP-701099497-10.0.1.78-1430101367576:blk_1073749341_8942 len=5202944 repl=3
+
+Status: HEALTHY
+ Total size:    2018468864 B
+ Total dirs:    1
+ Total files:    1
+ Total symlinks:        0
+ Total blocks (validated):    16 (avg. block size 126154304 B)
+ Minimally replicated blocks:    16 (100.0 %)
+ Over-replicated blocks:    0 (0.0 %)
+ Under-replicated blocks:    0 (0.0 %)
+ Mis-replicated blocks:        0 (0.0 %)
+ Default replication factor:    3
+ Average block replication:    3.0
+ Corrupt blocks:        0
+ Missing replicas:        0 (0.0 %)
+ Number of data-nodes:        4
+ Number of racks:        1
+FSCK ended at Fri Aug 14 12:01:50 CST 2015 in 1 milliseconds
+
+
+The filesystem under path '/test/fish' is HEALTHY
+```
+
+
 ### getconf
 用法：
 ```
-   hdfs getconf -namenodes           -->基本不用
-   hdfs getconf -secondaryNameNodes
-   hdfs getconf -nnRpcAddresses
-   hdfs getconf -journalNodes        -->基本不用
-   hdfs getconf -backupNodes
-   hdfs getconf -includeFile         -->基本不用
-   hdfs getconf -excludeFile         -->基本不用
-   hdfs getconf -confKey [key]       -->使用较多
+hdfs getconf -namenodes
+hdfs getconf -secondaryNameNodes
+hdfs getconf -nnRpcAddresses
+hdfs getconf -journalNodes
+hdfs getconf -backupNodes
+hdfs getconf -includeFile
+hdfs getconf -excludeFile
+hdfs getconf -confKey [key]       -->使用较多
 ```
 
 | 命令选项       | 描述                                               |
@@ -167,12 +213,30 @@ hdfs fsck <path>
 | -secondaryNameNodes	| 获取群集中的辅助名称节点列表                  |
 | -backupNodes | 获取群集中的备份节点列表。                           |
 | -journalNodes  | 获取群集中的日记节点列表                           |
-| -includeFile   | 获取包含文件路径，该路径定义可以加入群集的datanode   |
-| -excludeFile   | 获取排除文件路径，该路径定义需要停用的数据节点       |
+| -includeFile   | 获取dfs.hosts配置的值，该值定义了哪些DataNode加入到集群。   |
+| -excludeFile   | 获取dfs.hosts.exclude配置的值，该值定义了哪些DataNode排除在集群之外。       |
 | -nnRpcAddresses | 获取namenode rpc地址                            |
 | -confKey [key] | 从配置中获取配置的参数值                           |
 
 从配置目录中获取配置信息，进行后处理。
+
+```
+$ hdfs getconf -namenodes
+node01 node03
+
+$ hdfs getconf -nnRpcAddresses
+node01:8022
+node03:8022
+
+$ hdfs getconf -confKey dfs.webhdfs.enabled
+true
+
+$ hdfs getconf -includeFile
+Configuration dfs.hosts is missing.
+
+$ hdfs getconf -excludeFile
+Configuration dfs.hosts.exclude is missing.
+```
 
 
 ### groups
@@ -180,6 +244,11 @@ hdfs fsck <path>
 用法：`hdfs groups [username ...]`
 
 返回给定一个或多个用户名的组信息。
+
+```
+$ hdfs groups hadoop
+hadoop : clustergroup  //hadoop属于clustergroup组
+```
 
 ### httpfs
 
