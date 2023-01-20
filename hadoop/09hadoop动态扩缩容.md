@@ -197,3 +197,6 @@ Refresh nodes successful
 ```
 [hadoop@hadoop102 hadoop-3.1.3]$ sbin/start-balancer.sh -threshold 10
 ```
+
+参考：
+- https://www.cnblogs.com/sw-code/p/16388176.html
