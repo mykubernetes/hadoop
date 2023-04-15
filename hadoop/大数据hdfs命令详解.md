@@ -45,6 +45,35 @@ Most commands print help when invoked w/o parameters.
 # hdfs dfs
 ```
 
+| 命令名 | 格式 | 含义 |
+|--------|-----|------|
+| -ls | -ls<路径> | 查看指定路径的当前目录结构 |
+| -lsr | -lsr<路径> | 递归查看指定路径的目录结构 |
+| -du | -du<路径> | 统计目录下个文件大小 |
+| -dus | -dus<路径> | 汇总统计目录下文件(夹)大小 |
+| -count | -count[-q]<路径> | 统计文件(夹)数量 |
+| -mv | -mv<源路径><目的路径> | 移动 |
+| -cp | -cp<源路径><目的路径> | 复制 |
+| -rm | -rm[-skipTrash]<路径> | 删除文件/空白文件夹 |
+| -rmr | -rmr[-skipTrash]<路径> | 递归删除 |
+| -put | -put<多个 linux 上的文件> | 上传文件 |
+| -copyFromLocal | -copyFromLocal<多个 linux 上的文件> | 从本地复制 |
+| -moveFromLocal | -moveFromLocal<多个 linux 上的文件> | 从本地移动 |
+| -getmerge	 | getmerge<源路径> | 合并到本地 |
+| -cat | -cat | 查看文件内容 |
+| -text | -text | 查看文件内容 |
+| -copyToLocal | -copyToLocal[-ignoreCrc][-crc][hdfs 源路 径][linux 目的路径] | 复制到本地 |
+| -moveToLocal | -moveToLocal[-crc] | 移动到本地 |
+| -mkdir | -mkdir | 创建空白文件夹 |
+| -setrep | -setrep[-R][-w]<副本数><路径> | 修改副本数量 |
+| -touchz | -touchz<文件路径> | 创建空白文件 |
+| -stat | -stat[format]<路径> | 显示文件统计信息 |
+| -tail | -tail[-f]<文件> | 查看文件尾部信息 |
+| -chmod | -chmod[-R]<权限模式>[路径] | 修改权限 |
+| -chown | -chown[-R][属主][:[属组]] 路径 | 修改属主 |
+| -chgrp | -chgrp[-R] 属组名称 路径 | 修改属组 |
+| -help | -help[命令选项] | 帮助 |
+
 1.查看`hdfs`子命令的帮助信息
 ```
 # hdfs dfs -help ls
