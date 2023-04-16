@@ -30,6 +30,7 @@ https://docs.oracle.com/cd/E19253-01/819-7061/6n91j2vak/index.html
 ## 非 kadmin 模式
 
 | 操作 | 命令 |
+|-----|------|
 | 进入 kadmin | `kadmin.local/kadmin` |
 | 创建数据库 | `kdb5_util create -r JENKIN.COM -s` |
 | 启动 kdc 服务 | `service krb5kdc start` |
@@ -43,6 +44,7 @@ https://docs.oracle.com/cd/E19253-01/819-7061/6n91j2vak/index.html
 ## kadmin 模式
 
 | 操作 | 命令 |
+|------|------|
 | 生成随机 key 的 principal | `addprinc -randkey root/master1@JENKIN.COM` |
 | 生成指定 key 的 principal | `Addprinc -pw **** admin/admin@JENKIN.COM` |
 | 查看 principal | `listprincs` |
