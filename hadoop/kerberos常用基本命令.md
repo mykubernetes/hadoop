@@ -54,7 +54,7 @@ https://docs.oracle.com/cd/E19253-01/819-7061/6n91j2vak/index.html
 | 设置密码策略（policy） | `addpol -maxlife "90 days" -minlife "75 days" -minlength 8 -minclasses 3 -maxfailure 10 -history 10 user` |
 | 添加带有密码策略的用户 | `addprinc -policy user hello/admin@HADOOP.COM` |
 | 修改用户的密码策略 | `modprinc -policy user1 hello/admin@HADOOP.COM` |
-| 删除密码策略 | `delpol [-force] use`r |
+| 删除密码策略 | `delpol [-force] user` |
 | 修改密码策略 | `modpol -maxlife "90 days" -minlife "75 days" -minlength 8 -minclasses 3 -maxfailure 10 user` |
 | 添加用户 | `addprinc username` |
 
