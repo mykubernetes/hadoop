@@ -1,3 +1,5 @@
+https://docs.oracle.com/cd/E19253-01/819-7061/6n91j2vak/index.html
+
 # Kerberos 命令
 
 | 命令 | 说明 |
@@ -23,6 +25,37 @@
 | /usr/sbin/kdb5_util | 创建 Kerberos 数据库和存储文件 |
 | /usr/sbin/kgcmgr | 配置 Kerberos 主 KDC 和从 KDC |
 | /usr/sbin/kproplog | 列出更新日志中更新项的摘要 |
+
+
+## 非 kadmin 模式
+
+| 操作 | 命令 |
+| 进入 kadmin | `kadmin.local/kadmin` |
+| 创建数据库 | `kdb5_util create -r JENKIN.COM -s` |
+| 启动 kdc 服务 | `service krb5kdc start` |
+| 启动 kadmin 服务 | `service kadmin start` |
+| 修改当前密码 | `kpasswd` |
+| 测试 keytab 可用性 | `kinit -k -t /var/kerberos/krb5kdc/keytab/root.keytab root/master1@JENKIN.COM` |
+| 查看 keytab | `klist -e -k -t /etc/krb5.keytab` |
+| 清除缓存 | `kdestroy` |
+| 通过 keytab 文件认证登录 | `kinit -kt /var/run/cloudera-scm-agent/process/***-HIVESERVER2/hive.keytab hive/node2` |
+
+## kadmin 模式
+
+| 操作 | 命令 |
+| 生成随机 key 的 principal | `addprinc -randkey root/master1@JENKIN.COM` |
+| 生成指定 key 的 principal | `Addprinc -pw **** admin/admin@JENKIN.COM` |
+| 查看 principal | `listprincs` |
+| 修改 admin/admin 的密码 | `cpw -pw xxxx admin/admin` |
+| 添加/删除 principle | `addprinc/delprinc admin/admin` |
+| 直接生成到 keytab | `ktadd -k /etc/krb5.keytab host/master1@JENKIN.COM` |
+| 设置密码策略（policy） | `addpol -maxlife "90 days" -minlife "75 days" -minlength 8 -minclasses 3 -maxfailure 10 -history 10 user` |
+| 添加带有密码策略的用户 | `addprinc -policy user hello/admin@HADOOP.COM` |
+| 修改用户的密码策略 | `modprinc -policy user1 hello/admin@HADOOP.COM` |
+| 删除密码策略 | `delpol [-force] use`r |
+| 修改密码策略 | `modpol -maxlife "90 days" -minlife "75 days" -minlength 8 -minclasses 3 -maxfailure 10 user` |
+| 添加用户 | `addprinc username` |
+
 
 
 授权添加yarn账户
