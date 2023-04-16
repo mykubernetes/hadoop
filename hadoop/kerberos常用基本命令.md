@@ -1,3 +1,30 @@
+# Kerberos 命令
+
+| 命令 | 说明 |
+|------|-----|
+| /usr/bin/ftp | 文件传输协议程序 |
+| /usr/bin/kdestroy | 销毁 Kerberos 票证 |
+| /usr/bin/kinit | 获取并缓存 Kerberos 票证授予票证 |
+| /usr/bin/klist | 显示当前的 Kerberos 票证 |
+| /usr/bin/kpasswd | 更改 Kerberos 口令 |
+| /usr/bin/ktutil | 管理 Kerberos 密钥表文件 |
+| /usr/bin/rcp | 远程文件复制程序 |
+| /usr/bin/rdist | 远程文件分发程序 |
+| /usr/bin/rlogin | 远程登录程序 |
+| /usr/bin/rsh | 远程 Shell 程序 |
+| /usr/bin/telnet | 基于 Kerberos 的 telnet 程序 |
+| /usr/lib/krb5/kprop | Kerberos 数据库传播程序 |
+| /usr/sbin/gkadmin | Kerberos 数据库管理 GUI 程序，用于管理主体和策略 |
+| /usr/sbin/gsscred | 管理 gsscred 表项 |
+| /usr/sbin/kadmin | 远程 Kerberos 数据库管理程序（运行时需要进行 Kerberos 验证），用于管理主体、策略和密钥表文件 |
+| /usr/sbin/kadmin.local | 本地 Kerberos 数据库管理程序（运行时无需进行 Kerberos 验证，并且必须在主 KDC 上运行），用于管理主体、策略和密钥表文件 |
+| /usr/sbin/kclient | Kerberos 客户机安装脚本，有无安装配置文件皆可使用 |
+| /usr/sbin/kdb5_ldap_util | 为 Kerberos 数据库创建 LDAP 容器 |
+| /usr/sbin/kdb5_util | 创建 Kerberos 数据库和存储文件 |
+| /usr/sbin/kgcmgr | 配置 Kerberos 主 KDC 和从 KDC |
+| /usr/sbin/kproplog | 列出更新日志中更新项的摘要 |
+
+
 授权添加yarn账户
 ```
 [root@xxx ~]# kadmin.local 
