@@ -207,6 +207,6 @@ Aug 21 10:11:42 master krb5kdc[21935](info): TGS_REQ (6 etypes {18 17 16 23 1 3}
 注意: 服务端一定要以zookeeper用户的凭证进行启动. 否则client验证是不通过的!!!
 
 参考:
-https://zhangboyi.blog.csdn.net/article/details/115246149
-https://developer.aliyun.com/article/25626
-https://blog.51cto.com/1992zhong/1958018
+- https://zhangboyi.blog.csdn.net/article/details/115246149
+- https://developer.aliyun.com/article/25626
+- https://blog.51cto.com/1992zhong/1958018
