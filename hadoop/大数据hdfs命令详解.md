@@ -836,3 +836,5 @@ Usage: hdfs debug recoverLease -path <path> [-retries <num-retries>]
 参考：
 - 关于“Hadoop fs”更多相关命令请参考我的笔记：https://www.cnblogs.com/yinzhengjie/p/9906360.html
 - http://www.javashuo.com/article/p-konunspd-dy.html
+- http://www.51niux.com/?id=176
+- https://www.iteye.com/blog/qianshangding-2259417
