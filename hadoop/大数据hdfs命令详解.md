@@ -1,41 +1,35 @@
 # 一、查看hadf的帮助信息
 ```
-# hdfs
-Usage: hdfs [--config confdir] COMMAND
-       where COMMAND is one of:
-  dfs                  run a filesystem command on the file systems supported in Hadoop.
-  namenode -format     format the DFS filesystem
-  secondarynamenode    run the DFS secondary namenode
-  namenode             run the DFS namenode
-  journalnode          run the DFS journalnode
-  zkfc                 run the ZK Failover Controller daemon
-  datanode             run a DFS datanode
-  dfsadmin             run a DFS admin client
-  diskbalancer         Distributes data evenly among disks on a given node
-  haadmin              run a DFS HA admin client
-  fsck                 run a DFS filesystem checking utility
-  balancer             run a cluster balancing utility
-  jmxget               get JMX exported values from NameNode or DataNode.
-  mover                run a utility to move block replicas across
-                       storage types
-  oiv                  apply the offline fsimage viewer to an fsimage
-  oiv_legacy           apply the offline fsimage viewer to an legacy fsimage
-  oev                  apply the offline edits viewer to an edits file
-  fetchdt              fetch a delegation token from the NameNode
-  getconf              get config values from configuration
-  groups               get the groups which users belong to
-  snapshotDiff         diff two snapshots of a directory or diff the
-                       current directory contents with a snapshot
-  lsSnapshottableDir   list all snapshottable dirs owned by the current user
-                                                Use -help to see options
-  portmap              run a portmap service
-  nfs3                 run an NFS version 3 gateway
-  cacheadmin           configure the HDFS cache
-  crypto               configure HDFS encryption zones
-  storagepolicies      list/get/set block storage policies
-  version              print the version
- 
-Most commands print help when invoked w/o parameters.
+用法：hdfs [--config confdir] [--loglevel loglevel] COMMAND
+COMMAND如下：
+dfs              #在Hadoop支持的文件系统上运行文件系统命令。
+classpath        #打印所需的类路径获取Hadoop jar和所需的库
+namenode -format     #格式化DFS文件系统
+secondarynamenode    #运行DFS secondary namenode      
+namenode         #运行DFS namenode
+journalnode      #运行DFS journalnode
+zkfc             #运行ZK Failover Controller守护程序
+datanode         #运行DFS datanode
+dfsadmin         #运行DFS管理客户端
+haadmin          #运行DFS HA管理客户端
+fsck             #运行DFS文件系统检查实用程序
+balancer         #运行集群平衡实用程序
+jmxget           #从NameNode或DataNode获取JMX导出的值。
+mover            #运行一个实用程序以跨存储类型移动块副本
+oiv              #将离线fsimage查看器应用到fsimage
+oiv_legacy       #将离线fsimage查看器应用于传统的fsimage
+oev              #将离线编辑查看器应用到编辑文件
+fetchdt          #从NameNode获取一个委托令牌
+getconf          #从配置中获取配置值
+groups           #获取用户所属的组
+snapshotDiff     # diff目录的两个快照，或者将当前目录内容与快照区分开来
+lsSnapshottableDir  #列出当前用户拥有的所有snaphottable目录
+portmap          #RPC portmap开始使用HDFS NFS3服务
+nfs3             #启动NFS3网关使用HDFS NFS3服务
+cacheadmin       #配置HDFS缓存
+crypto           #配置HDFS加密区
+storagepolicies  #list/ get / set块存储策略
+version          #打印版本
 ```
 
 # 二.dfs
