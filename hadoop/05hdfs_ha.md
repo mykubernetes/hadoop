@@ -1318,3 +1318,6 @@ Queue Name : default
 </property>
 #重启Yarn或者执行yarn rmadmin -refreshQueues刷新队列，就可以看到两条资源队列
 ```
+
+参考：
+- https://blog.csdn.net/m0_37125796/article/details/123775511
